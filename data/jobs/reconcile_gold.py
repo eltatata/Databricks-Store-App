@@ -114,6 +114,36 @@ def check_gold_totals(catalog: str, query_scalar: ScalarQuery) -> list[CheckResu
     ]
 
 
+def check_dimension_coverage(catalog: str, query_scalar: ScalarQuery) -> list[CheckResult]:
+    items_without_known_category = query_scalar(
+        f"SELECT count(*) FROM {catalog}.silver.order_items AS items "
+        f"LEFT JOIN {catalog}.silver.products AS products ON items.product_id = products.product_id "
+        f"WHERE products.product_id IS NULL OR products.is_category_missing"
+    )
+    orders_without_known_state = query_scalar(
+        f"SELECT count(*) FROM {catalog}.silver.orders AS orders "
+        f"LEFT JOIN {catalog}.silver.customers AS customers ON orders.customer_id = customers.customer_id "
+        f"WHERE customers.customer_id IS NULL"
+    )
+    return [
+        CheckResult(
+            name="gold.dim_product rows = silver.products rows",
+            expected=query_scalar(f"SELECT count(*) FROM {catalog}.silver.products"),
+            actual=query_scalar(f"SELECT count(*) FROM {catalog}.gold.dim_product"),
+        ),
+        CheckResult(
+            name="gold.fact_sales unknown categories = silver items without category",
+            expected=items_without_known_category,
+            actual=query_scalar(f"SELECT count(*) FROM {catalog}.gold.fact_sales WHERE category_en = 'unknown'"),
+        ),
+        CheckResult(
+            name="gold.fact_orders unknown states = silver orders without customer",
+            expected=orders_without_known_state,
+            actual=query_scalar(f"SELECT count(*) FROM {catalog}.gold.fact_orders WHERE customer_state = 'unknown'"),
+        ),
+    ]
+
+
 def report_quarantine(catalog: str, query_scalar: ScalarQuery) -> dict[str, object]:
     return {table: query_scalar(f"SELECT count(*) FROM {catalog}.silver.{table}") for table in QUARANTINE_TABLES}
 
@@ -132,6 +162,7 @@ def run_checks(catalog: str, query_scalar: ScalarQuery) -> list[CheckResult]:
         *check_bronze_row_counts(catalog, query_scalar),
         *check_gold_primary_keys(catalog, query_scalar),
         *check_gold_totals(catalog, query_scalar),
+        *check_dimension_coverage(catalog, query_scalar),
     ]
 
 

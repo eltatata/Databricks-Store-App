@@ -4,6 +4,7 @@ from reconcile_gold import (
     EXPECTED_BRONZE_ROW_COUNTS,
     CheckResult,
     check_bronze_row_counts,
+    check_dimension_coverage,
     check_gold_primary_keys,
     check_gold_totals,
     find_failures,
@@ -75,3 +76,27 @@ def test_gold_totals_fail_when_a_table_drifts_from_silver() -> None:
 
     failure_names = [failure.name for failure in find_failures(results)]
     assert failure_names == ["gold.product_performance sum(gmv) = silver gmv"]
+
+
+def test_dimension_coverage_fails_when_gold_dimension_is_empty() -> None:
+    answers = {
+        "count(*) FROM catalog.silver.products": 32951,
+        "count(*) FROM catalog.gold.dim_product": 0,
+    }
+
+    results = check_dimension_coverage("catalog", query_returning(answers))
+
+    failure_names = [failure.name for failure in find_failures(results)]
+    assert failure_names == ["gold.dim_product rows = silver.products rows"]
+
+
+def test_dimension_coverage_fails_when_joins_lose_categories() -> None:
+    answers = {
+        "WHERE products.product_id IS NULL OR products.is_category_missing": 10,
+        "gold.fact_sales WHERE category_en = 'unknown'": 112650,
+    }
+
+    results = check_dimension_coverage("catalog", query_returning(answers))
+
+    failure_names = [failure.name for failure in find_failures(results)]
+    assert failure_names == ["gold.fact_sales unknown categories = silver items without category"]
