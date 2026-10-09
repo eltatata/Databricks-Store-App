@@ -1,0 +1,99 @@
+# Environment audit
+
+Phase 0 read-only discovery. Verified on **2026-10-09** with Databricks CLI **v1.20.0** and profile `local-dev`. No workspace resource was created, changed or deleted.
+
+Status legend: ✅ confirmed · ⚠️ available with caveats · ❌ not available · ❔ not yet verified
+
+## Workspace
+
+| Item | Status | Finding |
+|------|--------|---------|
+| Identity | ✅ | Current user is in the `admins` group. Cloud AWS, metastore region `us-east-2`. |
+| Unity Catalog | ✅ | Metastore active. Existing catalogs: `workspace`, `dbacademy`, `emissions`, `dataeng`, plus `system` and `samples`. |
+| `CREATE CATALOG` | ✅ | The user has already created managed catalogs (`dbacademy`, `emissions`, `dataeng`), so `data_engineering` can be created. The `workspace` fallback is not needed. |
+| SQL warehouse | ✅ | One warehouse, `Serverless Starter Warehouse`, 2X-Small, serverless, auto-stop 10 min. The ID goes in `.env` (`WAREHOUSE_ID`). |
+| Lakeflow pipelines | ⚠️ | One existing, unrelated pipeline (`bronze to silver to gold pipeline`) is `IDLE`. Only *active* pipelines count against the Free Edition limit. It is left untouched. |
+| Lakeflow jobs | ✅ | Two existing, unrelated jobs. Left untouched. |
+| Apps | ✅ | 0 of 3 apps used. |
+| Lakebase | ✅ | 0 projects. A new `store-app` project will be created in Phase 4, after user approval. |
+| Genie | ✅ | 3 existing spaces on the same warehouse, so Genie creation works on this workspace. |
+
+## Model serving (agent backend)
+
+| Endpoint | Tool calling | Streaming + routing test | Notes |
+|----------|--------------|--------------------------|-------|
+| `databricks-qwen3-next-80b-a3b-instruct` | ✅ | ✅ (`ask_analytics`) | Plain string content. **Recommended primary.** |
+| `databricks-llama-4-maverick` | ✅ | ✅ | Plain string content, fastest. **Recommended fallback.** |
+| `databricks-meta-llama-3-3-70b-instruct` | ✅ | ✅ | Plain string content. |
+| `databricks-gpt-oss-120b` | ✅ | ✅ | Reasoning model: `content` can arrive as a list of reasoning blocks, which may need adapter handling in AppKit. |
+| `databricks-qwen35-122b-a10b` | ✅ | ✅ | Same list-shaped content as gpt-oss. |
+| `databricks-deepseek-v4-flash-0731` | ❌ | — | Endpoint deprecated (HTTP 400). |
+| Claude / GPT (proprietary) | ❌ | — | No endpoint listed on this Free Edition workspace. |
+
+- Test method: a direct `POST /serving-endpoints/<name>/invocations` with two function tools (`deactivate_product`, `ask_analytics`). A mutation prompt and an analytics prompt each selected the correct tool on every model.
+- `databricks serving-endpoints query` drops the `tools` field (`unknown field: tools`). Do not use it to test tool calling.
+- **Unity Gateway is not enforced.** Direct invocation of the built-in `databricks-*` endpoints works, so the app binds the model as a `serving_endpoint` resource with `CAN_QUERY` (plan §7.1).
+
+## Declarative Automation Bundles
+
+The CLI v1.20.0 bundle schema supports more resource types than the skills and the plan assumed:
+
+| Resource | In schema | Flag |
+|----------|-----------|------|
+| `catalogs`, `schemas`, `volumes` | ✅ | GA |
+| `genie_spaces` (`serialized_space` or `file_path`, `warehouse_id`) | ✅ | — |
+| `postgres_projects`, `postgres_databases`, `postgres_branches`, `postgres_endpoints`, `postgres_roles` | ✅ | `[Beta]` |
+| `postgres_synced_tables` (incl. `existing_pipeline_id`, `scheduling_policy`, `primary_key_columns`) | ✅ | `[Beta]` |
+| `synced_database_tables` | ✅ | Legacy. Do not use (plan §5.3). |
+
+See plan change proposal P1 below.
+
+## AppKit manifest (`databricks apps manifest`)
+
+| Plugin | Resource key | Required fields |
+|--------|--------------|-----------------|
+| `server` | — | Mandatory for the template |
+| `lakebase` | `postgres` | `project`, `branch`, `database`, `host`, `databaseName`, `endpointPath`, `port`, `sslmode` |
+| `genie` | `genie-space` | `id`, `name` |
+| `agents` | `agents-serving-endpoint` (optional) | `name` |
+| `agents` | `agents-mlflow-experiment`, `agents-skills` (optional) | `experimentId`, `path` |
+
+Scaffolding rules to apply:
+- Template (must): treat `apps init` output as starter code to adapt; keep secrets only in `app.yaml`, `databricks.yml` or `.env`.
+- Template (never): guess resources when several or none are available; embed secrets in the client bundle.
+- Template (should): ask the user when the right resource for a plugin is unclear.
+- `lakebase` (should): after init, run the ORM migrations before the first request and verify connectivity.
+- `genie` (must): after init, configure the plugin's `spaces` map (alias → space ID).
+
+## Local tooling
+
+| Tool | Status | Needed for |
+|------|--------|-----------|
+| git 2.51, Node 24.14, npm 11.11, pnpm 11.0, Python 3.13 | ✅ | Repo, app, job tests |
+| Databricks CLI 1.20.0 | ✅ | Everything |
+| `kaggle` CLI and credentials | ❌ | Phase 1 download. Fallback: manual download of the zip into `.local/olist/`. |
+| `psql` | ❌ | `databricks psql` requires it (Lakebase grants and indexes in Phase 4). |
+| `uv`, `ruff` | ❌ | Python job tests and lint (Phase 3) |
+| `shellcheck` | ❌ | Lint for `scripts/` |
+| git `init.defaultBranch` | ❔ | Not set. The repo is initialized with `main`. |
+
+## Not yet verified (deferred to the phase that needs them)
+
+| Item | Phase |
+|------|-------|
+| Synced-table pipelines vs the "1 active pipeline per type" limit | 4 |
+| Genie Conversation API from the app (scope `genie`, on behalf of user or as the app's service principal) | 5–6 |
+| Allowed `user_api_scopes` for apps | 6 |
+| AppKit internals: Express version, Zod version, `server.extend` ordering, SIGTERM handling, build paths | 6 |
+| shadcn + bklit coexisting with `@databricks/appkit-ui` | 7 |
+| AppKit `agents()`: Genie toolkit name, approval config for all mutating tools, handling of list-shaped content | 8 |
+
+## Plan change proposals (need user approval)
+
+- **P1 — Manage more resources with DABs.** Move the catalog, the Genie space, the Lakebase project and the synced tables from `platform/` scripts into the `data/` bundle (`catalogs`, `genie_spaces`, `postgres_projects`, `postgres_synced_tables`).
+  - Benefits: fewer scripts and one `bundle deploy`.
+  - `existing_pipeline_id` lets all synced tables share one pipeline, which removes the "1 active pipeline" risk in §5.3.
+  - Risk: the Lakebase resources are `[Beta]`. Fallback: the CLI scripts described in the plan.
+  - `platform/` would keep only what DABs cannot express: `serving` grants and indexes (SQL) and the Genie benchmarks.
+- **P2 — Agent model.** Fix `databricks-qwen3-next-80b-a3b-instruct` as the primary model and `databricks-llama-4-maverick` as the fallback, configurable through `AGENT_SERVING_ENDPOINT`. Re-validate inside the AppKit `agents()` plugin in Phase 8.
+- **P3 — Local prerequisites.** Before Phase 1, the user installs (or approves installing) the `kaggle` CLI and credentials, the `psql` client, `uv`, `ruff` and `shellcheck`. Alternatives: download the dataset manually, and run the Lakebase SQL with a small TS script using `pg` plus `databricks postgres generate-database-credential` instead of `psql`.
