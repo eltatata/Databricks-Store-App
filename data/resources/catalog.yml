@@ -1,7 +1,0 @@
-resources:
-  catalogs:
-    data_engineering:
-      name: ${var.catalog}
-      comment: Olist store POC. Medallion layers (bronze, silver, gold) and Lakebase serving entries.
-      lifecycle:
-        prevent_destroy: true

@@ -1,7 +1,7 @@
 resources:
   volumes:
     landing:
-      catalog_name: ${resources.catalogs.data_engineering.name}
+      catalog_name: ${var.catalog}
       schema_name: ${resources.schemas.bronze.name}
       name: landing
       volume_type: MANAGED

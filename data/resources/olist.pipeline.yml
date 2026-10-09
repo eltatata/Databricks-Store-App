@@ -2,7 +2,7 @@ resources:
   pipelines:
     olist:
       name: olist-medallion
-      catalog: ${resources.catalogs.data_engineering.name}
+      catalog: ${var.catalog}
       schema: ${resources.schemas.bronze.name}
       serverless: true
       continuous: false
