@@ -25,4 +25,19 @@ Every KPI is computed in Gold (`data/pipeline/gold/`) and only displayed by the 
 - Bronze row counts equal the CSV record counts in `docs/DATASET.md`;
 - GMV in `kpi_daily`, `sales_by_category_month`, `sales_by_state_month`, `product_performance`, `seller_performance` and `fact_sales` equals Σ price of valid items computed directly from Silver;
 - orders and items in `kpi_daily` equal the Silver counts;
-- every Gold table has unique, non-null primary keys.
+- every Gold table has unique, non-null primary keys;
+- dimension joins lose nothing: `dim_product` has as many rows as `silver.products`, and the `unknown` categories and states in Gold equal the real gaps in Silver.
+
+## Reference values (dataset as downloaded on 2026-10-09)
+
+| KPI | Value |
+|-----|-------|
+| Valid orders | 98,199 |
+| GMV | R$ 13,494,400.74 |
+| Freight | R$ 2,241,126.29 |
+| AOV | R$ 137.42 |
+| Items sold | 112,101 |
+| Distinct customers | 94,983 |
+| Average review score | 4.12 |
+| Late delivery rate | 6.77% |
+| Purchase date range | 2016-09-04 to 2018-09-03 |
