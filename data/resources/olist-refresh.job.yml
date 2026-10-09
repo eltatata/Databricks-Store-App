@@ -1,0 +1,36 @@
+resources:
+  jobs:
+    olist_refresh:
+      name: olist-refresh
+      max_concurrent_runs: 1
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "4"
+      tasks:
+        - task_key: ingest_check
+          environment_key: default
+          spark_python_task:
+            python_file: ../jobs/ingest_check.py
+            parameters:
+              - --catalog
+              - "{{job.parameters.catalog}}"
+
+        - task_key: run_pipeline
+          depends_on:
+            - task_key: ingest_check
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.olist.id}
+
+        - task_key: reconcile_gold
+          depends_on:
+            - task_key: run_pipeline
+          environment_key: default
+          spark_python_task:
+            python_file: ../jobs/reconcile_gold.py
+            parameters:
+              - --catalog
+              - "{{job.parameters.catalog}}"
