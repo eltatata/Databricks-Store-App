@@ -1,0 +1,26 @@
+resources:
+  schemas:
+    bronze:
+      catalog_name: ${resources.catalogs.data_engineering.name}
+      name: bronze
+      comment: Raw Olist CSV data as ingested by Auto Loader. Source values preserved as strings.
+      lifecycle:
+        prevent_destroy: true
+    silver:
+      catalog_name: ${resources.catalogs.data_engineering.name}
+      name: silver
+      comment: Typed, cleaned and deduplicated Olist entities, plus quarantine tables with reject reasons.
+      lifecycle:
+        prevent_destroy: true
+    gold:
+      catalog_name: ${resources.catalogs.data_engineering.name}
+      name: gold
+      comment: Curated analytical model for dashboards, Lakebase serving and Genie.
+      lifecycle:
+        prevent_destroy: true
+    serving:
+      catalog_name: ${resources.catalogs.data_engineering.name}
+      name: serving
+      comment: Unity Catalog entries of the Lakebase synced tables (Gold served to the app).
+      lifecycle:
+        prevent_destroy: true
