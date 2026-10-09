@@ -35,12 +35,14 @@ CREATE OR REFRESH MATERIALIZED VIEW silver.order_items (
   CONSTRAINT primary_key_present EXPECT (order_id IS NOT NULL AND order_item_id IS NOT NULL) ON VIOLATION FAIL UPDATE
 )
 COMMENT 'Olist order items, one row per (order_id, order_item_id). Prices in BRL.'
+TBLPROPERTIES ('delta.feature.timestampNtz' = 'supported')
 AS SELECT * EXCEPT (reject_reason)
 FROM order_items_validated
 WHERE reject_reason IS NULL;
 
 CREATE OR REFRESH MATERIALIZED VIEW silver.order_items_quarantine
 COMMENT 'Order items rejected by the silver rules, with the reject reason.'
+TBLPROPERTIES ('delta.feature.timestampNtz' = 'supported')
 AS SELECT *
 FROM order_items_validated
 WHERE reject_reason IS NOT NULL;

@@ -32,12 +32,14 @@ CREATE OR REFRESH MATERIALIZED VIEW silver.order_reviews (
   CONSTRAINT primary_key_present EXPECT (review_id IS NOT NULL AND order_id IS NOT NULL) ON VIOLATION FAIL UPDATE
 )
 COMMENT 'Olist order reviews, one row per (review_id, order_id). An order can have more than one review.'
+TBLPROPERTIES ('delta.feature.timestampNtz' = 'supported')
 AS SELECT * EXCEPT (reject_reason)
 FROM order_reviews_validated
 WHERE reject_reason IS NULL;
 
 CREATE OR REFRESH MATERIALIZED VIEW silver.order_reviews_quarantine
 COMMENT 'Order reviews rejected by the silver rules, with the reject reason.'
+TBLPROPERTIES ('delta.feature.timestampNtz' = 'supported')
 AS SELECT *
 FROM order_reviews_validated
 WHERE reject_reason IS NOT NULL;

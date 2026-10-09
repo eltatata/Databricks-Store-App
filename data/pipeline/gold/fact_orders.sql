@@ -23,6 +23,7 @@ CREATE OR REFRESH MATERIALIZED VIEW gold.fact_orders (
   review_score INT COMMENT 'Latest review score of the order (1 to 5), null when not reviewed'
 )
 COMMENT 'Orders fact at order grain. Source for order counts, AOV, customers, delivery performance and reviews. Currency BRL.'
+TBLPROPERTIES ('delta.feature.timestampNtz' = 'supported')
 AS
 WITH item_totals AS (
   SELECT

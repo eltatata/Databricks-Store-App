@@ -22,6 +22,7 @@ CREATE OR REFRESH MATERIALIZED VIEW gold.fact_sales (
   review_score INT COMMENT 'Latest review score of the order (1 to 5), null when not reviewed'
 )
 COMMENT 'Sales fact at order item grain. Source for GMV, units and category/product/seller analysis. Currency BRL.'
+TBLPROPERTIES ('delta.feature.timestampNtz' = 'supported')
 AS
 WITH latest_order_reviews AS (
   SELECT order_id, review_score
