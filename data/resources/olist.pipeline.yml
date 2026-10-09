@@ -1,0 +1,15 @@
+resources:
+  pipelines:
+    olist:
+      name: olist-medallion
+      catalog: ${resources.catalogs.data_engineering.name}
+      schema: ${resources.schemas.bronze.name}
+      serverless: true
+      continuous: false
+      channel: CURRENT
+      root_path: ../pipeline
+      libraries:
+        - glob:
+            include: ../pipeline/**
+      configuration:
+        olist_landing_path: /Volumes/${var.catalog}/bronze/landing/olist
