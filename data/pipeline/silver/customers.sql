@@ -26,11 +26,12 @@ SELECT
 FROM deduplicated;
 
 CREATE OR REFRESH MATERIALIZED VIEW silver.customers (
-  CONSTRAINT passes_customer_rules EXPECT (reject_reason IS NULL) ON VIOLATION DROP ROW
+  CONSTRAINT primary_key_present EXPECT (customer_id IS NOT NULL) ON VIOLATION FAIL UPDATE
 )
 COMMENT 'Olist customers, one row per customer_id (one per order). customer_unique_id identifies the real person across orders.'
 AS SELECT * EXCEPT (reject_reason)
-FROM customers_validated;
+FROM customers_validated
+WHERE reject_reason IS NULL;
 
 CREATE OR REFRESH MATERIALIZED VIEW silver.customers_quarantine
 COMMENT 'Customers rejected by the silver rules, with the reject reason.'

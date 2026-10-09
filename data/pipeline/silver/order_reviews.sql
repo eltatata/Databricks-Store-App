@@ -29,11 +29,12 @@ FROM deduplicated AS reviews
 LEFT JOIN silver.orders AS orders ON reviews.order_id = orders.order_id;
 
 CREATE OR REFRESH MATERIALIZED VIEW silver.order_reviews (
-  CONSTRAINT passes_review_rules EXPECT (reject_reason IS NULL) ON VIOLATION DROP ROW
+  CONSTRAINT primary_key_present EXPECT (review_id IS NOT NULL AND order_id IS NOT NULL) ON VIOLATION FAIL UPDATE
 )
 COMMENT 'Olist order reviews, one row per (review_id, order_id). An order can have more than one review.'
 AS SELECT * EXCEPT (reject_reason)
-FROM order_reviews_validated;
+FROM order_reviews_validated
+WHERE reject_reason IS NULL;
 
 CREATE OR REFRESH MATERIALIZED VIEW silver.order_reviews_quarantine
 COMMENT 'Order reviews rejected by the silver rules, with the reject reason.'

@@ -53,11 +53,12 @@ FROM deduplicated AS products
 LEFT JOIN silver.category_translations AS translations ON products.category_pt = translations.category_pt;
 
 CREATE OR REFRESH MATERIALIZED VIEW silver.products (
-  CONSTRAINT passes_product_rules EXPECT (reject_reason IS NULL) ON VIOLATION DROP ROW
+  CONSTRAINT primary_key_present EXPECT (product_id IS NOT NULL) ON VIOLATION FAIL UPDATE
 )
 COMMENT 'Olist products, one row per product_id. category_en falls back to the Portuguese name when untranslated and to unknown when missing.'
 AS SELECT * EXCEPT (reject_reason)
-FROM products_validated;
+FROM products_validated
+WHERE reject_reason IS NULL;
 
 CREATE OR REFRESH MATERIALIZED VIEW silver.products_quarantine
 COMMENT 'Products rejected by the silver rules, with the reject reason.'

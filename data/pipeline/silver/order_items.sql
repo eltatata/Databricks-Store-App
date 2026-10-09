@@ -32,11 +32,12 @@ FROM deduplicated AS items
 LEFT JOIN silver.orders AS orders ON items.order_id = orders.order_id;
 
 CREATE OR REFRESH MATERIALIZED VIEW silver.order_items (
-  CONSTRAINT passes_order_item_rules EXPECT (reject_reason IS NULL) ON VIOLATION DROP ROW
+  CONSTRAINT primary_key_present EXPECT (order_id IS NOT NULL AND order_item_id IS NOT NULL) ON VIOLATION FAIL UPDATE
 )
 COMMENT 'Olist order items, one row per (order_id, order_item_id). Prices in BRL.'
 AS SELECT * EXCEPT (reject_reason)
-FROM order_items_validated;
+FROM order_items_validated
+WHERE reject_reason IS NULL;
 
 CREATE OR REFRESH MATERIALIZED VIEW silver.order_items_quarantine
 COMMENT 'Order items rejected by the silver rules, with the reject reason.'

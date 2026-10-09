@@ -12,7 +12,7 @@ One Lakeflow Spark Declarative Pipeline (`olist-medallion`, SQL, serverless) bui
 
 ## Silver — materialized views
 
-Each entity has a private validated view (typed, trimmed, deduplicated, with a `reject_reason`). From it come `silver.<entity>`, which drops rejected rows through an expectation so the drops appear in data quality metrics, and `silver.<entity>_quarantine`, which keeps the rejected rows with their reason.
+Each entity has a private validated view (typed, trimmed, deduplicated, with a `reject_reason`). From it come `silver.<entity>` (rows with no reject reason) and `silver.<entity>_quarantine` (rejected rows with their reason). Each Silver table also has a `primary_key_present` expectation with `FAIL UPDATE` as a last guard. Reject counts are measured from the quarantine tables and printed by `reconcile_gold`.
 
 | Table | Key | Deduplication | Reject reasons |
 |-------|-----|---------------|----------------|

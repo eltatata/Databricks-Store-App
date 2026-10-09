@@ -24,11 +24,12 @@ SELECT
 FROM deduplicated;
 
 CREATE OR REFRESH MATERIALIZED VIEW silver.sellers (
-  CONSTRAINT passes_seller_rules EXPECT (reject_reason IS NULL) ON VIOLATION DROP ROW
+  CONSTRAINT primary_key_present EXPECT (seller_id IS NOT NULL) ON VIOLATION FAIL UPDATE
 )
 COMMENT 'Olist sellers, one row per seller_id.'
 AS SELECT * EXCEPT (reject_reason)
-FROM sellers_validated;
+FROM sellers_validated
+WHERE reject_reason IS NULL;
 
 CREATE OR REFRESH MATERIALIZED VIEW silver.sellers_quarantine
 COMMENT 'Sellers rejected by the silver rules, with the reject reason.'

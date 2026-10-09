@@ -27,11 +27,12 @@ FROM deduplicated AS payments
 LEFT JOIN silver.orders AS orders ON payments.order_id = orders.order_id;
 
 CREATE OR REFRESH MATERIALIZED VIEW silver.order_payments (
-  CONSTRAINT passes_payment_rules EXPECT (reject_reason IS NULL) ON VIOLATION DROP ROW
+  CONSTRAINT primary_key_present EXPECT (order_id IS NOT NULL AND payment_sequential IS NOT NULL) ON VIOLATION FAIL UPDATE
 )
 COMMENT 'Olist order payments, one row per (order_id, payment_sequential). Values in BRL.'
 AS SELECT * EXCEPT (reject_reason)
-FROM order_payments_validated;
+FROM order_payments_validated
+WHERE reject_reason IS NULL;
 
 CREATE OR REFRESH MATERIALIZED VIEW silver.order_payments_quarantine
 COMMENT 'Order payments rejected by the silver rules, with the reject reason.'
