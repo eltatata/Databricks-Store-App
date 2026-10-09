@@ -3,7 +3,7 @@
 `IMPLEMENTATION_PLAN.md` is the contract for this project. Read the sections relevant to the current phase before acting. Locked decisions are in §0 (D1–D14). Do not reopen them without the user's approval, and record any new decision there.
 
 ## Status
-- Current block: **A — Phase 0 (Discovery)**, done. Waiting for the user's decision on proposals P1–P3 (`docs/ENVIRONMENT_AUDIT.md`) before block B. Profile: `local-dev` (confirmed by the user).
+- Current block: **A — Phase 0 (Discovery)**, done. P1–P3 approved (D15–D17). Profile: `local-dev` (confirmed by the user).
 - Execution blocks: A = Phase 0 · B = 1–3 · C = 4–5 · D = 6 · E = 7 · F = 8–9.
 - Stop at the end of each block and report against the exit gates (§10) and the final report (§11). Wait for the user before starting the next block.
 - Update this Status section when a block starts or ends.

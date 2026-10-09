@@ -71,10 +71,10 @@ Scaffolding rules to apply:
 |------|--------|-----------|
 | git 2.51, Node 24.14, npm 11.11, pnpm 11.0, Python 3.13 | ✅ | Repo, app, job tests |
 | Databricks CLI 1.20.0 | ✅ | Everything |
-| `kaggle` CLI and credentials | ❌ | Phase 1 download. Fallback: manual download of the zip into `.local/olist/`. |
-| `psql` | ❌ | `databricks psql` requires it (Lakebase grants and indexes in Phase 4). |
-| `uv`, `ruff` | ❌ | Python job tests and lint (Phase 3) |
-| `shellcheck` | ❌ | Lint for `scripts/` |
+| `kaggle` CLI and credentials | ❌ | Not needed: the user downloaded the 9 CSVs manually into `.local/olist/` (D17). |
+| `psql` | ❌ | Declined. Replaced by `platform/lakebase/run-sql.ts` (D17). |
+| `uv` 0.12.24 | ✅ | Installed by the user. `ruff` runs through it. |
+| `shellcheck` | ❌ | Declined (D17). |
 | git `init.defaultBranch` | ❔ | Not set. The repo is initialized with `main`. |
 
 ## Not yet verified (deferred to the phase that needs them)
@@ -88,7 +88,9 @@ Scaffolding rules to apply:
 | shadcn + bklit coexisting with `@databricks/appkit-ui` | 7 |
 | AppKit `agents()`: Genie toolkit name, approval config for all mutating tools, handling of list-shaped content | 8 |
 
-## Plan change proposals (need user approval)
+## Plan change proposals
+
+P1, P2 and P3 were approved by the user on 2026-10-09 and recorded in the plan as D15, D16 and D17. For P3, the user downloaded the dataset manually, installed `uv`, and declined `psql` and `shellcheck`.
 
 - **P1 — Manage more resources with DABs.** Move the catalog, the Genie space, the Lakebase project and the synced tables from `platform/` scripts into the `data/` bundle (`catalogs`, `genie_spaces`, `postgres_projects`, `postgres_synced_tables`).
   - Benefits: fewer scripts and one `bundle deploy`.
