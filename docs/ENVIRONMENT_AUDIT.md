@@ -31,7 +31,7 @@ Status legend: ✅ confirmed · ⚠️ available with caveats · ❌ not availab
 | Claude / GPT (proprietary) | ❌ | — | No endpoint listed on this Free Edition workspace. |
 
 - Test method: a direct `POST /serving-endpoints/<name>/invocations` with two function tools (`deactivate_product`, `ask_analytics`). A mutation prompt and an analytics prompt each selected the correct tool on every model.
-- `databricks serving-endpoints query` drops the `tools` field (`unknown field: tools`). Do not use it to test tool calling.
+- `databricks serving-endpoints query` drops the `tools` field (`unknown field: tools`). Do not use it to test tool calling. (`databricks api post` also failed in Phase 0, but only because of Git Bash path conversion; see Phase 1 findings.)
 - **Unity Gateway is not enforced.** Direct invocation of the built-in `databricks-*` endpoints works, so the app binds the model as a `serving_endpoint` resource with `CAN_QUERY` (plan §7.1).
 
 ## Declarative Automation Bundles
@@ -76,6 +76,13 @@ Scaffolding rules to apply:
 | `uv` 0.12.24 | ✅ | Installed by the user. `ruff` runs through it. |
 | `shellcheck` | ❌ | Declined (D17). |
 | git `init.defaultBranch` | ❔ | Not set. The repo is initialized with `main`. |
+
+## Findings during Phase 1
+
+| Item | Finding | Resolution |
+|------|---------|------------|
+| Catalog creation via DABs | `databricks bundle deploy` fails creating `catalogs.data_engineering`: `INVALID_STATE: Metastore storage root URL does not exist. Default Storage is enabled in your account`. | SQL `CREATE CATALOG` works on the Serverless Starter Warehouse. The catalog moved to `platform/workspace/catalog.sql` + `scripts/catalog-create.sh` (D15 amendment). |
+| Git Bash path conversion | Git Bash rewrites arguments that start with `/` (e.g. `/api/2.0/...`) into Windows paths, so `databricks api` returned `Not Found`. The Phase 0 `Not Found` on `/serving-endpoints/.../invocations` had the same cause. | `scripts/lib/common.sh` exports `MSYS_NO_PATHCONV=1` and resolves `REPO_ROOT` in `C:/...` form so the Windows CLI can read local files. |
 
 ## Not yet verified (deferred to the phase that needs them)
 
