@@ -2,7 +2,7 @@
 
 import { localPoint } from '@visx/event';
 import { ParentSize } from '@visx/responsive';
-import { scaleBand, scaleLinear } from '@visx/scale';
+import { scaleBand, scaleLinear, scaleTime } from '@visx/scale';
 import type { Transition } from 'motion/react';
 import { memo, type ReactElement, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -324,15 +324,8 @@ const ChartCore = memo(function ChartCore({
   const fakeTimeScale = useMemo(() => {
     const now = Date.now();
     const start = now - data.length * 24 * 60 * 60 * 1000;
-    const scale = {
-      ...categoryScale,
-      domain: () => [new Date(start), new Date(now)],
-      range: () => [0, innerWidth] as [number, number],
-      invert: (x: number) => new Date(start + (x / innerWidth) * (now - start)),
-      copy: () => scale,
-    };
-    return scale;
-  }, [categoryScale, innerWidth, data.length]);
+    return scaleTime<number>({ domain: [new Date(start), new Date(now)], range: [0, innerWidth] });
+  }, [innerWidth, data.length]);
 
   // Animation timing — replay when motion settings change
   // biome-ignore lint/correctness/useExhaustiveDependencies: revealSignature
@@ -533,7 +526,7 @@ const ChartCore = memo(function ChartCore({
     chartStatus: status,
     data,
     renderData: data,
-    xScale: fakeTimeScale as unknown as ReturnType<typeof import('@visx/scale').scaleTime<number>>,
+    xScale: fakeTimeScale,
     yScale: isHorizontal ? valueScale : primaryYScale,
     yScales,
     width,

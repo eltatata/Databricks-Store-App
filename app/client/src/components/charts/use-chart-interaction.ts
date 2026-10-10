@@ -141,7 +141,7 @@ export function useChartInteraction({
         if (!svg) {
           return null;
         }
-        point = localPoint(svg, touch as unknown as MouseEvent);
+        point = localPoint(svg, { clientX: touch.clientX, clientY: touch.clientY } as MouseEvent);
       } else {
         point = localPoint(event);
       }

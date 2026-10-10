@@ -34,7 +34,7 @@ function barDepthPerspectiveRise(
   if (centerX <= 0) {
     return 0;
   }
-  const step = (barScale as unknown as { step?: () => number }).step?.() ?? bandWidth;
+  const step = barScale.step();
   const maxDepth = barDepthMaxDepth(step, bandWidth);
   const bandX = barScale(barXAccessor(datum)) ?? 0;
   const cx = bandX + bandWidth / 2;
