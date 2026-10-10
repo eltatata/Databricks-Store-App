@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-10T03:00:00Z",
+  "title": "Design System: Olist Store",
+  "extensions": {
+    "colorMeta": {
+      "signal": { "role": "primary", "displayName": "Elenco Red", "canonical": "#e0342b" },
+      "ground": { "role": "neutral", "displayName": "Photo Black", "canonical": "#0c0c0b" },
+      "ink": { "role": "neutral", "displayName": "Warm White Ink", "canonical": "#f2f1ec" }
+    },
+    "typographyMeta": {
+      "hero-figure": { "displayName": "Hero figure", "purpose": "Lead KPI only." },
+      "figure": { "displayName": "Figure", "purpose": "Secondary KPIs." },
+      "section-title": { "displayName": "Section title", "purpose": "Panel headings and brand, wide stretch." }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "signal-glide",
+        "value": "spring(stiffness 520, damping 38, mass 0.6)",
+        "purpose": "Red dot moving between selections."
+      },
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Message entrances and state changes, 150-250 ms."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Segmented control",
+      "kind": "chip",
+      "refersTo": "segment-selected",
+      "description": "Pill toggle; the selected item carries the red signal dot.",
+      "html": "<div class=\"ds-seg\"><button class=\"on\"><i></i>Jan – Aug 2018</button><button>H1 2018</button><button>All time</button></div>",
+      "css": ".ds-seg{display:flex;gap:4px;font-family:'Archivo Variable',sans-serif}.ds-seg button{height:36px;padding:0 14px;border-radius:9999px;border:1px solid #2a2a28;background:#0c0c0b;color:#a3a39e;font-size:13px;display:flex;align-items:center;gap:8px}.ds-seg button.on{border-color:rgba(242,241,236,.8);color:#f2f1ec}.ds-seg i{width:6px;height:6px;border-radius:50%;background:#e0342b}"
+    },
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Warm white button with black text for the main action.",
+      "html": "<button class=\"ds-btn\">New product</button>",
+      "css": ".ds-btn{height:36px;padding:0 16px;border-radius:8px;border:0;background:#f2f1ec;color:#0c0c0b;font:500 14px 'Archivo Variable',sans-serif}.ds-btn:hover{background:rgba(242,241,236,.9)}"
+    },
+    {
+      "name": "KPI figure",
+      "kind": "custom",
+      "description": "Label, light condensed figure, change line; red dot marks the largest move.",
+      "html": "<div class=\"ds-kpi\"><span>Customers</span><strong>52,336<i></i></strong><em>+138.6% largest move</em></div>",
+      "css": ".ds-kpi{display:flex;flex-direction:column;gap:8px;background:#0c0c0b;padding:16px;font-family:'Archivo Variable',sans-serif}.ds-kpi span{font-size:12px;color:#77776f}.ds-kpi strong{font-size:34px;font-weight:300;font-stretch:82%;letter-spacing:-.03em;color:#f2f1ec;display:flex;gap:6px}.ds-kpi i{width:10px;height:10px;border-radius:50%;background:#e0342b;margin-top:4px}.ds-kpi em{font-style:normal;font-size:12px;color:#e0342b}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Elenco Sleeve",
+    "overview": "Photographic black, oversized light white numerals and one red dot that marks only what changed or what is selected. Numbers lead; everything else steps back into greys.",
+    "keyCharacteristics": [
+      "Black ground, warm white ink, one red signal",
+      "Light condensed tabular figures",
+      "Hairlines instead of cards",
+      "Monochrome charts"
+    ],
+    "rules": [
+      {
+        "name": "The One Dot Rule",
+        "body": "Red appears once per group: one active nav item, one selected segment, one largest move.",
+        "section": "colors"
+      },
+      {
+        "name": "The Monochrome Data Rule",
+        "body": "Chart series use the ink-to-grey ramp; categories differ by position and label, not hue.",
+        "section": "colors"
+      },
+      {
+        "name": "The Width Not Weight Rule",
+        "body": "Figures stay light; hierarchy comes from the width axis and size.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Card Rule",
+        "body": "Panels are grouped by hairlines and space; raised surfaces only for overlays.",
+        "section": "elevation"
+      }
+    ]
+  }
+}
