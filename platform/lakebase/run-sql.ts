@@ -105,7 +105,8 @@ async function executeSql(target: ConnectionTarget, sql: string): Promise<void> 
   const client = new pg.Client({ ...target, port: 5432, ssl: { rejectUnauthorized: true } });
   await client.connect();
   try {
-    await client.query(sql);
+    const results = [await client.query(sql)].flat();
+    results.filter((result) => result.rows.length > 0).forEach((result) => console.table(result.rows));
   } finally {
     await client.end();
   }
