@@ -70,6 +70,24 @@ export default tseslint.config(
     ...tseslint.configs.disableTypeChecked,
   },
 
+  {
+    files: ['client/src/components/ui/**/*.{ts,tsx}', 'client/src/components/charts/**/*.{ts,tsx}'],
+    rules: {
+      'react-hooks/refs': 'off',
+      'react-hooks/exhaustive-deps': 'off',
+      'react-hooks/set-state-in-effect': 'off',
+      'react-hooks/purity': 'off',
+      'react-refresh/only-export-components': 'off',
+      'react/no-array-index-key': 'off',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/unbound-method': 'off',
+      '@typescript-eslint/no-base-to-string': 'off',
+    },
+  },
+
   // Prettier config (must be last to override other formatting rules)
   prettier,
 

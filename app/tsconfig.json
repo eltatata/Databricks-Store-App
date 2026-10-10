@@ -1,4 +1,9 @@
 {
   "files": [],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./client/src/*"]
+    }
+  },
   "references": [{ "path": "./tsconfig.client.json" }, { "path": "./tsconfig.server.json" }]
 }
