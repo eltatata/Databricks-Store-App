@@ -611,7 +611,7 @@ server/
   - Install with `npx shadcn@latest add @bklit/<chart>` (line, area, bar, pie/ring, composed…). Charts land as source in `components/charts/`.
   - Theme through `--chart-*` CSS variables / `chartCssVars`, never hardcoded colors.
   - Check current docs at ui.bklit.com for the exact registry names and import paths.
-- `@databricks/appkit-ui` is used **only for plugin hooks** (`useAgentChat`, `useGenieChat`). Their visual rendering is built with shadcn and bklit for a consistent design system.
+- `@databricks/appkit-ui` is used **only for plugin hooks** (`useAgentChat`, `useGenieChat`). Their visual rendering is built with shadcn and bklit for a consistent design system. **Amendment (Phase 7):** AppKit-UI's `styles.css` is not imported; the theme lives in `client/src/index.css` and `app/DESIGN.md`. `components.json` sits in `app/` because the shadcn CLI needs `package.json` beside it; generated files still land in `client/src/components/{ui,charts}`. Genie helpers `transformGenieData` and `inferChartType` are also used.
   - `<GenieChat>` may be used only as a temporary fallback if `useGenieChat` blocks progress.
   - Check that AppKit-UI's Tailwind setup and shadcn's `components.json` coexist; resolve conflicts in Phase 6.
 - **Global client state: Zustand** (D12).

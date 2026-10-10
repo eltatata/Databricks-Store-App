@@ -109,12 +109,23 @@ Scaffolding rules to apply:
 | Grants on synced tables | Read grants for the app service principal survive a Snapshot refresh. | `scripts/app-grant-serving.sh` is a one-time step per app/synced-table creation. |
 | Identity | The platform injects `x-forwarded-email`; audit rows record the real user. | Used by `request-context.middleware.ts`. |
 
+## Findings during Phase 7
+
+| Item | Finding | Resolution |
+|------|---------|------------|
+| shadcn CLI 4.21 | Needs `package.json` in the working directory and asks for a component library (Base UI, React Aria, Radix). With the repo layout it also resolved `@/lib/utils` to an npm package called `cn` and dropped bklit files in `app/components/`. | `components.json` moved to `app/` (css path `client/src/index.css`, root `tsconfig.json` carries the `@/*` path). Radix chosen. After each `add`, imports are rewritten to `@/lib/utils`, files moved into `client/src/components/`, and the `cn` package removed. |
+| shadcn/bklit CSS injection | `add` appends a `.dark` block and `--color-*: var(----chart-*)` mappings (four dashes) to `index.css`, overriding the theme. | Removed by hand; the theme tokens live only in `client/src/index.css`. |
+| `@databricks/appkit-ui` styles | Its `styles.css` ships its own Tailwind tokens and light defaults. | No longer imported. AppKit-UI is used only for `useGenieChat`, `transformGenieData` and `inferChartType`. shadcn and AppKit-UI coexist without conflicts. |
+| `appkit lint` vs bklit | Three `as unknown as` casts in generated bklit files fail the `no-double-type-assertion` rule, so `databricks apps validate` failed. | Fixed in source (real `scaleTime`, `ScaleBand.step()`, explicit point object). `apps validate` passes. |
+| TypeScript strictness vs bklit | `noImplicitReturns` flags two generated effects; `d3-shape`/`d3-array` lack types. | `return undefined` added; `@types/d3-*` installed. ESLint relaxes React Compiler rules for `components/ui` and `components/charts` only. |
+| Genie `inferChartType` | Suggests `pie` for small categorical results. | Explore maps pie/donut to a bklit bar chart; only allowlisted bar/line specs render. |
+| Local dev on Windows | `pnpm dev` fails (`NODE_ENV=` syntax in cmd); local Lakebase needs `PGUSER`. Rolldown-Vite can cache a stub module after a file is replaced ("Canonicalized path was dropped"). | Run `tsx` directly from Git Bash with `PGUSER=<email>`; restart the dev server after replacing files. AppKit's persistent cache logs an ownership error locally (table owned by the app service principal); harmless. |
+
 ## Not yet verified (deferred to the phase that needs them)
 
 | Item | Phase |
 |------|-------|
 | Genie Conversation API from the app (scope `genie`, on behalf of user or as the app's service principal) | 6 |
-| shadcn + bklit coexisting with `@databricks/appkit-ui` | 7 |
 | AppKit `agents()`: Genie toolkit name, approval config for all mutating tools, handling of list-shaped content | 8 |
 
 ## Plan change proposals
