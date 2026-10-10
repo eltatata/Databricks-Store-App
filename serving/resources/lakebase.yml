@@ -1,0 +1,75 @@
+resources:
+  postgres_projects:
+    store_app:
+      project_id: ${var.lakebase_project_id}
+      display_name: Olist Store App
+      pg_version: 17
+      default_endpoint_settings:
+        autoscaling_limit_min_cu: 0.5
+        autoscaling_limit_max_cu: 2
+        suspend_timeout_duration: 300s
+      lifecycle:
+        prevent_destroy: true
+
+  postgres_synced_tables:
+    kpi_daily:
+      synced_table_id: ${var.catalog}.serving.kpi_daily
+      source_table_full_name: ${var.catalog}.gold.kpi_daily
+      primary_key_columns: [order_date]
+      scheduling_policy: SNAPSHOT
+      branch: projects/${resources.postgres_projects.store_app.project_id}/branches/${var.lakebase_branch_id}
+      postgres_database: ${var.lakebase_database}
+      create_database_objects_if_missing: true
+      new_pipeline_spec:
+        storage_catalog: ${var.catalog}
+        storage_schema: serving
+
+    dim_product:
+      synced_table_id: ${var.catalog}.serving.dim_product
+      source_table_full_name: ${var.catalog}.gold.dim_product
+      primary_key_columns: [product_id]
+      scheduling_policy: SNAPSHOT
+      branch: projects/${resources.postgres_projects.store_app.project_id}/branches/${var.lakebase_branch_id}
+      postgres_database: ${var.lakebase_database}
+      create_database_objects_if_missing: true
+      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.pipeline_id}
+
+    sales_by_category_month:
+      synced_table_id: ${var.catalog}.serving.sales_by_category_month
+      source_table_full_name: ${var.catalog}.gold.sales_by_category_month
+      primary_key_columns: [order_month, category_en]
+      scheduling_policy: SNAPSHOT
+      branch: projects/${resources.postgres_projects.store_app.project_id}/branches/${var.lakebase_branch_id}
+      postgres_database: ${var.lakebase_database}
+      create_database_objects_if_missing: true
+      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.pipeline_id}
+
+    sales_by_state_month:
+      synced_table_id: ${var.catalog}.serving.sales_by_state_month
+      source_table_full_name: ${var.catalog}.gold.sales_by_state_month
+      primary_key_columns: [order_month, customer_state]
+      scheduling_policy: SNAPSHOT
+      branch: projects/${resources.postgres_projects.store_app.project_id}/branches/${var.lakebase_branch_id}
+      postgres_database: ${var.lakebase_database}
+      create_database_objects_if_missing: true
+      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.pipeline_id}
+
+    product_performance:
+      synced_table_id: ${var.catalog}.serving.product_performance
+      source_table_full_name: ${var.catalog}.gold.product_performance
+      primary_key_columns: [product_id]
+      scheduling_policy: SNAPSHOT
+      branch: projects/${resources.postgres_projects.store_app.project_id}/branches/${var.lakebase_branch_id}
+      postgres_database: ${var.lakebase_database}
+      create_database_objects_if_missing: true
+      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.pipeline_id}
+
+    seller_performance:
+      synced_table_id: ${var.catalog}.serving.seller_performance
+      source_table_full_name: ${var.catalog}.gold.seller_performance
+      primary_key_columns: [seller_id]
+      scheduling_policy: SNAPSHOT
+      branch: projects/${resources.postgres_projects.store_app.project_id}/branches/${var.lakebase_branch_id}
+      postgres_database: ${var.lakebase_database}
+      create_database_objects_if_missing: true
+      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.pipeline_id}

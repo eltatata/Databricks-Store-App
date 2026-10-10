@@ -1,0 +1,27 @@
+bundle:
+  name: store-serving
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog catalog that holds the gold and serving schemas
+    default: data_engineering
+  lakebase_project_id:
+    description: Lakebase project that serves the app
+    default: store-app
+  lakebase_branch_id:
+    description: Lakebase branch used by the app
+    default: production
+  lakebase_database:
+    description: Postgres database that holds the synced tables
+    default: databricks_postgres
+  warehouse_id:
+    description: SQL warehouse used by the Genie space
+    lookup:
+      warehouse: Serverless Starter Warehouse
+
+targets:
+  dev:
+    default: true
