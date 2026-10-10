@@ -77,7 +77,7 @@ export function RankedBarChart({
         orientation="horizontal"
         margin={{ ...BAR_CHART_MARGIN, left: labelWidth }}
         aspectRatio={aspectRatio}
-        barGap={0.58}
+        barGap={0.72}
         animationDuration={CHART_ANIMATION_MS}
         revealSignature={revealSignature}
       >
