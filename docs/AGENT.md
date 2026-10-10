@@ -92,6 +92,17 @@ The result was 12/12.
 - **No writes:** the server log shows no mutating tool executed. The sample product kept version 1, and no product named `Eval Approval Probe` exists.
 - **Manual deny check:** a UI deny from a real browser session left no product and no audit row.
 
+### Deployed verification (2026-10-10)
+
+The run went through `/api/agents/chat` and `/api/agents/approve` on the deployed app as the signed-in user:
+- **Create, approved:** created the test product, version 1.
+- **Deactivate, approved:** the agent searched first, then deactivated it (version 2).
+- **Price change on a catalog product, denied:** nothing changed.
+- **Audit:** `create` and `deactivate` rows with channel `agent` and the user's email; no row for the denial.
+- **Cleanup:** the test product was deleted afterwards.
+
+One wrong premise came up in that run: the model claimed an inactive product must be reactivated before its price can change. The routing policy now says that inactive products are edited like active ones (commit `0247911`). The fix is not deployed yet.
+
 Run the evals again:
 
 ```bash

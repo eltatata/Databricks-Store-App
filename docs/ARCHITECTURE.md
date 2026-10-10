@@ -14,7 +14,7 @@ The target design and its rationale are in `IMPLEMENTATION_PLAN.md` (§0 decisio
 | Genie space | Deployed and verified: `Olist Store Analytics`, 10/10 benchmark answers correct (see `AGENT.md`) |
 | App (`store-app`) | Deployed and verified (backend): AppKit 0.84, `/api/v1` REST API (health, dashboard, products CRUD, admin seed), Swagger at `/api/v1/docs`, Drizzle migrations applied by the service principal, `app.products` seeded with 32,951 products. Frontend deployed (Phase 7); create, edit, version conflict, deactivate, reactivate and permanent delete verified from the deployed UI with audit rows |
 | Frontend | React 19 + React Router 7 (lazy routes), TanStack Query, Zustand, shadcn/ui (Radix) and bklit charts (area, bar, y-axis). Pages: Dashboard, Products (list, sheet form, detail), Explore (`useGenieChat`), Assistant (`useAgentChat`, approval cards, allowlisted result views). Visual system in `app/DESIGN.md` ("Elenco Sleeve": black ground, warm white ink, one red signal dot) |
-| Supervisor agent | Built and evaluated locally (Phase 8): markdown agent with Genie and 6 Lakebase tools from the `store-tools` plugin, approval for every mutation, 12/12 evals (see `AGENT.md`). Deployment pending |
+| Supervisor agent | Deployed and verified (Phase 8): markdown agent with Genie and 6 Lakebase tools from the `store-tools` plugin, approval for every mutation, 12/12 evals. On the deployed app, an approved create and deactivate wrote audit rows with channel `agent` and the user's email; a denied update changed nothing (see `AGENT.md`, `FINAL_REPORT.md`) |
 
 ## Environment-driven choices
 
