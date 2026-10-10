@@ -131,7 +131,7 @@ Identity and secrets:
 Known limitations:
 - **Roles:** none by design (D6). Every user who can open the app can do everything, including approving the assistant's changes in their own session.
 - **Threads:** agent conversations live in memory and are lost on restart or redeploy.
-- **Model behavior:** the model can still pick a wrong premise; on 2026-10-10 it claimed an inactive product had to be reactivated before a price change. The routing policy was corrected in commit `0247911`, deployed and verified the same day: an approved price change on an inactive test product kept it inactive. That run also showed that the agent did not look for inactive products when asked to edit one by name. The fix is verified locally (13/13 evals) and ships with the next deploy.
+- **Model behavior:** the model can still pick a wrong premise; on 2026-10-10 it claimed an inactive product had to be reactivated before a price change. The routing policy was corrected in commit `0247911`, deployed and verified the same day: an approved price change on an inactive test product kept it inactive. That run also showed that the agent did not look for inactive products when asked to edit one by name. The search fix was deployed and works, but the agent still proposed reactivation before editing an inactive product. A worked example in the routing policy fixed it locally (6 of 6 runs, 13/13 evals) and ships with the next deploy.
 - **Write-back:** app edits to products do not flow back to Gold (D4); write-back is a stretch goal.
 - **Product names:** they are synthetic, because the dataset has no product names.
 

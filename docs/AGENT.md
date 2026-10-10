@@ -115,6 +115,16 @@ That run found two more gaps:
 - **Inactive products not found:** `search_products` returns only active products by default. A plain "change the price of <name>" either found nothing (Spanish) or stopped after the model wrote "Let me search" without calling a tool (English, 2 of 2 runs).
 - **Fix (local, not deployed):** the routing policy and the tool description now say to search with `includeInactive` when resolving a product to update, to retry with it before saying a product does not exist, and to call a tool instead of announcing it. Locally, both prompts then searched with `includeInactive` (English 3 of 3), and the new `update-searches-inactive` eval passes (13/13).
 
+### Third deployed verification (2026-10-10)
+
+The redeploy with the search fix (`13e2f79`) was checked with a new test product, created and deactivated with approval:
+- **Search, fixed:** for a plain "change the price of <name>", the agent searched again with `includeInactive` and found the inactive product, in English and Spanish.
+- **Edit, still wrong:** the agent then proposed to reactivate the product and asked in chat instead of calling `update_product`. Nothing was written.
+- **Locally, same behavior:** 0 of 6 runs called `update_product`. Rewording the tool descriptions alone reached 2 of 6.
+- **Fix (local, not deployed):** routing rule 4 is now a step list with a worked example (search with `includeInactive`, `get_product`, `update_product` with only the asked fields, whether the product is active or not). Result: 6 of 6, English and Spanish, with only `listPriceBrl` in `changes`.
+- **Regressions (all denied):** reactivate sent `isActive: true`, rename sent only `displayName`, and a weight change on an active product sent only `weightG`. Evals 13/13.
+- **Data:** every local call was denied. The test product kept version 2 and was then deleted through the REST API.
+
 Run the evals again:
 
 ```bash

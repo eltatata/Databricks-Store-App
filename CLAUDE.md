@@ -8,7 +8,8 @@
   - E2E acceptance 9/9.
   - Runbooks (`docs/DEPLOYMENT.md`, `docs/TROUBLESHOOTING.md`) and `docs/FINAL_REPORT.md` written.
   - Inactive-product edit fix (`0247911`) deployed and verified on 2026-10-10.
-  - Pending, needs user approval: one redeploy to ship the inactive-product search fix (verified locally, 13/13 evals), then verify it on the deployed app with a test product.
+  - Inactive-product search fix (`13e2f79`) deployed: search works, but the agent still proposed reactivation.
+  - Pending, needs user approval: one redeploy to ship the worked-example routing fix (verified locally: 6 of 6 runs, 13/13 evals), then verify it on the deployed app with a test product.
   - Profile: `local-dev` (confirmed by the user).
 - Execution blocks: A = Phase 0 · B = 1–3 · C = 4–5 · D = 6 · E = 7 · F = 8–9.
 - Stop at the end of each block and report against the exit gates (§10) and the final report (§11). Wait for the user before starting the next block.
