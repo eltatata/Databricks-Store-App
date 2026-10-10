@@ -126,7 +126,7 @@ export function buildStoreTools(options: StoreToolsOptions): ToolRegistry {
     }),
     update_product: defineTool({
       description:
-        'Change fields of an existing product. Requires productId, the version returned by get_product, and the changes to apply. Set changes.isActive to true to reactivate a product. Fails with VERSION_CONFLICT if the product changed since it was read. The user must approve the call before it runs.',
+        'Change fields of an existing product. Requires productId, the version returned by get_product, and the changes to apply. Works the same for active and inactive products: an inactive product stays inactive after a price or field change. Include changes.isActive only when the user explicitly asks to activate or deactivate. Fails with VERSION_CONFLICT if the product changed since it was read. The user must approve the call before it runs.',
       schema: updateProductToolSchema,
       annotations: { effect: 'update' },
       execute: ({ productId, version, changes }) =>

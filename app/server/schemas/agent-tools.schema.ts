@@ -57,7 +57,7 @@ export const updateProductToolSchema = z.object({
   version: z.number().int().min(1).describe('Current version from get_product'),
   changes: createProductToolSchema
     .partial()
-    .extend({ isActive: z.boolean().optional().describe('true reactivates, false deactivates') })
+    .extend({ isActive: z.boolean().optional().describe('Only when the user explicitly asks to activate (true) or deactivate (false)') })
     .describe('Only the fields to change'),
 });
 
