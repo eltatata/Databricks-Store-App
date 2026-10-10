@@ -125,6 +125,18 @@ The redeploy with the search fix (`13e2f79`) was checked with a new test product
 - **Regressions (all denied):** reactivate sent `isActive: true`, rename sent only `displayName`, and a weight change on an active product sent only `weightG`. Evals 13/13.
 - **Data:** every local call was denied. The test product kept version 2 and was then deleted through the REST API.
 
+### Final deployed verification (2026-10-10)
+
+After the redeploy with the worked-example fix (`77a2e8b`, `2b7b707`), the full cycle ran on the deployed app with a new test product:
+- **Create and deactivate, approved:** version 1, then version 2, inactive.
+- **Plain price change, denied 5 times** (3 in Spanish, 2 in English): every run found the inactive product and called `update_product` with only `listPriceBrl`; nothing was written.
+- **Plain price change, approved:** `search_products` with `includeInactive`, then `get_product` and `update_product` with `{listPriceBrl: 95}`. The product stayed inactive (version 3).
+- **Reactivate, approved:** `update_product` with `{isActive: true}` (version 4).
+- **Audit:** `create`, `deactivate`, `update` and `update`, all with channel `agent` and the user's email. The denials left no rows. The catalog product used in the denial checks stayed at R$199.00, version 1.
+- **Read routes and refusal:** H1 2018 average order value R$137.35 from `get_kpi_summary` (equal to Gold), top categories from `ask_analytics`, and permanent delete refused with an offer to deactivate.
+- **Smoke and logs:** smoke test 5/5 against the deployed URL; no errors in the app logs.
+- **Cleanup:** the test product was deleted through the REST API.
+
 Run the evals again:
 
 ```bash
