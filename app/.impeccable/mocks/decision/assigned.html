@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Real Note</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1440px;height:900px;overflow:hidden;background:#0c1524;color:#e7edf3;font-family:Geist,system-ui,sans-serif;font-variant-numeric:tabular-nums;display:grid;grid-template-columns:232px 1fr}
+aside{background:#0a1220;border-right:1px solid #1d2c47;padding:22px 16px;display:flex;flex-direction:column;gap:4px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;margin-bottom:26px}
+.seal{width:28px;height:28px;border-radius:50%;background:repeating-radial-gradient(circle,#e2a93f 0 1px,transparent 1px 3px);border:1px solid #e2a93f}
+.nav{padding:9px 12px;border-radius:8px;font-size:14px;color:#9fb0c6}
+.nav.on{background:#14213a;color:#e7edf3;box-shadow:inset 2px 0 #e2a93f}
+.foot{margin-top:auto;font-size:12px;color:#6d809b;border-top:1px solid #1d2c47;padding-top:14px}
+main{padding:22px 32px;display:grid;grid-template-rows:auto auto 1fr auto;gap:18px}
+header{display:flex;align-items:center;justify-content:space-between}
+h1{font-size:22px;font-weight:500;letter-spacing:-.01em}
+.filters{display:flex;gap:8px}
+.chip{border:1px solid #23365a;background:#101b30;border-radius:8px;padding:7px 12px;font-size:13px;color:#c3cfdd}
+.fresh{font-size:12px;color:#7fd1b0;border:1px solid #1f4a3f;background:#0e2421;border-radius:999px;padding:5px 10px}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid #1d2c47;border-radius:12px;background:#0f1a2e;overflow:hidden}
+.k{padding:16px 18px;border-right:1px solid #1d2c47;position:relative}
+.k:last-child{border-right:0}
+.k .l{font-size:12px;color:#8a9bb3}
+.k .v{font-size:30px;font-weight:600;letter-spacing:-.02em;margin-top:6px}
+.k .d{font-size:12px;margin-top:4px;color:#7fd1b0}
+.k .d.bad{color:#e0605a}
+.k::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--c)}
+.grid{display:grid;grid-template-columns:1.7fr 1fr;gap:18px;min-height:0}
+.panel{border:1px solid #1d2c47;border-radius:12px;background:#0f1a2e;padding:16px 18px;display:flex;flex-direction:column;min-height:0}
+.ph{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.ph b{font-size:14px;font-weight:500}.ph span{font-size:12px;color:#7d8fa8}
+.seg{display:flex;border:1px solid #23365a;border-radius:7px;overflow:hidden;font-size:12px}
+.seg i{font-style:normal;padding:4px 10px;color:#9fb0c6}.seg i.on{background:#1a2a48;color:#e7edf3}
+svg{display:block}
+.bars{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.row{display:grid;grid-template-columns:150px 1fr 82px;align-items:center;gap:10px;font-size:13px;color:#c3cfdd}
+.track{height:10px;border-radius:2px;background:#14213a}
+.fill{height:10px;border-radius:2px;background:repeating-linear-gradient(90deg,var(--c) 0 2px,transparent 2px 4px);border:1px solid var(--c)}
+.row em{font-style:normal;text-align:right;color:#e7edf3}
+.bottom{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-weight:400;color:#7d8fa8;font-size:12px;padding:6px 0;border-bottom:1px solid #1d2c47}
+td{padding:7px 0;border-bottom:1px solid #16243d;color:#c3cfdd}
+td.n{text-align:right;color:#e7edf3}th.n{text-align:right}
+</style></head><body>
+<aside>
+<div class="brand"><span class="seal"></span>Olist Store</div>
+<div class="nav on">Dashboard</div><div class="nav">Products</div><div class="nav">Explore</div><div class="nav">Assistant</div>
+<div class="foot">Gold synced to Lakebase<br>Data as of 2018-10-17</div>
+</aside>
+<main>
+<header><h1>Business overview</h1>
+<div class="filters"><span class="chip">Jan 1, 2018 – Aug 31, 2018</span><span class="chip">All categories</span><span class="fresh">Synced 2 h ago</span></div></header>
+<section class="kpis">
+<div class="k" style="--c:#e2a93f"><div class="l">GMV</div><div class="v">R$ 13.49M</div><div class="d">+18.4% vs prior</div></div>
+<div class="k" style="--c:#5aa0e0"><div class="l">Orders</div><div class="v">98,199</div><div class="d">+16.9%</div></div>
+<div class="k" style="--c:#9b7bd4"><div class="l">Avg order value</div><div class="v">R$ 137.42</div><div class="d">+1.3%</div></div>
+<div class="k" style="--c:#6fb7b0"><div class="l">Customers</div><div class="v">94,983</div><div class="d">+17.2%</div></div>
+<div class="k" style="--c:#c98a5a"><div class="l">Avg review</div><div class="v">4.12</div><div class="d bad">−0.04</div></div>
+<div class="k" style="--c:#e0605a"><div class="l">Late deliveries</div><div class="v">6.77%</div><div class="d bad">+1.2 pts</div></div>
+</section>
+<section class="grid">
+<div class="panel"><div class="ph"><b>GMV by month</b><div class="seg"><i>Day</i><i class="on">Month</i></div></div>
+<svg width="100%" height="300" viewBox="0 0 820 300" preserveAspectRatio="none">
+<defs><pattern id="eng" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><line x1="0" y1="0" x2="0" y2="4" stroke="#e2a93f" stroke-width=".8" opacity=".55"/></pattern></defs>
+<g stroke="#1d2c47"><line x1="0" y1="60" x2="820" y2="60"/><line x1="0" y1="140" x2="820" y2="140"/><line x1="0" y1="220" x2="820" y2="220"/></g>
+<path d="M0 250 C60 240 90 230 130 205 S220 170 270 160 S360 120 410 128 S500 95 550 80 S640 70 690 88 S770 60 820 66 L820 280 L0 280Z" fill="url(#eng)"/>
+<path d="M0 250 C60 240 90 230 130 205 S220 170 270 160 S360 120 410 128 S500 95 550 80 S640 70 690 88 S770 60 820 66" fill="none" stroke="#e2a93f" stroke-width="2"/>
+<g fill="none" stroke="#e2a93f" opacity=".18"><path d="M0 262 C120 255 240 210 410 150 S700 90 820 84"/><path d="M0 270 C120 262 240 222 410 166 S700 104 820 98"/></g>
+<rect x="540" y="0" width="160" height="280" fill="#e2a93f" opacity=".06"/><line x1="550" y1="80" x2="550" y2="280" stroke="#e2a93f" stroke-dasharray="2 3"/>
+<circle cx="550" cy="80" r="4" fill="#0c1524" stroke="#e2a93f" stroke-width="2"/>
+</svg></div>
+<div class="panel"><div class="ph"><b>GMV by category</b><span>shared scale</span></div>
+<div class="bars">
+<div class="row">health_beauty<div class="track"><div class="fill" style="width:92%;--c:#e2a93f"></div></div><em>R$ 1.26M</em></div>
+<div class="row">watches_gifts<div class="track"><div class="fill" style="width:84%;--c:#5aa0e0"></div></div><em>R$ 1.21M</em></div>
+<div class="row">bed_bath_table<div class="track"><div class="fill" style="width:76%;--c:#9b7bd4"></div></div><em>R$ 1.04M</em></div>
+<div class="row">sports_leisure<div class="track"><div class="fill" style="width:71%;--c:#6fb7b0"></div></div><em>R$ 0.99M</em></div>
+<div class="row">computers_access.<div class="track"><div class="fill" style="width:66%;--c:#c98a5a"></div></div><em>R$ 0.91M</em></div>
+<div class="row">furniture_decor<div class="track"><div class="fill" style="width:53%;--c:#e0605a"></div></div><em>R$ 0.73M</em></div>
+</div></div>
+</section>
+<section class="bottom">
+<div class="panel"><div class="ph"><b>Top products</b><span>by GMV</span></div><table><tr><th>Product</th><th>Category</th><th class="n">GMV</th></tr>
+<tr><td>bb50f2e2…</td><td>health_beauty</td><td class="n">R$ 63,885</td></tr><tr><td>6cdd53843…</td><td>health_beauty</td><td class="n">R$ 54,730</td></tr></table></div>
+<div class="panel"><div class="ph"><b>Top sellers</b><span>by GMV</span></div><table><tr><th>Seller</th><th>State</th><th class="n">GMV</th></tr>
+<tr><td>4869f7a5…</td><td>SP</td><td class="n">R$ 249,640</td></tr><tr><td>53243585…</td><td>BA</td><td class="n">R$ 222,776</td></tr></table></div>
+</section>
+</main></body></html>

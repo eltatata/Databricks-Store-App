@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Category standard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1440px;height:900px;overflow:hidden;background:#09090b;color:#fafafa;font-family:Inter,system-ui,sans-serif;font-variant-numeric:tabular-nums;display:grid;grid-template-columns:240px 1fr}
+aside{border-right:1px solid #27272a;padding:20px 14px;background:#0c0c0e}
+.b{font-weight:600;font-size:15px;margin-bottom:24px;padding:0 8px}
+.n{padding:8px;border-radius:6px;font-size:14px;color:#a1a1aa}.n.on{background:#18181b;color:#fafafa}
+main{padding:24px 32px;display:flex;flex-direction:column;gap:18px}
+header{display:flex;justify-content:space-between;align-items:center}h1{font-size:20px;font-weight:600}
+.f{display:flex;gap:8px}.f span{border:1px solid #27272a;border-radius:6px;padding:6px 12px;font-size:13px;color:#d4d4d8}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.card{border:1px solid #27272a;border-radius:10px;background:#111113;padding:16px}
+.card .l{font-size:12px;color:#a1a1aa}.card .v{font-size:24px;font-weight:600;margin-top:6px}.card .d{font-size:12px;color:#22c55e;margin-top:4px}
+.two{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+.t{font-size:14px;font-weight:500;margin-bottom:12px}
+.row{display:flex;justify-content:space-between;font-size:13px;color:#d4d4d8;padding:8px 0;border-bottom:1px solid #1f1f23}
+</style></head><body>
+<aside><div class="b">Olist Store</div><div class="n on">Dashboard</div><div class="n">Products</div><div class="n">Explore</div><div class="n">Assistant</div></aside>
+<main>
+<header><h1>Dashboard</h1><div class="f"><span>Jan 1 – Aug 31, 2018</span><span>All categories</span><span>Data as of Oct 17, 2018</span></div></header>
+<div class="kpis">
+<div class="card"><div class="l">GMV</div><div class="v">R$ 13.49M</div><div class="d">+18.4%</div></div>
+<div class="card"><div class="l">Orders</div><div class="v">98,199</div><div class="d">+16.9%</div></div>
+<div class="card"><div class="l">AOV</div><div class="v">R$ 137.42</div><div class="d">+1.3%</div></div>
+<div class="card"><div class="l">Customers</div><div class="v">94,983</div><div class="d">+17.2%</div></div>
+<div class="card"><div class="l">Avg review</div><div class="v">4.12</div><div class="d" style="color:#ef4444">−0.04</div></div>
+<div class="card"><div class="l">Late deliveries</div><div class="v">6.77%</div><div class="d" style="color:#ef4444">+1.2 pts</div></div>
+</div>
+<div class="two">
+<div class="card"><div class="t">GMV by month</div><svg width="100%" height="320" viewBox="0 0 800 320" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3b82f6" stop-opacity=".35"/><stop offset="1" stop-color="#3b82f6" stop-opacity="0"/></linearGradient></defs><path d="M0 280 C80 260 140 230 220 200 S380 150 460 140 S620 90 800 70 L800 320 L0 320Z" fill="url(#g)"/><path d="M0 280 C80 260 140 230 220 200 S380 150 460 140 S620 90 800 70" fill="none" stroke="#3b82f6" stroke-width="2"/></svg></div>
+<div class="card"><div class="t">By category</div>
+<div class="row"><span>health_beauty</span><span>R$ 1.26M</span></div><div class="row"><span>watches_gifts</span><span>R$ 1.21M</span></div><div class="row"><span>bed_bath_table</span><span>R$ 1.04M</span></div><div class="row"><span>sports_leisure</span><span>R$ 0.99M</span></div><div class="row"><span>computers_accessories</span><span>R$ 0.91M</span></div><div class="row"><span>furniture_decor</span><span>R$ 0.73M</span></div></div>
+</div></main></body></html>

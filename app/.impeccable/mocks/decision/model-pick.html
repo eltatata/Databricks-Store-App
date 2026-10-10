@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Elenco Sleeve</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1440px;height:900px;overflow:hidden;background:#0b0b0b;color:#f2f1ec;font-family:Archivo,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.top{height:64px;display:flex;align-items:center;gap:40px;padding:0 40px;border-bottom:1px solid #222}
+.brand{font-weight:800;font-stretch:125%;letter-spacing:.02em;font-size:16px}
+.brand b{display:inline-block;width:9px;height:9px;border-radius:50%;background:#e0342b;margin-left:4px}
+.nav{display:flex;gap:28px;font-size:14px;color:#8c8c88}.nav .on{color:#f2f1ec}
+.right{margin-left:auto;display:flex;gap:10px;font-size:13px}
+.pill{border:1px solid #333;border-radius:999px;padding:7px 14px;color:#cfcfca}
+.pill.on{border-color:#f2f1ec;color:#f2f1ec;position:relative;padding-left:24px}
+.pill.on:before{content:"";position:absolute;left:11px;top:13px;width:6px;height:6px;border-radius:50%;background:#e0342b}
+main{padding:28px 40px;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto 1fr auto;gap:0 40px;height:836px}
+.hero{grid-column:1/4;display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;border-bottom:1px solid #222;padding-bottom:24px}
+.k .l{font-size:12px;color:#8c8c88;letter-spacing:.04em}
+.k .v{font-size:40px;font-weight:300;font-stretch:90%;letter-spacing:-.02em;margin-top:8px}
+.k.big .v{font-size:84px;font-weight:200;line-height:.95}
+.k .d{font-size:12px;color:#8c8c88;margin-top:6px}
+.k.flag .v{position:relative}
+.k.flag .v:after{content:"";position:absolute;top:6px;right:-2px;width:12px;height:12px;border-radius:50%;background:#e0342b}
+.k.flag .d{color:#e0342b}
+.chart{grid-column:1/3;padding-top:24px}
+.side{padding-top:24px;border-left:1px solid #222;padding-left:40px}
+h2{font-size:13px;font-weight:600;font-stretch:115%;letter-spacing:.03em;margin-bottom:14px;display:flex;justify-content:space-between}
+h2 span{font-weight:400;color:#8c8c88;font-stretch:100%}
+.row{display:grid;grid-template-columns:140px 1fr 70px;gap:12px;align-items:center;font-size:13px;margin-bottom:12px;color:#cfcfca}
+.bar{height:6px;background:#f2f1ec}.row em{font-style:normal;text-align:right}
+.tables{grid-column:1/4;display:grid;grid-template-columns:1fr 1fr;gap:40px;border-top:1px solid #222;padding-top:18px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-weight:400;color:#8c8c88;padding:5px 0;font-size:12px}
+td{padding:7px 0;border-top:1px solid #1d1d1d;color:#cfcfca}.n{text-align:right}
+</style></head><body>
+<div class="top"><div class="brand">OLIST STORE<b></b></div>
+<div class="nav"><span class="on">Dashboard</span><span>Products</span><span>Explore</span><span>Assistant</span></div>
+<div class="right"><span class="pill on">2018</span><span class="pill">All categories</span><span class="pill">Data as of Oct 17, 2018</span></div></div>
+<main>
+<section class="hero">
+<div class="k big"><div class="l">GMV</div><div class="v">R$ 13.49M</div><div class="d">+18.4% vs prior period</div></div>
+<div class="k"><div class="l">Orders</div><div class="v">98,199</div><div class="d">+16.9%</div></div>
+<div class="k"><div class="l">AOV</div><div class="v">R$ 137</div><div class="d">+1.3%</div></div>
+<div class="k"><div class="l">Customers</div><div class="v">94,983</div><div class="d">+17.2%</div></div>
+<div class="k"><div class="l">Review</div><div class="v">4.12</div><div class="d">−0.04</div></div>
+<div class="k flag"><div class="l">Late</div><div class="v">6.77%</div><div class="d">+1.2 pts, largest move</div></div>
+</section>
+<section class="chart"><h2>GMV by month<span>Day · Month</span></h2>
+<svg width="100%" height="330" viewBox="0 0 860 330" preserveAspectRatio="none">
+<g stroke="#1f1f1f"><line x1="0" y1="80" x2="860" y2="80"/><line x1="0" y1="170" x2="860" y2="170"/><line x1="0" y1="260" x2="860" y2="260"/></g>
+<g fill="#3a3a38"><rect x="10" y="280" width="40" height="30"/><rect x="80" y="250" width="40" height="60"/><rect x="150" y="220" width="40" height="90"/><rect x="220" y="200" width="40" height="110"/><rect x="290" y="190" width="40" height="120"/><rect x="360" y="160" width="40" height="150"/><rect x="430" y="150" width="40" height="160"/><rect x="500" y="120" width="40" height="190"/><rect x="570" y="105" width="40" height="205"/><rect x="640" y="95" width="40" height="215"/><rect x="710" y="90" width="40" height="220"/></g>
+<rect x="780" y="70" width="40" height="240" fill="#f2f1ec"/><circle cx="800" cy="54" r="6" fill="#e0342b"/>
+</svg></section>
+<section class="side"><h2>By category<span>GMV</span></h2>
+<div class="row">health_beauty<div class="bar" style="width:92%"></div><em>1.26M</em></div>
+<div class="row">watches_gifts<div class="bar" style="width:86%"></div><em>1.21M</em></div>
+<div class="row">bed_bath_table<div class="bar" style="width:74%"></div><em>1.04M</em></div>
+<div class="row">sports_leisure<div class="bar" style="width:70%"></div><em>0.99M</em></div>
+<div class="row">computers_acc.<div class="bar" style="width:64%"></div><em>0.91M</em></div>
+<div class="row">furniture_decor<div class="bar" style="width:52%"></div><em>0.73M</em></div>
+</section>
+<section class="tables">
+<table><tr><th>Top product</th><th>Category</th><th class="n">GMV</th></tr><tr><td>bb50f2e2…</td><td>health_beauty</td><td class="n">R$ 63,885</td></tr><tr><td>6cdd53843…</td><td>health_beauty</td><td class="n">R$ 54,730</td></tr></table>
+<table><tr><th>Top seller</th><th>State</th><th class="n">GMV</th></tr><tr><td>4869f7a5…</td><td>SP</td><td class="n">R$ 249,640</td></tr><tr><td>53243585…</td><td>BA</td><td class="n">R$ 222,776</td></tr></table>
+</section>
+</main></body></html>

@@ -1,0 +1,132 @@
+{
+  "title": "Choose the visual world for Olist Store",
+  "question": "Dark, minimal and built for data and administration. Keep the first direction, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Real Note",
+      "kicker": "THE ROLL",
+      "lineage": "The Brazilian real banknote family (2010 series)",
+      "thesis": "The store's money read the way the real is printed: engraved fine lines, struck numerals, one colour per denomination.",
+      "palette": ["#0c1524", "#14213a", "#e7edf3", "#e2a93f", "#5aa0e0", "#9b7bd4", "#e0605a"],
+      "materials": ["guilloche fine-line engraving", "struck tabular numerals", "denomination colour coding"],
+      "viewport": "Side rail and filter bar; a KPI strip of six struck numerals; the GMV trend drawn as engraved fine lines instead of a flat fill; category and state breakdowns below in denomination colours.",
+      "risk": "The fine-line fills must stay quiet, or the dashboard reads like a currency gimmick.",
+      "raised": [
+        {"from": "challenger-ticket-wallet", "raise": "Nothing disappears, it cancels: deactivated products stay in the table, struck through and stamped Inactive."},
+        {"from": "challenger-botanical-folio", "raise": "Category and state breakdowns share one value scale, so bars compare across panels."},
+        {"from": "challenger-type-specimen", "raise": "Dragging a range on the trend remaps every KPI and breakdown live."},
+        {"from": "challenger-labanotation", "raise": "Every bar's length is the exact value; no decorative fill carries meaning."}
+      ],
+      "html": ".impeccable/mocks/decision/assigned.html"
+    },
+    {
+      "id": "model-pick",
+      "label": "Elenco Sleeve",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Cesar Villela's Elenco bossa nova record covers (1960s)",
+      "thesis": "High-contrast black and white with a red dot that marks only what changed or what you selected.",
+      "palette": ["#0b0b0b", "#1a1a1a", "#f2f1ec", "#8c8c88", "#e0342b"],
+      "materials": ["photographic black and white", "one red dot", "wide-tracked grotesk"],
+      "viewport": "Black shell, oversized white KPI numerals, monochrome charts; a single red dot flags the KPI that moved most and the active filter.",
+      "risk": "Close to the near-black plus one accent look many dark dashboards ship; it depends on typographic discipline to feel authored.",
+      "html": ".impeccable/mocks/decision/model-pick.html"
+    },
+    {
+      "id": "challenger-metro",
+      "label": "Metro Tiles",
+      "verdict": "competitive",
+      "lineage": "Microsoft Metro / Windows Phone typographic tiles",
+      "thesis": "Flat colour tiles on black, giant lowercase headings, the accent floods whatever is live or selected.",
+      "palette": ["#000000", "#1ba1e2", "#d80073", "#8cbf26", "#ffffff"],
+      "materials": ["flat colour fields", "light-weight lowercase type", "tile flips"],
+      "viewport": "Black ground, a large lowercase page title, KPIs as flat tiles that flip when the date range changes, charts in flat series colours.",
+      "case": "Holds product clarity on a dark data screen; loses audience identification, an Olist operator has no tie to Windows Phone.",
+      "risk": "Cropped giant type fights dense tables; easy to read as retro Windows.",
+      "html": ".impeccable/mocks/decision/challenger-metro.html",
+      "hero": "https://impeccable.style/worlds/cards/digital-design-canon-metro-typographic-tiles-hero.webp"
+    },
+    {
+      "id": "challenger-ticket-wallet",
+      "label": "Jet-age Ticket Wallet",
+      "verdict": "declined",
+      "lineage": "1960s airline ticket wallets",
+      "thesis": "Coupons that stamp their own state.",
+      "palette": ["#f7f5ef", "#1d2b55", "#c8102e", "#5b3f8c"],
+      "materials": ["coupon stock", "carbon numerals"],
+      "viewport": "Each order as a coupon leg.",
+      "case": "Loses both axes: light paper stock and a journey metaphor do not fit a dark KPI screen.",
+      "risk": "Costume of paper on a working screen.",
+      "kept": "Cancelled states stay visible instead of vanishing.",
+      "hero": "https://impeccable.style/worlds/cards/vernacular-ephemera-jet-age-ticket-wallet-hero.webp"
+    },
+    {
+      "id": "challenger-botanical-folio",
+      "label": "Botanical Folio",
+      "verdict": "declined",
+      "lineage": "seasonal botanical plates",
+      "thesis": "One subject at fixed scale across plates.",
+      "palette": ["#f3ecdc", "#3d6b3a", "#b3261e", "#6b5a45"],
+      "materials": ["engraved plates", "sepia rules"],
+      "viewport": "Five aligned plates.",
+      "case": "Loses both axes: a cream editorial world with no link to a marketplace operator.",
+      "risk": "Editorial artifact instead of a product.",
+      "kept": "Shared scale across comparable panels.",
+      "hero": "https://impeccable.style/worlds/cards/editorial-sequence-montage-botanical-folio-season-hero.webp"
+    },
+    {
+      "id": "challenger-labanotation",
+      "label": "Labanotation Score",
+      "verdict": "declined",
+      "lineage": "dance notation",
+      "thesis": "Length is exact duration.",
+      "palette": ["#ffffff", "#111111", "#bdbdbd"],
+      "materials": ["score paper", "shaded blocks"],
+      "viewport": "A vertical centre staff.",
+      "case": "Loses both axes: a symmetric staff layout breaks dashboard scanning.",
+      "risk": "Unreadable to operators.",
+      "kept": "Bar length encodes the exact value, nothing decorative.",
+      "hero": "https://impeccable.style/worlds/cards/notation-diagram-systems-labanotation-hero.webp"
+    },
+    {
+      "id": "challenger-crouwel-grid",
+      "label": "Crouwel Grid Specimen",
+      "verdict": "declined",
+      "lineage": "Wim Crouwel posters",
+      "thesis": "The grid is visible and is the design.",
+      "palette": ["#ffffff", "#2b59c3", "#111111"],
+      "materials": ["construction grid", "cell letterforms"],
+      "viewport": "Monumental grid letters.",
+      "case": "Loses both axes: poster letterforms compete with the numbers.",
+      "risk": "Poster, not product.",
+      "kept": "Strict cell grid for the KPI strip and panels.",
+      "hero": "https://impeccable.style/worlds/cards/crouwel-grid-specimen-hero.webp"
+    },
+    {
+      "id": "challenger-type-specimen",
+      "label": "Variable Type Specimen",
+      "verdict": "declined",
+      "lineage": "variable font specimens",
+      "thesis": "One slider remaps the whole page.",
+      "palette": ["#f6f5f1", "#111111", "#ff4f00"],
+      "materials": ["live axis sliders", "glyph grid"],
+      "viewport": "A giant morphing glyph.",
+      "case": "Loses both axes: type play is not the operator's task.",
+      "risk": "Toy, not tool.",
+      "kept": "One control, the date range, remaps every view live.",
+      "hero": "https://impeccable.style/worlds/cards/variable-font-specimen-hero.webp"
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A dark zinc admin dashboard in the Linear and Vercel mould, executed with full craft.",
+    "palette": ["#09090b", "#18181b", "#fafafa", "#a1a1aa", "#3b82f6"],
+    "materials": ["zinc neutrals", "hairline borders", "one blue accent"],
+    "viewport": "Sidebar, KPI cards with sparklines, an area chart, two tables.",
+    "risk": "Indistinguishable from every other dark dashboard by design.",
+    "html": ".impeccable/mocks/decision/canon.html"
+  },
+  "steer": true
+}

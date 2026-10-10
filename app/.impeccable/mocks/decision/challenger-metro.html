@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Metro Tiles</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1440px;height:900px;overflow:hidden;background:#000;color:#fff;font-family:"Open Sans",system-ui,sans-serif;font-variant-numeric:tabular-nums;padding:28px 0 0 48px}
+.top{display:flex;gap:32px;font-size:22px;font-weight:300;color:#777;margin-bottom:4px}.top .on{color:#fff}
+h1{font-size:120px;font-weight:300;letter-spacing:-.04em;line-height:1;white-space:nowrap;margin-bottom:22px}
+h1 span{color:#333}
+.wrap{display:grid;grid-template-columns:repeat(6,190px);grid-auto-rows:150px;gap:10px}
+.t{padding:14px 16px;display:flex;flex-direction:column;justify-content:space-between}
+.t .l{font-size:14px;text-transform:lowercase}.t .v{font-size:38px;font-weight:300;letter-spacing:-.02em}
+.c{background:#1ba1e2}.m{background:#d80073}.g{background:#8cbf26}.k{background:#1a1a1a}
+.w2{grid-column:span 2}.w3{grid-column:span 3}.h2{grid-row:span 2}
+.chart{background:#111;padding:14px 16px}
+.chart .l{font-size:14px;color:#aaa;margin-bottom:10px}
+.bars{display:flex;align-items:flex-end;gap:8px;height:230px}
+.bars i{flex:1;background:#1ba1e2}.bars i.hi{background:#d80073}
+.list{background:#111;padding:14px 16px;font-size:14px}
+.list .l{color:#aaa;margin-bottom:10px}
+.r{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #222}
+</style></head><body>
+<div class="top"><span class="on">dashboard</span><span>products</span><span>explore</span><span>assistant</span></div>
+<h1>overview <span>2018 · all categories</span></h1>
+<div class="wrap">
+<div class="t c w2"><div class="l">gmv</div><div class="v">R$ 13.49M</div></div>
+<div class="t k"><div class="l">orders</div><div class="v">98,199</div></div>
+<div class="t k"><div class="l">aov</div><div class="v">R$ 137</div></div>
+<div class="t g"><div class="l">customers</div><div class="v">94,983</div></div>
+<div class="t m"><div class="l">late</div><div class="v">6.77%</div></div>
+<div class="chart w3 h2"><div class="l">gmv by month</div><div class="bars"><i style="height:14%"></i><i style="height:26%"></i><i style="height:38%"></i><i style="height:46%"></i><i style="height:50%"></i><i style="height:62%"></i><i style="height:66%"></i><i style="height:78%"></i><i style="height:84%"></i><i style="height:88%"></i><i style="height:90%"></i><i class="hi" style="height:100%"></i></div></div>
+<div class="list w3 h2"><div class="l">top categories</div>
+<div class="r"><span>health_beauty</span><span>R$ 1.26M</span></div><div class="r"><span>watches_gifts</span><span>R$ 1.21M</span></div><div class="r"><span>bed_bath_table</span><span>R$ 1.04M</span></div><div class="r"><span>sports_leisure</span><span>R$ 0.99M</span></div><div class="r"><span>computers_accessories</span><span>R$ 0.91M</span></div><div class="r"><span>furniture_decor</span><span>R$ 0.73M</span></div></div>
+</div></body></html>
