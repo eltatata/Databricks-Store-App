@@ -39,7 +39,8 @@ Main source → Silver mappings:
 | `fact_sales` | `order_id`, `order_item_id` | Silver items + orders + customers + sellers + products + latest review | No | ✅ |
 | `fact_orders` | `order_id` | Silver orders + item, payment and review aggregates | No | ✅ |
 | `dim_product` | `product_id` | Silver products + median valid item price | ✅ | ✅ |
-| `kpi_daily` | `order_date` | `fact_orders` (valid) | ✅ | ✅ |
+| `kpi_daily` | `order_date` | `fact_orders` (valid); includes additive `reviewed_orders` and `review_score_sum` | ✅ | ✅ |
+| `customer_activity_daily` | `order_date`, `customer_unique_id` | `fact_orders` (valid), distinct pairs | ✅ | No |
 | `sales_by_category_month` | `order_month`, `category_en` | `fact_sales` (valid) | ✅ | ✅ |
 | `sales_by_state_month` | `order_month`, `customer_state` | `fact_orders` (valid) | ✅ | ✅ |
 | `product_performance` | `product_id` | `fact_sales` (valid) + `dim_product` | ✅ | ✅ |
@@ -53,7 +54,7 @@ Gold columns carry `COMMENT`s with business meaning. KPI formulas are in `docs/K
 
 ## Lakebase serving
 
-Project `store-app`, branch `production`, database `databricks_postgres`. The 6 synced tables (Snapshot mode, read-only) live in Postgres schema `serving`, and their Unity Catalog entries are in `data_engineering.serving`.
+Project `store-app`, branch `production`, database `databricks_postgres`. The 7 synced tables (Snapshot mode, read-only) live in Postgres schema `serving`, and their Unity Catalog entries are in `data_engineering.serving`.
 
 | Postgres table | Source | Primary key |
 |----------------|--------|-------------|
@@ -63,5 +64,15 @@ Project `store-app`, branch `production`, database `databricks_postgres`. The 6 
 | `serving.sales_by_state_month` | `gold.sales_by_state_month` | `order_month`, `customer_state` |
 | `serving.product_performance` | `gold.product_performance` | `product_id` |
 | `serving.seller_performance` | `gold.seller_performance` | `seller_id` |
+| `serving.customer_activity_daily` | `gold.customer_activity_daily` | `order_date`, `customer_unique_id` |
 
-Indexes for the app's query paths: `platform/lakebase/sql/serving-indexes.sql`.
+Indexes for the app's query paths: `platform/lakebase/sql/serving-indexes.sql`. Read grants for the app service principal: `platform/lakebase/sql/serving-grants.sql` (applied by `scripts/app-grant-serving.sh`).
+
+## App-owned schema (`app`)
+
+Created by the app's service principal at startup from Drizzle migrations (`app/server/database/migrations/`); tracking table `drizzle.__drizzle_migrations`.
+
+| Table | Key | Notes |
+|-------|-----|-------|
+| `app.products` | `product_id` | Seeded once from `serving.dim_product` (`source = 'olist_seed'`, 32,951 rows); app-created rows use a UUID and `source = 'app'`. Soft delete via `is_active`, optimistic concurrency via `version`. |
+| `app.audit_log` | `id` | One row per mutation: actor email, channel (`ui`/`agent`), action, entity, before/after JSON. |

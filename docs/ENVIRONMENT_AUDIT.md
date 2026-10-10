@@ -96,13 +96,24 @@ Scaffolding rules to apply:
 | pnpm 11 build scripts | `pnpm install` fails until dependency build scripts are approved (`esbuild` for `tsx`). | `platform/lakebase/pnpm-workspace.yaml` sets `allowBuilds.esbuild: true`. |
 | Genie on Free Edition | `genie_spaces` bundle resource and the Conversation API both work. | Space `Olist Store Analytics` deployed from `serving/genie/olist-store.geniespace.json`. |
 
+## Findings during Phase 6
+
+| Item | Finding | Resolution |
+|------|---------|------------|
+| AppKit version | `databricks apps init` scaffolded AppKit 0.84.0, React 19, React Router 7, Tailwind 4, Zod 4.3.6. Runtime Express is 4.22 (types are v5). | Async controllers use `asyncHandler`; OpenAPI uses `@asteasolutions/zod-to-openapi` v8. |
+| AppKit Lakebase pool | `appkit.lakebase.pool` is a `pg.Pool` subset that Drizzle cannot use for transactions. | Drizzle uses its own pool from `appkit.lakebase.getPgConfig()` (D14 amendment). |
+| Server build on Windows | The `appkitServerConfig()` external filter treats Windows absolute paths (`C:\...`) as external, so `dist/server.js` did not contain the app modules. | `tsdown.server.config.ts` overrides `external` to recognise absolute paths. |
+| Type versions | `@types/pg` must match AppKit's (8.15.6) or `PoolConfig` types clash. | Pinned. |
+| pnpm build scripts | `@scarf/scarf` (swagger-ui telemetry) requests a build script. | Denied in `app/pnpm-workspace.yaml`. |
+| Signal handling | AppKit owns `SIGTERM`/`SIGINT`, but the platform logged "App did not respect SIGTERM timeout of 15 seconds" while the app ran through `pnpm run start`; AppKit's shutdown log never appeared, so the signal was not reaching Node. | `app.yaml` now runs `node ./dist/server.js` directly with `NODE_ENV=production`. To be confirmed on the next redeploy. |
+| Grants on synced tables | Read grants for the app service principal survive a Snapshot refresh. | `scripts/app-grant-serving.sh` is a one-time step per app/synced-table creation. |
+| Identity | The platform injects `x-forwarded-email`; audit rows record the real user. | Used by `request-context.middleware.ts`. |
+
 ## Not yet verified (deferred to the phase that needs them)
 
 | Item | Phase |
 |------|-------|
 | Genie Conversation API from the app (scope `genie`, on behalf of user or as the app's service principal) | 6 |
-| Allowed `user_api_scopes` for apps | 6 |
-| AppKit internals: Express version, Zod version, `server.extend` ordering, SIGTERM handling, build paths | 6 |
 | shadcn + bklit coexisting with `@databricks/appkit-ui` | 7 |
 | AppKit `agents()`: Genie toolkit name, approval config for all mutating tools, handling of list-shaped content | 8 |
 

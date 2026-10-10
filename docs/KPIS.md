@@ -15,8 +15,8 @@ Every KPI is computed in Gold (`data/pipeline/gold/`) and only displayed by the 
 | Orders | count of valid orders | `kpi_daily.orders` | In `sales_by_category_month` it counts orders containing the category, so it is not additive across categories. |
 | Items sold | count of items in valid orders | `kpi_daily.items_sold` | |
 | Average order value (AOV) | GMV / Orders | `kpi_daily.average_order_value` | Recompute from GMV and Orders when aggregating over a period; never average the daily AOVs. |
-| Customers | count distinct `customer_unique_id` with a valid order | `kpi_daily.customers`, `sales_by_state_month.customers` | Not additive across days or months. |
-| Average review score | mean of the latest review score per valid order | `kpi_daily.average_review_score` | Scale 1 to 5. |
+| Customers | count distinct `customer_unique_id` with a valid order | `customer_activity_daily` (any date range), `kpi_daily.customers` (per day) | Not additive across days or months; for a range count distinct over `customer_activity_daily`. |
+| Average review score | mean of the latest review score per valid order | `kpi_daily.review_score_sum / kpi_daily.reviewed_orders` | Scale 1 to 5. Sum both columns over the period, then divide. |
 | Late delivery rate | delivered valid orders with delivery date > estimated date / delivered valid orders | `kpi_daily.late_delivery_rate` | Recompute from `late_orders` / `delivered_orders` when aggregating. |
 | Delivery days | delivery date − purchase date | `fact_orders.delivery_days` | Delivered orders only. |
 

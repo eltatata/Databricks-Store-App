@@ -10,10 +10,10 @@ The target design and its rationale are in `IMPLEMENTATION_PLAN.md` (§0 decisio
 | UC catalog, schemas, volume | Created: catalog `data_engineering` (SQL), schemas `bronze`/`silver`/`gold`/`serving` and volume `bronze.landing` (DAB) |
 | SDP pipeline (Bronze → Silver → Gold) | Deployed and verified: `olist-medallion` (8 Bronze, 7 Silver + quarantine, 8 Gold) |
 | Refresh jobs | Deployed and verified: `olist-refresh` (data) and `olist-serving-refresh` (refresh_synced_tables → reconcile_lakebase) |
-| Lakebase project and synced tables | Deployed and verified: project `store-app` (PG 17), 6 synced tables in Postgres schema `serving` sharing one pipeline, 7 indexes |
+| Lakebase project and synced tables | Deployed and verified: project `store-app` (PG 17), 7 synced tables in Postgres schema `serving` sharing one pipeline, 7 indexes, read grants for the app service principal |
 | Genie space | Deployed and verified: `Olist Store Analytics`, 10/10 benchmark answers correct (see `AGENT.md`) |
-| App (`store-app`) | Not created |
-| Supervisor agent | Not created |
+| App (`store-app`) | Deployed and verified (backend): AppKit 0.84, `/api/v1` REST API (health, dashboard, products CRUD, admin seed), Swagger at `/api/v1/docs`, Drizzle migrations applied by the service principal, `app.products` seeded with 32,951 products. Frontend is a placeholder until Phase 7 |
+| Supervisor agent | Placeholder `server/agents/supervisor/agent.md` without tools (Phase 8) |
 
 ## Environment-driven choices
 
