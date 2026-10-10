@@ -39,22 +39,25 @@ export const createProductBodySchema = z
   })
   .meta({ id: 'CreateProductRequest' });
 
-export const updateProductBodySchema = z
-  .strictObject({
-    displayName: editableProductShape.displayName.optional(),
-    categoryEn: editableProductShape.categoryEn.optional(),
-    weightG: editableProductShape.weightG.optional(),
-    lengthCm: editableProductShape.lengthCm.optional(),
-    heightCm: editableProductShape.heightCm.optional(),
-    widthCm: editableProductShape.widthCm.optional(),
-    listPriceBrl: editableProductShape.listPriceBrl.optional(),
-    isActive: z.boolean().optional().meta({ description: 'Reactivate or deactivate the product' }),
-    version: z
-      .number()
-      .int()
-      .min(1)
-      .meta({ description: 'Version read by the client, used for optimistic concurrency' }),
-  })
+export const productChangesSchema = z.strictObject({
+  displayName: editableProductShape.displayName.optional(),
+  categoryEn: editableProductShape.categoryEn.optional(),
+  weightG: editableProductShape.weightG.optional(),
+  lengthCm: editableProductShape.lengthCm.optional(),
+  heightCm: editableProductShape.heightCm.optional(),
+  widthCm: editableProductShape.widthCm.optional(),
+  listPriceBrl: editableProductShape.listPriceBrl.optional(),
+  isActive: z.boolean().optional().meta({ description: 'Reactivate or deactivate the product' }),
+});
+
+export const productVersionSchema = z
+  .number()
+  .int()
+  .min(1)
+  .meta({ description: 'Version read by the client, used for optimistic concurrency' });
+
+export const updateProductBodySchema = productChangesSchema
+  .extend({ version: productVersionSchema })
   .refine((body) => Object.keys(body).some((key) => key !== 'version'), {
     message: 'Provide at least one field to change',
   })
