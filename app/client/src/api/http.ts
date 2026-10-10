@@ -1,6 +1,7 @@
 import type { ApiEnvelope, ApiErrorBody, ApiErrorCode, FieldIssue, QueryParams } from '@/types/api.types';
 
 const API_BASE = '/api/v1';
+export const AGENTS_API_BASE = '/api/agents';
 const REQUEST_ID_HEADER = 'x-request-id';
 
 export class ApiError extends Error {
@@ -34,7 +35,7 @@ export const fieldIssuesOf = (error: unknown): FieldIssue[] => {
   );
 };
 
-const buildUrl = (path: string, query?: QueryParams): string => {
+const buildUrl = (path: string, query?: QueryParams, base = API_BASE): string => {
   const params = new URLSearchParams();
   Object.entries(query ?? {}).forEach(([key, value]) => {
     if (value !== undefined && value !== '') {
@@ -42,7 +43,7 @@ const buildUrl = (path: string, query?: QueryParams): string => {
     }
   });
   const search = params.toString();
-  return `${API_BASE}${path}${search ? `?${search}` : ''}`;
+  return `${base}${path}${search ? `?${search}` : ''}`;
 };
 
 const isErrorBody = (body: unknown): body is ApiErrorBody =>
@@ -79,6 +80,7 @@ const toApiError = (response: Response, body: unknown): ApiError => {
 };
 
 interface RequestOptions {
+  base?: string;
   query?: QueryParams;
   body?: unknown;
   signal?: AbortSignal;
@@ -87,7 +89,7 @@ interface RequestOptions {
 const request = async <T>(method: string, path: string, options: RequestOptions = {}): Promise<ApiEnvelope<T>> => {
   let response: Response;
   try {
-    response = await fetch(buildUrl(path, options.query), {
+    response = await fetch(buildUrl(path, options.query, options.base), {
       method,
       signal: options.signal,
       headers: options.body === undefined ? { Accept: 'application/json' } : { 'Content-Type': 'application/json' },
@@ -109,7 +111,8 @@ const request = async <T>(method: string, path: string, options: RequestOptions 
 
 export const http = {
   get: <T>(path: string, options?: Omit<RequestOptions, 'body'>) => request<T>('GET', path, options),
-  post: <T>(path: string, body: unknown) => request<T>('POST', path, { body }),
+  post: <T>(path: string, body: unknown, options?: Pick<RequestOptions, 'base'>) =>
+    request<T>('POST', path, { ...options, body }),
   patch: <T>(path: string, body: unknown) => request<T>('PATCH', path, { body }),
   delete: <T>(path: string, options?: Omit<RequestOptions, 'body'>) => request<T>('DELETE', path, options),
 };
