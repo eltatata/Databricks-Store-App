@@ -23,5 +23,5 @@
       "@/*": ["./client/src/*"]
     }
   },
-  "include": ["client/src", "shared/appkit-types"]
+  "include": ["client/src", "shared/appkit-types", "tests/client"]
 }
