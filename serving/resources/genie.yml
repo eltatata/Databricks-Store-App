@@ -1,0 +1,7 @@
+resources:
+  genie_spaces:
+    olist_store:
+      title: Olist Store Analytics
+      description: Natural-language analytics over the Olist gold model (sales, categories, states, products, sellers, delivery and reviews). Currency BRL.
+      warehouse_id: ${var.warehouse_id}
+      file_path: ../genie/olist-store.geniespace.json
