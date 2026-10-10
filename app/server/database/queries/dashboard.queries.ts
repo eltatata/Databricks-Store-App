@@ -29,6 +29,8 @@ export interface KpiTotals {
   lastOrderDate: string | null;
 }
 
+export type TrendGranularity = 'day' | 'month';
+
 export interface TrendRow {
   period: string;
   gmv: number;
@@ -90,8 +92,13 @@ export async function countDistinctCustomers(range: DateRange): Promise<number> 
   return row?.customers ?? 0;
 }
 
-export function sumKpisByPeriod(range: DateRange, granularity: 'day' | 'month'): Promise<TrendRow[]> {
-  const period = sql<string>`to_char(date_trunc(${granularity}, ${kpiDaily.orderDate}), 'YYYY-MM-DD')`;
+const TRUNCATION_UNITS: Record<TrendGranularity, SQL> = {
+  day: sql.raw("'day'"),
+  month: sql.raw("'month'"),
+};
+
+export function sumKpisByPeriod(range: DateRange, granularity: TrendGranularity): Promise<TrendRow[]> {
+  const period = sql<string>`to_char(date_trunc(${TRUNCATION_UNITS[granularity]}, ${kpiDaily.orderDate}), 'YYYY-MM-DD')`;
   return runQuery(() =>
     getDb()
       .select({ period, gmv: sumAsNumber(kpiDaily.gmv), orders: sumAsNumber(kpiDaily.orders) })
