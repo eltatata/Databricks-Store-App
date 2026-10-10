@@ -3,23 +3,26 @@ import { useState, type KeyboardEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 
-interface ExploreComposerProps {
+interface ChatComposerProps {
   disabled: boolean;
-  onAsk: (question: string) => void;
+  placeholder: string;
+  inputLabel: string;
+  submitLabel: string;
+  onSubmit: (message: string) => void;
 }
 
-const MAX_QUESTION_LENGTH = 1000;
+const MAX_MESSAGE_LENGTH = 2000;
 
-export function ExploreComposer({ disabled, onAsk }: ExploreComposerProps) {
-  const [question, setQuestion] = useState('');
-  const trimmed = question.trim();
+export function ChatComposer({ disabled, placeholder, inputLabel, submitLabel, onSubmit }: ChatComposerProps) {
+  const [message, setMessage] = useState('');
+  const trimmed = message.trim();
 
   const submit = () => {
     if (!trimmed || disabled) {
       return;
     }
-    onAsk(trimmed);
-    setQuestion('');
+    onSubmit(trimmed);
+    setMessage('');
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -38,13 +41,13 @@ export function ExploreComposer({ disabled, onAsk }: ExploreComposerProps) {
       className="flex items-end gap-2 rounded-xl border border-hairline-strong bg-raised p-2 transition-colors focus-within:border-ink-3"
     >
       <Textarea
-        value={question}
-        onChange={(event) => setQuestion(event.target.value)}
+        value={message}
+        onChange={(event) => setMessage(event.target.value)}
         onKeyDown={handleKeyDown}
-        maxLength={MAX_QUESTION_LENGTH}
+        maxLength={MAX_MESSAGE_LENGTH}
         rows={1}
-        placeholder="Ask about sales, categories, sellers or deliveries"
-        aria-label="Question for Genie"
+        placeholder={placeholder}
+        aria-label={inputLabel}
         className="max-h-40 min-h-10 resize-none border-0 bg-transparent px-2 py-2 shadow-none focus-visible:ring-0 dark:bg-transparent"
       />
       <Button
@@ -52,7 +55,7 @@ export function ExploreComposer({ disabled, onAsk }: ExploreComposerProps) {
         size="icon"
         className="size-9 shrink-0 rounded-lg"
         disabled={!trimmed || disabled}
-        aria-label="Ask Genie"
+        aria-label={submitLabel}
       >
         <ArrowUp strokeWidth={2} />
       </Button>

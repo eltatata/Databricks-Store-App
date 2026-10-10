@@ -53,26 +53,42 @@ const toChart = (
   return { kind, xKey: inference.xKey, yKey };
 };
 
+export interface ExploreResultSource {
+  attachmentId: string;
+  title?: string | null;
+  description?: string | null;
+  sql?: string | null;
+  statement: Parameters<typeof transformGenieData>[0];
+}
+
+export const buildExploreResult = (source: ExploreResultSource): ExploreResult | null => {
+  const transformed = transformGenieData(source.statement);
+  if (!transformed) {
+    return null;
+  }
+  const columns = transformed.columns.map(({ name, category }) => ({ name, category }));
+  return {
+    attachmentId: source.attachmentId,
+    title: source.title ?? null,
+    description: source.description ?? null,
+    sql: source.sql ?? null,
+    rows: transformed.rows,
+    columns,
+    chart: toChart(transformed.rows, columns, transformed.columns),
+  };
+};
+
 const toMessage = (message: GenieMessageItem): ExploreMessage => {
   const queryAttachments = message.attachments.filter((attachment) => attachment.query && attachment.attachmentId);
   const results = queryAttachments.flatMap<ExploreResult>((attachment) => {
-    const statement = message.queryResults.get(attachment.attachmentId ?? '');
-    const transformed = transformGenieData(statement);
-    if (!transformed) {
-      return [];
-    }
-    const columns = transformed.columns.map(({ name, category }) => ({ name, category }));
-    return [
-      {
-        attachmentId: attachment.attachmentId ?? '',
-        title: attachment.query?.title ?? null,
-        description: attachment.query?.description ?? null,
-        sql: attachment.query?.query ?? null,
-        rows: transformed.rows,
-        columns,
-        chart: toChart(transformed.rows, columns, transformed.columns),
-      },
-    ];
+    const result = buildExploreResult({
+      attachmentId: attachment.attachmentId ?? '',
+      title: attachment.query?.title,
+      description: attachment.query?.description,
+      sql: attachment.query?.query,
+      statement: message.queryResults.get(attachment.attachmentId ?? ''),
+    });
+    return result ? [result] : [];
   });
   const textAttachments = message.attachments.flatMap((attachment) =>
     attachment.text?.content ? [attachment.text.content] : []

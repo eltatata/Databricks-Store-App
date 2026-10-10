@@ -1,37 +1,13 @@
 import { RotateCcw } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { ChatComposer } from '@/components/common/ChatComposer';
+import { ChatSuggestions } from '@/components/common/ChatSuggestions';
 import { PageHeader } from '@/components/common/PageHeader';
-import { ExploreComposer } from '@/components/explore/ExploreComposer';
 import { ExploreMessage } from '@/components/explore/ExploreMessage';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EXPLORE_SUGGESTIONS } from '@/configs/env';
 import { useExplore } from '@/hooks/explore/useExplore';
-
-function Suggestions({ onAsk }: { onAsk: (question: string) => void }) {
-  return (
-    <div className="flex flex-col gap-4 py-6">
-      <p className="text-sm text-ink-2">Try one of these, or ask your own question.</p>
-      <ul className="flex flex-col divide-y divide-hairline border-y border-hairline">
-        {EXPLORE_SUGGESTIONS.map((question) => (
-          <li key={question}>
-            <button
-              type="button"
-              onClick={() => onAsk(question)}
-              className="group flex w-full items-center justify-between gap-4 py-3.5 text-left text-sm text-ink-2 transition-colors hover:text-ink"
-            >
-              {question}
-              <span
-                aria-hidden
-                className="size-1.5 rounded-full bg-signal opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-              />
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
 
 export function ExplorePage() {
   const explore = useExplore();
@@ -75,7 +51,11 @@ export function ExplorePage() {
             <Skeleton className="h-24 w-full" />
           </div>
         ) : explore.messages.length === 0 ? (
-          <Suggestions onAsk={explore.ask} />
+          <ChatSuggestions
+            intro="Try one of these, or ask your own question."
+            suggestions={EXPLORE_SUGGESTIONS}
+            onPick={explore.ask}
+          />
         ) : (
           explore.messages.map((message, index) => (
             <ExploreMessage
@@ -98,7 +78,13 @@ export function ExplorePage() {
       </div>
 
       <div className="sticky bottom-0 mt-auto bg-gradient-to-t from-ground from-70% to-transparent pt-6 pb-6">
-        <ExploreComposer disabled={explore.isStreaming || explore.isLoadingHistory} onAsk={explore.ask} />
+        <ChatComposer
+          disabled={explore.isStreaming || explore.isLoadingHistory}
+          placeholder="Ask about sales, categories, sellers or deliveries"
+          inputLabel="Question for Genie"
+          submitLabel="Ask Genie"
+          onSubmit={explore.ask}
+        />
         <p className="mt-2 text-center text-[11px] text-ink-3">Genie can be wrong. Check the SQL behind each answer.</p>
       </div>
     </div>
