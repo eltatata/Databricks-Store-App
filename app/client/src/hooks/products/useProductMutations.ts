@@ -71,3 +71,11 @@ export const useReloadProduct = () => {
   const cache = useProductCacheSync();
   return (productId: string) => cache.refreshProduct(productId);
 };
+
+export const useSeedProducts = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => productsService.seed(),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: productKeys.all }),
+  });
+};
