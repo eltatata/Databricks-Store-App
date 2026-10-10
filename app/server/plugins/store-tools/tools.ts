@@ -85,7 +85,7 @@ export function buildStoreTools(options: StoreToolsOptions): ToolRegistry {
     }),
     search_products: defineTool({
       description:
-        'Search the product catalog by name words or product id, optionally filtered by exact category. Returns up to 20 products with id, name, category, price in BRL, dimensions, active flag and version. Use it to resolve which product the user means before reading or changing it.',
+        'Search the product catalog by name words or product id, optionally filtered by exact category. Returns up to 20 products with id, name, category, price in BRL, dimensions, active flag and version. Returns only active products unless includeInactive is true; set it to true when resolving a product to update or reactivate. Use it to resolve which product the user means before reading or changing it.',
       schema: searchProductsToolSchema,
       annotations: { effect: 'read' },
       execute: ({ query, category, includeInactive, limit }) =>
