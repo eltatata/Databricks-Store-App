@@ -9,13 +9,16 @@ import { cn } from '@/lib/utils';
 export function TopBar() {
   return (
     <header className="sticky top-0 z-30 border-b border-hairline bg-ground/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-10 px-6 lg:px-10">
-        <NavLink to="/" className="flex items-baseline gap-1.5 rounded-sm text-[15px] font-bold font-wide">
+      <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-6 px-4 sm:gap-10 sm:px-6 lg:px-10">
+        <NavLink
+          to="/"
+          className="flex shrink-0 items-baseline gap-1.5 rounded-sm text-[15px] font-bold whitespace-nowrap font-wide"
+        >
           Olist Store
           <span aria-hidden className="size-1.5 rounded-full bg-signal" />
         </NavLink>
 
-        <nav aria-label="Main" className="flex h-full items-stretch gap-7">
+        <nav aria-label="Main" className="flex h-full items-stretch gap-5 sm:gap-7">
           {NAVIGATION.map((item) => (
             <NavLink
               key={item.to}
@@ -38,7 +41,7 @@ export function TopBar() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-4">
+        <div className="ml-auto hidden items-center gap-4 md:flex">
           <FreshnessLabel />
           <Tooltip>
             <TooltipTrigger asChild>

@@ -37,6 +37,7 @@ export function StateBreakdownChart({ range }: StateBreakdownChartProps) {
         emptyTitle="No state sales in this period"
         revealSignature={`${range.from ?? 'all'}-${range.to ?? 'all'}`}
         aspectRatio="6 / 5"
+        labelWidth={40}
       />
     </Panel>
   );

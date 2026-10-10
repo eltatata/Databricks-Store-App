@@ -25,6 +25,7 @@ interface RankedBarChartProps {
   emptyTitle: string;
   revealSignature: string;
   aspectRatio: string;
+  labelWidth?: number;
 }
 
 const SKELETON_WIDTHS = ['92%', '84%', '76%', '70%', '62%', '55%', '48%', '40%'];
@@ -54,6 +55,7 @@ export function RankedBarChart({
   emptyTitle,
   revealSignature,
   aspectRatio,
+  labelWidth = BAR_CHART_MARGIN.left,
 }: RankedBarChartProps) {
   if (error && data.length === 0) {
     return <ErrorState error={error} onRetry={onRetry} />;
@@ -73,7 +75,7 @@ export function RankedBarChart({
         data={data}
         xDataKey="label"
         orientation="horizontal"
-        margin={BAR_CHART_MARGIN}
+        margin={{ ...BAR_CHART_MARGIN, left: labelWidth }}
         aspectRatio={aspectRatio}
         barGap={0.58}
         animationDuration={CHART_ANIMATION_MS}

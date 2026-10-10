@@ -11,7 +11,7 @@ export function AppShell() {
         Skip to content
       </a>
       <TopBar />
-      <main id="main" className="mx-auto max-w-[1440px] px-6 pt-8 pb-16 lg:px-10">
+      <main id="main" className="mx-auto max-w-[1440px] px-4 pt-8 pb-16 sm:px-6 lg:px-10">
         <Outlet />
       </main>
     </div>

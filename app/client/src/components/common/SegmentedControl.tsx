@@ -24,7 +24,7 @@ export function SegmentedControl<T extends string>({
   size = 'md',
 }: SegmentedControlProps<T>) {
   return (
-    <div role="radiogroup" aria-label={label} className="flex items-center gap-1">
+    <div role="radiogroup" aria-label={label} className="flex flex-wrap items-center gap-1">
       {options.map((option) => {
         const selected = option.value === value;
         return (
@@ -35,7 +35,7 @@ export function SegmentedControl<T extends string>({
             aria-checked={selected}
             onClick={() => onChange(option.value)}
             className={cn(
-              'relative flex items-center gap-2 rounded-full border transition-[color,border-color,background-color] duration-200 active:scale-[0.97]',
+              'relative flex items-center gap-2 rounded-full border whitespace-nowrap transition-[color,border-color,background-color] duration-200 active:scale-[0.97]',
               size === 'md' ? 'h-9 px-3.5 text-[13px]' : 'h-7 px-2.5 text-xs',
               selected
                 ? 'border-ink/80 text-ink'
