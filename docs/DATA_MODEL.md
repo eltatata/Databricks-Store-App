@@ -48,4 +48,20 @@ Main source → Silver mappings:
 Gold columns carry `COMMENT`s with business meaning. KPI formulas are in `docs/KPIS.md`.
 
 ## Orchestration
-Job `olist-refresh` (`data/resources/olist-refresh.job.yml`, manual trigger): `ingest_check` → `run_pipeline` → `reconcile_gold`. Phase 4 adds the Lakebase sync refresh and reconciliation tasks.
+- `olist-refresh` (`data/` bundle, manual): `ingest_check` → `run_pipeline` → `reconcile_gold`.
+- `olist-serving-refresh` (`serving/` bundle, manual, run after `olist-refresh`): `refresh_synced_tables` (triggers the shared sync pipeline) → `reconcile_lakebase` (row counts and GMV, Lakebase vs Gold).
+
+## Lakebase serving
+
+Project `store-app`, branch `production`, database `databricks_postgres`. The 6 synced tables (Snapshot mode, read-only) live in Postgres schema `serving`, and their Unity Catalog entries are in `data_engineering.serving`.
+
+| Postgres table | Source | Primary key |
+|----------------|--------|-------------|
+| `serving.kpi_daily` | `gold.kpi_daily` | `order_date` |
+| `serving.dim_product` | `gold.dim_product` | `product_id` |
+| `serving.sales_by_category_month` | `gold.sales_by_category_month` | `order_month`, `category_en` |
+| `serving.sales_by_state_month` | `gold.sales_by_state_month` | `order_month`, `customer_state` |
+| `serving.product_performance` | `gold.product_performance` | `product_id` |
+| `serving.seller_performance` | `gold.seller_performance` | `seller_id` |
+
+Indexes for the app's query paths: `platform/lakebase/sql/serving-indexes.sql`.

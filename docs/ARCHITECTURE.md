@@ -9,9 +9,9 @@ The target design and its rationale are in `IMPLEMENTATION_PLAN.md` (§0 decisio
 | Repository scaffolding | Created (Phase 0) |
 | UC catalog, schemas, volume | Created: catalog `data_engineering` (SQL), schemas `bronze`/`silver`/`gold`/`serving` and volume `bronze.landing` (DAB) |
 | SDP pipeline (Bronze → Silver → Gold) | Deployed and verified: `olist-medallion` (8 Bronze, 7 Silver + quarantine, 8 Gold) |
-| Refresh job | Deployed and verified: `olist-refresh` (ingest_check → run_pipeline → reconcile_gold). Lakebase tasks pending (Phase 4) |
-| Lakebase project and synced tables | Not created |
-| Genie space | Not created |
+| Refresh jobs | Deployed and verified: `olist-refresh` (data) and `olist-serving-refresh` (refresh_synced_tables → reconcile_lakebase) |
+| Lakebase project and synced tables | Deployed and verified: project `store-app` (PG 17), 6 synced tables in Postgres schema `serving` sharing one pipeline, 7 indexes |
+| Genie space | Deployed and verified: `Olist Store Analytics`, 10/10 benchmark answers correct (see `AGENT.md`) |
 | App (`store-app`) | Not created |
 | Supervisor agent | Not created |
 
