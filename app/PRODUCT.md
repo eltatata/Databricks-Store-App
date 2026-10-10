@@ -16,7 +16,7 @@ Olist Store is the operator's single place to read KPIs and manage products. Eve
 
 ## Positioning
 
-The dashboard is not a BI embed: KPIs are precomputed in Gold and served from Postgres, so they match Genie and SQL exactly. Explore lets the operator ask questions in plain language against the same Gold tables through a Genie space. An AI assistant that can act on the catalog with human approval is planned for the next phase.
+The dashboard is not a BI embed: KPIs are precomputed in Gold and served from Postgres, so they match Genie and SQL exactly. Explore lets the operator ask questions in plain language against the same Gold tables through a Genie space. The Assistant combines both: it reads KPIs and products from Lakebase, delegates analysis to Genie, and drafts catalog changes that run only after the operator approves them.
 
 ## Operating Context
 
@@ -30,6 +30,7 @@ The dashboard is not a BI embed: KPIs are precomputed in Gold and served from Po
 - Dashboard: six KPIs (GMV, orders, AOV, distinct customers, average review score, late-delivery rate) for any date range, a sales trend by day or month, and breakdowns by category and state, plus top products, top sellers and freshness.
 - Products: paginated, searchable and filterable list; create, edit (optimistic concurrency with a version number), soft delete, and permanent delete. Writes are audited with the operator's email.
 - Explore: natural-language questions to the Genie space, answered with text, SQL-backed tables and an optional chart.
+- Assistant: a supervisor agent that answers KPI and product questions, routes analysis to Genie, and proposes create, update or deactivate actions that wait for an approval card. Writes from the assistant are audited with the operator's email and the `agent` channel.
 - KPIs are never recomputed in the browser.
 - Built on Databricks Free Edition: one app, cold starts after the 24 h auto-stop are possible.
 

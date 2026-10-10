@@ -196,6 +196,15 @@ Flat by default. Depth is tonal: ground, then raised, then raised-2. Shadows com
 - **Inactive products:** name struck through in Ink 3 and status "Inactive" with a hollow dot. They stay in the table.
 - **Forms:** labels above the inputs, units as suffixes (BRL, g, cm), and errors in red below the field with `aria-invalid`. Create and edit happen in a right-hand sheet or inline on the detail page, never in a modal.
 - **Dialogs:** alert dialogs only for destructive or state-changing confirmations (deactivate, delete permanently).
+- **Assistant turns:**
+  - User bubbles are Raised Black 2, right aligned. Assistant text is plain body copy with no bubble.
+  - Each tool call shows a 12px grey activity line ("Asked Genie", "Searched the catalog") with a check icon, or a shimmer while it runs.
+  - Results render only through allowlisted views: the KPI figure grid, the product table or line, and the Explore result for Genie.
+- **Approval card:**
+  - Raised Black, 12px radius, Hairline Strong border while open. It takes the red dot while it waits, and the dot springs away once a decision lands.
+  - The body shows the fields to create, a Now / After approval table for updates, or the target product for deactivation.
+  - The primary action names the change (Create, Save changes); deactivation uses the destructive button. Deny is outlined.
+  - After a decision the actions disappear and the status line says what happened: Approved, Denied or Expired, with "Nothing was changed" when nothing was.
 - **States:**
   - skeletons shaped like the final layout;
   - an empty state that says what to do next;

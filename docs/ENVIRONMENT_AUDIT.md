@@ -121,12 +121,23 @@ Scaffolding rules to apply:
 | Genie `inferChartType` | Suggests `pie` for small categorical results. | Explore maps pie/donut to a bklit bar chart; only allowlisted bar/line specs render. |
 | Local dev on Windows | `pnpm dev` fails (`NODE_ENV=` syntax in cmd); local Lakebase needs `PGUSER`. Rolldown-Vite can cache a stub module after a file is replaced ("Canonicalized path was dropped"). | Run `tsx` directly from Git Bash with `PGUSER=<email>`; restart the dev server after replacing files. AppKit's persistent cache logs an ownership error locally (table owned by the app service principal); harmless. |
 
+## Findings during Phase 8
+
+| Item | Finding | Resolution |
+|------|---------|------------|
+| Hand-rolled tool identity | `tool({ execute })` runs as the service principal and receives only its arguments. There is no request, caller context or user email, even after HITL approval. | Lakebase tools moved to a ToolProvider plugin (`server/plugins/store-tools`). Plugin tools run through `PluginContext.executeTool` in the user's caller scope, so `getCallerContext().principal.userEmail` is set. |
+| Markdown agents and plugins | `plugin:<name>` in frontmatter resolves only plugins that implement `toolkit()`; `getAgentTools()` alone is enough for code agents but not for markdown ones (`plugin 'store' is not registered. Available: genie, lakebase`). | The plugin implements `toolkit()` with the same `prefix`/`only`/`except`/`rename` semantics as AppKit's internal helper. |
+| JSON Schema on `databricks-qwen3-next-80b-a3b-instruct` | Tool parameters with `pattern` (from Zod `.regex()` or `z.iso.date()`) fail the first request: `Invalid JSON schema - the "pattern" keyword is not supported`. | LLM-facing schemas use plain strings and numbers. Tools re-validate with the REST Zod schemas and return field issues to the model. |
+| Model behavior around approval | Without explicit instructions the model asked for confirmation in chat instead of calling the tool. After a denial it said the change was still pending. | The routing policy says the approval card is the confirmation and gives a fixed reply for `Tool execution denied`. |
+| Genie tool output | `olist.sendMessage` returns every Genie event (status updates, `message_result`, `query_result` with the statement). A three-row answer is about 6 KB. Some attachments (text, suggestions) have no `attachmentId`. | Size is acceptable. The client rebuilds the Genie table and chart from `query_result` with the Explore helpers and ignores attachments without a query. |
+| Thread store | The default `InMemoryThreadStore` logs a dev-only warning; threads are lost on restart. | Accepted for the POC (single instance, conversations are short). Lakebase-backed store left as a stretch item. |
+| Local tooling | Killing every `node.exe` to restart the dev server also stopped the Playwright MCP server. | Restart the dev server by port (`netstat` + `taskkill /PID`). UI checks used `playwright-core` with the installed Chrome from the session scratchpad. |
+
 ## Not yet verified (deferred to the phase that needs them)
 
 | Item | Phase |
 |------|-------|
 | Genie Conversation API from the app (scope `genie`, on behalf of user or as the app's service principal) | 6 |
-| AppKit `agents()`: Genie toolkit name, approval config for all mutating tools, handling of list-shaped content | 8 |
 
 ## Plan change proposals
 

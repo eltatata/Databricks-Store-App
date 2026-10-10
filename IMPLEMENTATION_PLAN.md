@@ -714,6 +714,13 @@ src/
 - **HITL:** configure `agents({ approval: … })` so that **all** mutating tools require approval (not only destructive). Verify the option name in the docs. Approvals post to `/api/agents/approve` and must come from the same user who opened the stream. The timeout auto-denies.
 - **Never** enable `lakebase.query` as an agent tool. There is no generic SQL tool and no model-supplied SQL, code or JSX.
 - Audit: every tool mutation writes `audit_log` with `channel='agent'` and the requesting user's email.
+- **Amendment (Phase 8):**
+  - **Tool plugin:** AppKit runs a hand-rolled `tool({ execute })` as the service principal with no access to the request, so its audit rows could not carry the user's email. The Lakebase tools therefore live in a small ToolProvider plugin, `server/plugins/store-tools/` (`plugin.ts` + `tools.ts`, registered as `storeTools()` in `createApp`). Plugin tools run in the caller scope, so `getCallerContext().principal.userEmail` is available. The plugin exposes `toolkit()` because markdown agents resolve `plugin:<name>` only through it.
+  - **Markdown agent:** the supervisor is `server/agents/supervisor/agent.md` (frontmatter tools + routing policy body) instead of `agent.ts` + `instructions.md`. A code agent is bundled as a separate entry, would duplicate the database client module, and gains nothing here.
+  - **Genie tool:** `ask_analytics` is the Genie toolkit tool `olist.sendMessage`, renamed in the frontmatter.
+  - **Argument schemas:** the serving endpoint rejects JSON Schema `pattern`, so the LLM-facing schemas (`server/schemas/agent-tools.schema.ts`) use plain types, and each tool re-validates with the REST Zod schemas.
+  - **Approval timeout:** set by `AGENT_APPROVAL_TIMEOUT_MS` (default 120 s). Limits: 20 tool calls per run, 100 s per tool call.
+  - **Threads:** the thread store stays the default in-memory store, so conversations are lost on restart. That is acceptable for a single-instance POC. A Lakebase-backed store is a stretch item.
 
 ## 7.2 Routing policy (in `instructions.md`)
 1. Historical or analytical questions (trends, rankings, "why", cross-dimension slicing) → `ask_analytics`.
@@ -843,7 +850,7 @@ Commit per phase once git is initialized (it is **not** yet a git repo; `git ini
 - [x] Shared sync pipeline works; referenced as `status.pipeline_id` (Phase 4).
 - [x] Deploy ordering solved with the `serving/` bundle (D15 amendment).
 - [ ] Genie Agent creation and Conversation API usable on Free Edition.
-- [ ] AppKit `agents()` plugin: genie toolkit name, approval config for all mutating effects, Lakebase thread-store option.
+- [x] AppKit `agents()` plugin: genie toolkit `olist.sendMessage` (renamed `ask_analytics`), approval gates every `write`/`update`/`destructive` tool by default, thread store left in memory (Phase 8 amendment in §7.1).
 - [ ] AppKit server internals: Express major version (decides whether `asyncHandler` is needed), how `server.extend` orders custom routers vs plugin routes and the SPA fallback, whether AppKit already handles SIGTERM/pool shutdown, and which server/client paths the build and lint require (so the §6.4/§6.6 restructure does not break them).
 - [ ] Zod major version shipped by AppKit → pick `@asteasolutions/zod-to-openapi` v8+ (Zod 4) or 7.3.4 (Zod 3).
 - [ ] shadcn `components.json` + Tailwind coexisting with `@databricks/appkit-ui`; current bklit registry names and import paths.

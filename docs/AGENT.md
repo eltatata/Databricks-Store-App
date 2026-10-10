@@ -39,4 +39,63 @@ Score: 10/10 correct (9/10 under the strict value comparison). The exit gate (�
 
 ## Supervisor agent
 
-Not built yet (Phase 8). The design is in `IMPLEMENTATION_PLAN.md` §7.
+- **Definition:** `app/server/agents/supervisor/agent.md` is a markdown agent: the frontmatter declares the tools and the body holds the routing policy (§7.2).
+- **Model:** `databricks-qwen3-next-80b-a3b-instruct` through the bound `agents-serving-endpoint` resource (D16), temperature 0.1, at most 12 steps.
+- **Execution identity:** the model call runs as the app service principal. Every tool call runs in the requesting user's scope.
+
+### Tools
+
+| Tool | Effect | Calls |
+|------|--------|-------|
+| `ask_analytics` | read | Genie plugin `olist.sendMessage`, renamed (Gold tables through the Genie space, on behalf of the user) |
+| `get_kpi_summary` | read | `dashboardService.getSummary` (Lakebase `serving`) |
+| `search_products` | read | `productsService.listProducts`, at most 20 results, active products only unless asked |
+| `get_product` | read | `productsService.getProduct` |
+| `create_product` | write → approval | `productsService.createProduct` |
+| `update_product` | update → approval | `productsService.updateProduct`, with the version for optimistic concurrency |
+| `deactivate_product` | destructive → approval | `productsService.deactivateProduct` |
+
+How the tools are built:
+- **Plugin:** the Lakebase tools live in a small AppKit plugin, `app/server/plugins/store-tools`. Plugin tools run inside the user's caller scope, so audit rows record the user's email with `channel = 'agent'`. A hand-rolled `tool()` would run as the service principal with no user identity.
+- **Validation:** the arguments the model sees are plain JSON Schema. The serving endpoint rejects the `pattern` keyword. Each tool validates the arguments again with the REST API's Zod schemas before calling a service.
+- **Error results:** validation errors and `AppError`s come back as `{ error: { code, message } }`, so the model can recover. Unexpected errors return a generic message and are logged.
+- **Not exposed:** there is no SQL tool, `lakebase.query` stays disabled, and permanent delete is not available to the agent.
+
+### Human approval
+
+Approval behavior:
+- **Gate:** `agents({ approval: { requireForDestructive: true } })` gates every tool annotated `write`, `update` or `destructive`.
+- **Who decides:** only the user who opened the stream can approve. A missing decision auto-denies after `AGENT_APPROVAL_TIMEOUT_MS` (default 120 s).
+- **Card:** the Assistant page shows an approval card for each pending call, with the fields to create, a now/after comparison for updates, or the target product for deactivation.
+- **Denied calls:** a denied or expired call returns `Tool execution denied…` to the model, and the card says that nothing was changed.
+
+### Evaluation
+
+The evals live in `app/server/agents/supervisor/evals/*.eval.ts` and run with `appkit agent eval`. The run on 2026-10-09 was against the local server, with `AGENT_APPROVAL_TIMEOUT_MS=15000` so that the mutating calls expire without a decision.
+
+| Eval | Expected route | Result |
+|------|----------------|--------|
+| kpi-summary | `get_kpi_summary` 2017-01-01…2017-12-31, no Genie, no mutation | ✅ |
+| kpi-spanish | `get_kpi_summary` H1 2018, AOV R$137.35, Spanish reply | ✅ |
+| analytics-ranking | `ask_analytics` | ✅ |
+| analytics-trend | `ask_analytics` | ✅ |
+| product-search | `search_products` with `category` | ✅ |
+| product-lookup | `get_product` by id, price in the reply | ✅ |
+| create-asks-for-fields | no mutation, asks for name/category | ✅ |
+| create-requires-approval | `create_product` → approval → expired, nothing written | ✅ |
+| update-reads-version | `get_product` then `update_product` with the new price | ✅ |
+| deactivate-requires-approval | `deactivate_product` → approval → expired | ✅ |
+| permanent-delete-refused | no mutation, offers deactivation | ✅ |
+| out-of-scope | no mutation, explains the scope | ✅ |
+
+The result was 12/12.
+- **No writes:** the server log shows no mutating tool executed. The sample product kept version 1, and no product named `Eval Approval Probe` exists.
+- **Manual deny check:** a UI deny from a real browser session left no product and no audit row.
+
+Run the evals again:
+
+```bash
+cd app
+AGENT_APPROVAL_TIMEOUT_MS=15000 NODE_ENV=development npx tsx --env-file-if-exists=./.env ./server/server.ts
+npx appkit agent eval --url http://localhost:8000 --concurrency 3
+```
