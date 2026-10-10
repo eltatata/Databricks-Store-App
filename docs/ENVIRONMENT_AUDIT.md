@@ -105,7 +105,7 @@ Scaffolding rules to apply:
 | Server build on Windows | The `appkitServerConfig()` external filter treats Windows absolute paths (`C:\...`) as external, so `dist/server.js` did not contain the app modules. | `tsdown.server.config.ts` overrides `external` to recognise absolute paths. |
 | Type versions | `@types/pg` must match AppKit's (8.15.6) or `PoolConfig` types clash. | Pinned. |
 | pnpm build scripts | `@scarf/scarf` (swagger-ui telemetry) requests a build script. | Denied in `app/pnpm-workspace.yaml`. |
-| Signal handling | AppKit owns `SIGTERM`/`SIGINT`, but the platform logged "App did not respect SIGTERM timeout of 15 seconds" while the app ran through `pnpm run start`; AppKit's shutdown log never appeared, so the signal was not reaching Node. | `app.yaml` now runs `node ./dist/server.js` directly with `NODE_ENV=production`. To be confirmed on the next redeploy. |
+| Signal handling | AppKit owns `SIGTERM`/`SIGINT`, but the platform logged "App did not respect SIGTERM timeout of 15 seconds" while the app ran through `pnpm run start`; AppKit's shutdown log never appeared, so the signal was not reaching Node. | `app.yaml` now runs `node ./dist/server.js` directly with `NODE_ENV=production`. Confirmed in Phase 7: the redeploy logged `Graceful shutdown complete` and no timeout warning. |
 | Grants on synced tables | Read grants for the app service principal survive a Snapshot refresh. | `scripts/app-grant-serving.sh` is a one-time step per app/synced-table creation. |
 | Identity | The platform injects `x-forwarded-email`; audit rows record the real user. | Used by `request-context.middleware.ts`. |
 

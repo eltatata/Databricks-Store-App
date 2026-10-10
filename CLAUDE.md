@@ -3,7 +3,7 @@
 `IMPLEMENTATION_PLAN.md` is the contract for this project. Read the sections relevant to the current phase before acting. Locked decisions are in §0 (D1–D17). Do not reopen them without the user's approval, and record any new decision there.
 
 ## Status
-- Current block: **E — Phase 7 (Frontend)**, built and verified locally; waiting for the user to approve the redeploy, then block F. Open item: confirm on the next redeploy that the SIGTERM warning is gone (app.yaml now runs node directly). Profile: `local-dev` (confirmed by the user).
+- Current block: **E — Phase 7 (Frontend)**, done: deployed and CRUD verified from the deployed UI (SIGTERM fix confirmed). Two copy/UI nits are fixed locally and ship with the next deploy. Waiting for the user before block F. Profile: `local-dev` (confirmed by the user).
 - Execution blocks: A = Phase 0 · B = 1–3 · C = 4–5 · D = 6 · E = 7 · F = 8–9.
 - Stop at the end of each block and report against the exit gates (§10) and the final report (§11). Wait for the user before starting the next block.
 - Update this Status section when a block starts or ends.
