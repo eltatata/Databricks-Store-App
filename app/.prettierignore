@@ -35,3 +35,7 @@ pnpm-lock.yaml
 # Vendor
 vendor
 server/database/migrations
+
+# Generated
+appkit.plugins.json
+.impeccable
