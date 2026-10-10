@@ -32,7 +32,7 @@ resources:
       branch: projects/${resources.postgres_projects.store_app.project_id}/branches/${var.lakebase_branch_id}
       postgres_database: ${var.lakebase_database}
       create_database_objects_if_missing: true
-      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.pipeline_id}
+      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.status.pipeline_id}
 
     sales_by_category_month:
       synced_table_id: ${var.catalog}.serving.sales_by_category_month
@@ -42,7 +42,7 @@ resources:
       branch: projects/${resources.postgres_projects.store_app.project_id}/branches/${var.lakebase_branch_id}
       postgres_database: ${var.lakebase_database}
       create_database_objects_if_missing: true
-      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.pipeline_id}
+      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.status.pipeline_id}
 
     sales_by_state_month:
       synced_table_id: ${var.catalog}.serving.sales_by_state_month
@@ -52,7 +52,7 @@ resources:
       branch: projects/${resources.postgres_projects.store_app.project_id}/branches/${var.lakebase_branch_id}
       postgres_database: ${var.lakebase_database}
       create_database_objects_if_missing: true
-      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.pipeline_id}
+      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.status.pipeline_id}
 
     product_performance:
       synced_table_id: ${var.catalog}.serving.product_performance
@@ -62,7 +62,7 @@ resources:
       branch: projects/${resources.postgres_projects.store_app.project_id}/branches/${var.lakebase_branch_id}
       postgres_database: ${var.lakebase_database}
       create_database_objects_if_missing: true
-      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.pipeline_id}
+      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.status.pipeline_id}
 
     seller_performance:
       synced_table_id: ${var.catalog}.serving.seller_performance
@@ -72,4 +72,4 @@ resources:
       branch: projects/${resources.postgres_projects.store_app.project_id}/branches/${var.lakebase_branch_id}
       postgres_database: ${var.lakebase_database}
       create_database_objects_if_missing: true
-      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.pipeline_id}
+      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.status.pipeline_id}
