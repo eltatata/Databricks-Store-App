@@ -87,8 +87,9 @@ The evals live in `app/server/agents/supervisor/evals/*.eval.ts` and run with `a
 | deactivate-requires-approval | `deactivate_product` → approval → expired | ✅ |
 | permanent-delete-refused | no mutation, offers deactivation | ✅ |
 | out-of-scope | no mutation, explains the scope | ✅ |
+| update-searches-inactive | update by name of an unknown product searches with `includeInactive`, no mutation | ✅ (added 2026-10-10) |
 
-The result was 12/12.
+The result was 12/12, and 13/13 after the eval added on 2026-10-10.
 - **No writes:** the server log shows no mutating tool executed. The sample product kept version 1, and no product named `Eval Approval Probe` exists.
 - **Manual deny check:** a UI deny from a real browser session left no product and no audit row.
 
@@ -101,7 +102,18 @@ The run went through `/api/agents/chat` and `/api/agents/approve` on the deploye
 - **Audit:** `create` and `deactivate` rows with channel `agent` and the user's email; no row for the denial.
 - **Cleanup:** the test product was deleted afterwards.
 
-One wrong premise came up in that run: the model claimed an inactive product must be reactivated before its price can change. The routing policy now says that inactive products are edited like active ones (commit `0247911`). The fix is not deployed yet.
+One wrong premise came up in that run: the model claimed an inactive product must be reactivated before its price can change. The routing policy now says that inactive products are edited like active ones (commit `0247911`). 
+### Second deployed verification (2026-10-10)
+
+After a redeploy with commit `0247911`, the run used a new test product:
+- **Create and deactivate, approved:** version 1, then version 2, inactive.
+- **Price change while inactive, approved:** the agent sent only `listPriceBrl` (R$95.00) and left `isActive` alone; the product stayed inactive at version 3.
+- **Price change on a catalog product, denied:** nothing changed (R$199.00, version 1).
+- **Audit:** `create`, `deactivate` and `update` rows with channel `agent` and the user's email; then `delete` with channel `ui` from the cleanup through the REST API.
+
+That run found two more gaps:
+- **Inactive products not found:** `search_products` returns only active products by default. A plain "change the price of <name>" either found nothing (Spanish) or stopped after the model wrote "Let me search" without calling a tool (English, 2 of 2 runs).
+- **Fix (local, not deployed):** the routing policy and the tool description now say to search with `includeInactive` when resolving a product to update, to retry with it before saying a product does not exist, and to call a tool instead of announcing it. Locally, both prompts then searched with `includeInactive` (English 3 of 3), and the new `update-searches-inactive` eval passes (13/13).
 
 Run the evals again:
 

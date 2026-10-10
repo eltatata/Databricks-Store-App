@@ -12,7 +12,7 @@ The structure follows `IMPLEMENTATION_PLAN.md` §11. Every number below was meas
 | Genie | Space `Olist Store Analytics` over 7 Gold tables, with instructions, synonyms and 10 benchmark questions | `serving/genie/olist-store.geniespace.json` |
 | Backend | REST API `/api/v1`: health, dashboard (summary, trend, breakdowns, top products/sellers, freshness), products CRUD with optimistic concurrency and audit, admin seed. Swagger at `/api/v1/docs`. | `app/server/` |
 | Frontend | Dashboard, Products (list, sheet form, detail), Explore (Genie), Assistant (agent with approval cards); dark "Elenco Sleeve" design system | `app/client/src/`, `app/DESIGN.md` |
-| Agent | Supervisor markdown agent; `ask_analytics` (Genie); 6 Lakebase tools in the `store-tools` plugin; approval for every mutation; 12 evals | `app/server/agents/supervisor/`, `app/server/plugins/store-tools/` |
+| Agent | Supervisor markdown agent; `ask_analytics` (Genie); 6 Lakebase tools in the `store-tools` plugin; approval for every mutation; 13 evals | `app/server/agents/supervisor/`, `app/server/plugins/store-tools/` |
 
 | Test suite | Command | Result (2026-10-10) |
 |------------|---------|---------------------|
@@ -21,7 +21,7 @@ The structure follows `IMPLEMENTATION_PLAN.md` §11. Every number below was meas
 | AppKit validation | `databricks apps validate --profile local-dev` | typegen, ast-grep, typecheck, build, tests: all passed |
 | Smoke test (Playwright), local | `pnpm test:smoke` | 5/5 passed |
 | Smoke test, deployed app | `SMOKE_BASE_URL=<app-url> SMOKE_BEARER_TOKEN=… pnpm test:smoke` | 5/5 passed |
-| Agent evals | `npx appkit agent eval --url http://localhost:8000` | 12/12 passed (2026-10-09) |
+| Agent evals | `npx appkit agent eval --url http://localhost:8000` | 13/13 passed (2026-10-10) |
 | Data job helpers (pytest) | `cd data && uv run pytest` | 15 passed |
 | Serving job helpers (pytest) | `cd serving && uv run pytest` | 4 passed |
 | Gold reconciliation | `bash scripts/data-run.sh` | 38/38 checks passed |
@@ -96,7 +96,7 @@ Idempotency was checked on 2026-10-10:
 | Lakebase tools through the agent | H1 2018: GMV R$5,614,133.04, 40,876 orders, AOV R$137.35, equal to `gold.kpi_daily` |
 | Tools | `ask_analytics`, `get_kpi_summary`, `search_products`, `get_product` (read); `create_product` (write), `update_product` (update), `deactivate_product` (destructive) |
 | HITL | Every write/update/destructive call waits for an approval card from the user who opened the stream; no decision in 120 s auto-denies |
-| Evals | 12/12: routing (Genie vs Lakebase), clarification, approval on each mutation, refusal of permanent delete and out-of-scope requests |
+| Evals | 13/13: routing (Genie vs Lakebase), clarification, approval on each mutation, refusal of permanent delete and out-of-scope requests, inactive products found before an update |
 
 Deployed approval run on 2026-10-10. Each step went through `/api/agents/chat` and `/api/agents/approve` as the signed-in user:
 
@@ -131,7 +131,7 @@ Identity and secrets:
 Known limitations:
 - **Roles:** none by design (D6). Every user who can open the app can do everything, including approving the assistant's changes in their own session.
 - **Threads:** agent conversations live in memory and are lost on restart or redeploy.
-- **Model behavior:** the model can still pick a wrong premise; on 2026-10-10 it claimed an inactive product had to be reactivated before a price change. The routing policy was corrected in commit `0247911`. That fix ships with the next deploy and must be checked on the deployed app with a test product.
+- **Model behavior:** the model can still pick a wrong premise; on 2026-10-10 it claimed an inactive product had to be reactivated before a price change. The routing policy was corrected in commit `0247911`, deployed and verified the same day: an approved price change on an inactive test product kept it inactive. That run also showed that the agent did not look for inactive products when asked to edit one by name. The fix is verified locally (13/13 evals) and ships with the next deploy.
 - **Write-back:** app edits to products do not flow back to Gold (D4); write-back is a stretch goal.
 - **Product names:** they are synthetic, because the dataset has no product names.
 

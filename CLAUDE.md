@@ -7,7 +7,8 @@
   - Agent deployed and verified with real approvals.
   - E2E acceptance 9/9.
   - Runbooks (`docs/DEPLOYMENT.md`, `docs/TROUBLESHOOTING.md`) and `docs/FINAL_REPORT.md` written.
-  - Pending, needs user approval: one redeploy to ship the agent routing fix for inactive products (commit `0247911`), then verify it on the deployed app with a test product.
+  - Inactive-product edit fix (`0247911`) deployed and verified on 2026-10-10.
+  - Pending, needs user approval: one redeploy to ship the inactive-product search fix (verified locally, 13/13 evals), then verify it on the deployed app with a test product.
   - Profile: `local-dev` (confirmed by the user).
 - Execution blocks: A = Phase 0 · B = 1–3 · C = 4–5 · D = 6 · E = 7 · F = 8–9.
 - Stop at the end of each block and report against the exit gates (§10) and the final report (§11). Wait for the user before starting the next block.
