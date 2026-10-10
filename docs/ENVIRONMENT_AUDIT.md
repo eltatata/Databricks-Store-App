@@ -84,12 +84,23 @@ Scaffolding rules to apply:
 | Catalog creation via DABs | `databricks bundle deploy` fails creating `catalogs.data_engineering`: `INVALID_STATE: Metastore storage root URL does not exist. Default Storage is enabled in your account`. | SQL `CREATE CATALOG` works on the Serverless Starter Warehouse. The catalog moved to `platform/workspace/catalog.sql` + `scripts/catalog-create.sh` (D15 amendment). |
 | Git Bash path conversion | Git Bash rewrites arguments that start with `/` (e.g. `/api/2.0/...`) into Windows paths, so `databricks api` returned `Not Found`. The Phase 0 `Not Found` on `/serving-endpoints/.../invocations` had the same cause. | `scripts/lib/common.sh` exports `MSYS_NO_PATHCONV=1` and resolves `REPO_ROOT` in `C:/...` form so the Windows CLI can read local files. |
 
+## Findings during Phases 4–5
+
+| Item | Finding | Resolution |
+|------|---------|------------|
+| Lakebase via DABs (Beta) | `postgres_projects` and `postgres_synced_tables` work on Free Edition. Project `store-app` created with PG 17, 0.5–2 CU, 300 s suspend. | Kept as bundle resources in `serving/`. |
+| Shared sync pipeline reference | `${resources.postgres_synced_tables.<key>.pipeline_id}` fails at plan time (`field "pipeline_id" not found`). | Use `${resources.postgres_synced_tables.kpi_daily.status.pipeline_id}`. All 6 tables share pipeline `6d06052e…`. |
+| Bin-packed tables after creation | Tables added to the shared pipeline while its first update was starting stayed `SYNCED_TABLE_OFFLINE`. | The next pipeline update (the `olist-serving-refresh` job) brought all 6 tables online. `serving-run.sh` is part of the bootstrap order. |
+| `psycopg[binary]` on serverless | Importing it aborts the Python process (SIGABRT in libpq loading) on the serverless job runtime. | `reconcile_lakebase` uses the pure-Python `pg8000` driver. |
+| Custom indexes on synced tables | Indexes created by the owner survive a Snapshot refresh (7/7 present after a full refresh). | `serving-indexes.sql` only needs to be applied once per table creation. |
+| pnpm 11 build scripts | `pnpm install` fails until dependency build scripts are approved (`esbuild` for `tsx`). | `platform/lakebase/pnpm-workspace.yaml` sets `allowBuilds.esbuild: true`. |
+| Genie on Free Edition | `genie_spaces` bundle resource and the Conversation API both work. | Space `Olist Store Analytics` deployed from `serving/genie/olist-store.geniespace.json`. |
+
 ## Not yet verified (deferred to the phase that needs them)
 
 | Item | Phase |
 |------|-------|
-| Synced-table pipelines vs the "1 active pipeline per type" limit | 4 |
-| Genie Conversation API from the app (scope `genie`, on behalf of user or as the app's service principal) | 5–6 |
+| Genie Conversation API from the app (scope `genie`, on behalf of user or as the app's service principal) | 6 |
 | Allowed `user_api_scopes` for apps | 6 |
 | AppKit internals: Express version, Zod version, `server.extend` ordering, SIGTERM handling, build paths | 6 |
 | shadcn + bklit coexisting with `@databricks/appkit-ui` | 7 |
