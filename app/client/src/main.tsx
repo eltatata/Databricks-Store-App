@@ -1,24 +1,19 @@
-import { ResourceStatusIndicator, ResourceStatusProvider } from '@databricks/appkit-ui/react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
-import { ErrorBoundary } from './ErrorBoundary.tsx';
+import { ErrorBoundary } from './components/common/ErrorBoundary.tsx';
 
-createRoot(document.getElementById('root')!).render(
+const container = document.getElementById('root');
+
+if (!container) {
+  throw new Error('The #root element is missing from index.html');
+}
+
+createRoot(container).render(
   <StrictMode>
     <ErrorBoundary>
-      {/*
-       * Surfaces resource readiness (e.g. SQL warehouse cold-starts) as a
-       * single sonner toast across the whole tree. Both are no-ops when
-       * nothing's pending; remove them to render the aggregate yourself
-       * via useResourceStatus(). Apps that already mount their own
-       * <Toaster /> can swap the indicator for useResourceStatusToaster().
-       */}
-      <ResourceStatusProvider>
-        <ResourceStatusIndicator />
-        <App />
-      </ResourceStatusProvider>
+      <App />
     </ErrorBoundary>
   </StrictMode>
 );

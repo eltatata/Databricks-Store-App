@@ -73,3 +73,18 @@ export const formatDateTime = (value: string | null | undefined) =>
 export const humanizeSlug = (value: string | null | undefined) => (value ? value.replaceAll('_', ' ') : EMPTY_VALUE);
 
 export const shortId = (value: string, length = 8) => (value.length > length ? `${value.slice(0, length)}…` : value);
+
+export const toDisplayText = (value: unknown): string => {
+  if (value === null || value === undefined || value === '') {
+    return EMPTY_VALUE;
+  }
+  if (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean' ||
+    typeof value === 'bigint'
+  ) {
+    return String(value);
+  }
+  return JSON.stringify(value);
+};
