@@ -31,7 +31,13 @@ export interface ExploreMessage {
   suggestedQuestions: string[];
 }
 
-const CHART_KINDS: Record<string, ExploreChartKind> = { bar: 'bar', line: 'line', area: 'line' };
+const CHART_KINDS: Record<string, ExploreChartKind> = {
+  bar: 'bar',
+  pie: 'bar',
+  donut: 'bar',
+  line: 'line',
+  area: 'line',
+};
 
 const toChart = (
   rows: Record<string, unknown>[],
@@ -75,7 +81,7 @@ const toMessage = (message: GenieMessageItem): ExploreMessage => {
   return {
     id: message.id,
     role: message.role,
-    text: [message.content, ...textAttachments].filter(Boolean).join('\n\n'),
+    text: [...new Set([message.content, ...textAttachments].map((part) => part.trim()).filter(Boolean))].join('\n\n'),
     status: message.status,
     error: message.error ?? null,
     results,
