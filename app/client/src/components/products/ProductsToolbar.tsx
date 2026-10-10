@@ -48,7 +48,7 @@ export function ProductsToolbar({ state, onChange }: ProductsToolbarProps) {
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Search by name or product ID"
           aria-label="Search products"
-          className="pr-9 pl-9"
+          className="pr-9 pl-9 [&::-webkit-search-cancel-button]:appearance-none"
         />
         {search ? (
           <button

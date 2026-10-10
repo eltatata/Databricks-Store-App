@@ -25,7 +25,11 @@ export function ProductsPage() {
     <>
       <PageHeader
         title="Products"
-        description={data ? `${formatCount(data.meta.total)} products in the catalog view` : 'Manage the store catalog'}
+        description={
+          data
+            ? `${formatCount(data.meta.total)} ${data.meta.total === 1 ? 'product' : 'products'} in the catalog view`
+            : 'Manage the store catalog'
+        }
       >
         <Button onClick={() => setSheet({ mode: 'create' })}>
           <Plus strokeWidth={2} />
