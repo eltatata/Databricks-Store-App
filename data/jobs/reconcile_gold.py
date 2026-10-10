@@ -24,6 +24,7 @@ GOLD_PRIMARY_KEYS = {
     "seller_performance": ("seller_id",),
     "fact_sales": ("order_id", "order_item_id"),
     "fact_orders": ("order_id",),
+    "customer_activity_daily": ("order_date", "customer_unique_id"),
 }
 
 QUARANTINE_TABLES = (
@@ -140,6 +141,11 @@ def check_dimension_coverage(catalog: str, query_scalar: ScalarQuery) -> list[Ch
             name="gold.fact_orders unknown states = silver orders without customer",
             expected=orders_without_known_state,
             actual=query_scalar(f"SELECT count(*) FROM {catalog}.gold.fact_orders WHERE customer_state = 'unknown'"),
+        ),
+        CheckResult(
+            name="gold.customer_activity_daily customers = gold.fact_orders valid customers",
+            expected=query_scalar(f"SELECT count(DISTINCT customer_unique_id) FROM {catalog}.gold.fact_orders WHERE is_valid_sale"),
+            actual=query_scalar(f"SELECT count(DISTINCT customer_unique_id) FROM {catalog}.gold.customer_activity_daily"),
         ),
     ]
 
