@@ -18,7 +18,7 @@ resources:
             environment_version: "4"
             dependencies:
               - databricks-sdk>=0.81
-              - psycopg[binary]>=3.2
+              - pg8000>=1.31
       tasks:
         - task_key: refresh_synced_tables
           pipeline_task:

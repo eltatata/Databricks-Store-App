@@ -101,23 +101,18 @@ def resolve_lakebase_target(project: str, branch: str, database: str) -> Lakebas
 
 
 def build_lakebase_scalar_query(target: LakebaseTarget) -> ScalarQuery:
-    import psycopg
+    import ssl
 
-    connection = psycopg.connect(
-        host=target.host,
+    import pg8000.native
+
+    connection = pg8000.native.Connection(
         user=target.user,
         password=target.password,
-        dbname=target.database,
-        sslmode="require",
-        autocommit=True,
+        host=target.host,
+        database=target.database,
+        ssl_context=ssl.create_default_context(),
     )
-
-    def query_scalar(statement: str) -> object:
-        with connection.cursor() as cursor:
-            cursor.execute(statement)
-            return cursor.fetchone()[0]
-
-    return query_scalar
+    return lambda statement: connection.run(statement)[0][0]
 
 
 def build_spark_scalar_query() -> ScalarQuery:
