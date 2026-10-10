@@ -23,7 +23,7 @@ interface BarYAxisLabelProps {
 function BarYAxisLabel({ label, y, bandHeight, isHovered }: BarYAxisLabelProps) {
   return (
     <div
-      className="absolute right-0 flex items-center justify-end pr-2"
+      className="absolute right-0 left-0 flex items-center justify-end pr-3"
       style={{
         top: y,
         height: bandHeight,
@@ -39,7 +39,7 @@ function BarYAxisLabel({ label, y, bandHeight, isHovered }: BarYAxisLabelProps) 
           opacity: 0.7,
           color: 'var(--chart-label, var(--color-zinc-500))',
         }}
-        style={{ maxWidth: 70 }}
+        style={{ maxWidth: '100%' }}
         transition={{ duration: 0.15 }}
       >
         {label}
