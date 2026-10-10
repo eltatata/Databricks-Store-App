@@ -1,5 +1,6 @@
 import { BookOpenText } from 'lucide-react';
-import { NavLink } from 'react-router';
+import { useEffect, useRef } from 'react';
+import { NavLink, useLocation } from 'react-router';
 import { SignalDot } from '@/components/common/SignalDot';
 import { FreshnessLabel } from '@/components/layout/FreshnessLabel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -7,9 +8,16 @@ import { API_DOCS_URL, NAVIGATION } from '@/configs/routes';
 import { cn } from '@/lib/utils';
 
 export function TopBar() {
+  const navRef = useRef<HTMLElement>(null);
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    navRef.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }, [pathname]);
+
   return (
     <header className="sticky top-0 z-30 border-b border-hairline bg-ground/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-6 px-4 sm:gap-10 sm:px-6 lg:px-10">
+      <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-5 px-4 sm:gap-10 sm:px-6 lg:px-10">
         <NavLink
           to="/"
           className="flex shrink-0 items-baseline gap-1.5 rounded-sm text-[15px] font-bold whitespace-nowrap font-wide"
@@ -18,7 +26,11 @@ export function TopBar() {
           <span aria-hidden className="size-1.5 rounded-full bg-signal" />
         </NavLink>
 
-        <nav aria-label="Main" className="flex h-full items-stretch gap-5 sm:gap-7">
+        <nav
+          ref={navRef}
+          aria-label="Main"
+          className="flex h-full min-w-0 items-stretch gap-5 overflow-x-auto [scrollbar-width:none] sm:gap-7"
+        >
           {NAVIGATION.map((item) => (
             <NavLink
               key={item.to}
@@ -26,7 +38,7 @@ export function TopBar() {
               end={item.end}
               className={({ isActive }) =>
                 cn(
-                  'relative flex items-center text-sm transition-colors duration-200',
+                  'relative flex shrink-0 items-center text-sm whitespace-nowrap transition-colors duration-200',
                   isActive ? 'text-ink' : 'text-ink-3 hover:text-ink-2'
                 )
               }
