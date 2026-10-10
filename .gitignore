@@ -27,6 +27,6 @@ Thumbs.db
 .vscode/
 
 .playwright-mcp/
-.impeccable/review/
-.impeccable/questions/
-.impeccable/mocks/decision/payload.json
+**/.impeccable/review/
+**/.impeccable/questions/
+**/.impeccable/mocks/decision/payload.json

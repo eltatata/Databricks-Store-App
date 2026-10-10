@@ -70,6 +70,23 @@ export default tseslint.config(
     ...tseslint.configs.disableTypeChecked,
   },
 
+  // Prettier config (must be last to override other formatting rules)
+  prettier,
+
+  // Custom rules
+  {
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+      '@typescript-eslint/no-explicit-any': 'warn',
+    },
+  },
+
   {
     files: ['client/src/components/ui/**/*.{ts,tsx}', 'client/src/components/charts/**/*.{ts,tsx}'],
     rules: {
@@ -85,23 +102,6 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/unbound-method': 'off',
       '@typescript-eslint/no-base-to-string': 'off',
-    },
-  },
-
-  // Prettier config (must be last to override other formatting rules)
-  prettier,
-
-  // Custom rules
-  {
-    rules: {
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        {
-          argsIgnorePattern: '^_',
-          varsIgnorePattern: '^_',
-        },
-      ],
-      '@typescript-eslint/no-explicit-any': 'warn',
     },
   }
 );
