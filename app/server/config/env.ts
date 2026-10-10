@@ -4,6 +4,7 @@ const environmentSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('production'),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
   DEV_USER_EMAIL: z.email().optional(),
+  AGENT_APPROVAL_TIMEOUT_MS: z.coerce.number().int().min(5_000).max(300_000).default(120_000),
   LAKEBASE_ENDPOINT: z.string().min(1),
   PGHOST: z.string().min(1),
   PGDATABASE: z.string().min(1),
