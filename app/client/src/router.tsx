@@ -25,6 +25,10 @@ export const router = createBrowserRouter([
         lazy: async () => ({ Component: (await import('@/pages/ExplorePage')).ExplorePage }),
       },
       {
+        path: ROUTES.assistant,
+        lazy: async () => ({ Component: (await import('@/pages/AssistantPage')).AssistantPage }),
+      },
+      {
         path: '*',
         lazy: async () => ({ Component: (await import('@/pages/NotFoundPage')).NotFoundPage }),
       },

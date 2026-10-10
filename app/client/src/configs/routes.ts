@@ -3,6 +3,7 @@ export const ROUTES = {
   products: '/products',
   productDetail: '/products/:productId',
   explore: '/explore',
+  assistant: '/assistant',
 } as const;
 
 export const productDetailPath = (productId: string) => `/products/${encodeURIComponent(productId)}`;
@@ -19,4 +20,5 @@ export const NAVIGATION: NavigationItem[] = [
   { label: 'Dashboard', to: ROUTES.dashboard, end: true },
   { label: 'Products', to: ROUTES.products, end: false },
   { label: 'Explore', to: ROUTES.explore, end: false },
+  { label: 'Assistant', to: ROUTES.assistant, end: false },
 ];
