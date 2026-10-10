@@ -11,6 +11,7 @@ SYNCED_TABLES = (
     "sales_by_state_month",
     "product_performance",
     "seller_performance",
+    "customer_activity_daily",
 )
 
 GMV_TABLES = (

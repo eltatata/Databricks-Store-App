@@ -73,3 +73,13 @@ resources:
       postgres_database: ${var.lakebase_database}
       create_database_objects_if_missing: true
       existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.status.pipeline_id}
+
+    customer_activity_daily:
+      synced_table_id: ${var.catalog}.serving.customer_activity_daily
+      source_table_full_name: ${var.catalog}.gold.customer_activity_daily
+      primary_key_columns: [order_date, customer_unique_id]
+      scheduling_policy: SNAPSHOT
+      branch: projects/${resources.postgres_projects.store_app.project_id}/branches/${var.lakebase_branch_id}
+      postgres_database: ${var.lakebase_database}
+      create_database_objects_if_missing: true
+      existing_pipeline_id: ${resources.postgres_synced_tables.kpi_daily.status.pipeline_id}
