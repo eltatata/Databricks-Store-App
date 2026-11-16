@@ -19,7 +19,7 @@ export function ChatSuggestions({ intro, suggestions, onPick }: ChatSuggestionsP
               {suggestion}
               <span
                 aria-hidden
-                className="size-1.5 rounded-full bg-signal opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                className="size-1.5 rounded-full bg-brand opacity-0 transition-opacity duration-200 group-hover:opacity-100"
               />
             </button>
           </li>

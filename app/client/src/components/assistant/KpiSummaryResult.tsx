@@ -21,7 +21,7 @@ export function KpiSummaryResult({ summary }: KpiSummaryResultProps) {
         {figures.map((figure) => (
           <div key={figure.label} className="flex flex-col gap-1">
             <dt className="text-xs text-ink-3">{figure.label}</dt>
-            <dd className="font-condensed text-2xl leading-none font-light tracking-[-0.03em] text-ink tabular-nums">
+            <dd className="text-2xl leading-none font-semibold tracking-[-0.03em] text-ink tabular-nums">
               {figure.value}
             </dd>
           </div>

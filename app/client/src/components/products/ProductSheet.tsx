@@ -65,7 +65,7 @@ export function ProductSheet({ state, onClose }: ProductSheetProps) {
     <Sheet open={state.mode !== 'closed'} onOpenChange={(open) => (open ? undefined : onClose())}>
       <SheetContent className="w-full overflow-y-auto border-hairline bg-raised sm:max-w-md">
         <SheetHeader className="px-6 pt-6">
-          <SheetTitle className="text-lg font-light tracking-[-0.01em]">{titleOf(state, product)}</SheetTitle>
+          <SheetTitle className="text-lg font-semibold tracking-[-0.01em]">{titleOf(state, product)}</SheetTitle>
           <SheetDescription className="text-ink-3">
             {state.mode === 'create'
               ? 'Products created here live in the app catalog and can be deleted permanently.'

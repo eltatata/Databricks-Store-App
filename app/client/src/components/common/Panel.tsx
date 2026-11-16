@@ -12,9 +12,9 @@ interface PanelProps {
 export function Panel({ title, caption, actions, className, children }: PanelProps) {
   return (
     <section aria-label={title} className={cn('flex min-w-0 flex-col', className)}>
-      <div className="mb-4 flex min-h-8 items-center justify-between gap-4">
+      <div className="mb-4 flex min-h-8 flex-wrap items-center justify-between gap-x-4 gap-y-3">
         <div className="flex items-baseline gap-3">
-          <h2 className="text-[13px] font-semibold font-wide">{title}</h2>
+          <h2 className="text-sm font-semibold tracking-[-0.01em]">{title}</h2>
           {caption ? <span className="text-xs text-ink-3">{caption}</span> : null}
         </div>
         {actions}

@@ -1,4 +1,4 @@
-import { SignalDot } from './SignalDot';
+import { AccentDot } from './AccentDot';
 import { cn } from '@/lib/utils';
 
 export interface SegmentOption<T extends string> {
@@ -11,7 +11,7 @@ interface SegmentedControlProps<T extends string> {
   options: SegmentOption<T>[];
   value: T | null;
   onChange: (value: T) => void;
-  signalId: string;
+  accentId: string;
   size?: 'sm' | 'md';
 }
 
@@ -20,7 +20,7 @@ export function SegmentedControl<T extends string>({
   options,
   value,
   onChange,
-  signalId,
+  accentId,
   size = 'md',
 }: SegmentedControlProps<T>) {
   return (
@@ -38,11 +38,11 @@ export function SegmentedControl<T extends string>({
               'relative flex items-center gap-2 rounded-full border whitespace-nowrap transition-[color,border-color,background-color] duration-200 active:scale-[0.97]',
               size === 'md' ? 'h-9 px-3.5 text-[13px]' : 'h-7 px-2.5 text-xs',
               selected
-                ? 'border-ink/80 text-ink'
+                ? 'border-brand bg-brand-soft text-ink'
                 : 'border-hairline text-ink-2 hover:border-hairline-strong hover:text-ink'
             )}
           >
-            {selected ? <SignalDot layoutId={signalId} className="size-1.5" /> : null}
+            {selected ? <AccentDot layoutId={accentId} className="size-1.5" /> : null}
             {option.label}
           </button>
         );

@@ -4,7 +4,7 @@ import type { DateRange as PickerRange } from 'react-day-picker';
 import { parseISO } from 'date-fns';
 import { useShallow } from 'zustand/react/shallow';
 import { SegmentedControl } from '@/components/common/SegmentedControl';
-import { SignalDot } from '@/components/common/SignalDot';
+import { AccentDot } from '@/components/common/AccentDot';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -59,7 +59,7 @@ export function DashboardFilters({ customLabel }: DashboardFiltersProps) {
         options={PRESET_OPTIONS}
         value={presetId === 'custom' ? null : presetId}
         onChange={selectPreset}
-        signalId="period-signal"
+        accentId="period-signal"
       />
       <Popover open={open} onOpenChange={openPicker}>
         <PopoverTrigger asChild>
@@ -69,12 +69,12 @@ export function DashboardFilters({ customLabel }: DashboardFiltersProps) {
             className={cn(
               'flex h-9 items-center gap-2 rounded-full border px-3.5 text-[13px] transition-colors duration-200 active:scale-[0.97]',
               isCustom
-                ? 'border-ink/80 text-ink'
+                ? 'border-brand bg-brand-soft text-ink'
                 : 'border-hairline text-ink-2 hover:border-hairline-strong hover:text-ink'
             )}
           >
             {isCustom ? (
-              <SignalDot layoutId="period-signal" className="size-1.5" />
+              <AccentDot layoutId="period-signal" className="size-1.5" />
             ) : (
               <CalendarRange className="size-3.5" strokeWidth={1.75} />
             )}

@@ -1,7 +1,7 @@
 import { BookOpenText } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router';
-import { SignalDot } from '@/components/common/SignalDot';
+import { AccentDot } from '@/components/common/AccentDot';
 import { FreshnessLabel } from '@/components/layout/FreshnessLabel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { API_DOCS_URL, NAVIGATION } from '@/configs/routes';
@@ -20,10 +20,11 @@ export function TopBar() {
       <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-5 px-4 sm:gap-10 sm:px-6 lg:px-10">
         <NavLink
           to="/"
-          className="flex shrink-0 items-baseline gap-1.5 rounded-sm text-[15px] font-bold whitespace-nowrap font-wide"
+          aria-label="Olist Store home"
+          className="flex shrink-0 items-baseline gap-1 rounded-sm whitespace-nowrap"
         >
-          Olist Store
-          <span aria-hidden className="size-1.5 rounded-full bg-signal" />
+          <span className="text-[22px] leading-none font-extrabold tracking-[-0.05em] text-brand">olist</span>
+          <span className="text-sm font-medium text-ink-2">store</span>
         </NavLink>
 
         <nav
@@ -46,7 +47,7 @@ export function TopBar() {
               {({ isActive }) => (
                 <>
                   {item.label}
-                  {isActive ? <SignalDot layoutId="nav-signal" className="absolute -bottom-px left-1/2 -ml-1" /> : null}
+                  {isActive ? <AccentDot layoutId="nav-signal" className="absolute -bottom-px left-1/2 -ml-1" /> : null}
                 </>
               )}
             </NavLink>

@@ -143,7 +143,7 @@ export function ApprovalCard({ tool, state, onDecide }: ApprovalCardProps) {
     >
       <header className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <h3 id={titleId} className="font-wide text-[13px] font-semibold text-ink">
+          <h3 id={titleId} className="text-[13px] font-semibold text-ink">
             {copy.title}
           </h3>
           <p role="status" className="text-xs text-ink-3">
@@ -158,7 +158,7 @@ export function ApprovalCard({ tool, state, onDecide }: ApprovalCardProps) {
               animate={{ scale: 1 }}
               exit={{ scale: 0, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 520, damping: 38, mass: 0.6 }}
-              className="mt-1 size-2 shrink-0 rounded-full bg-signal"
+              className="mt-1 size-2 shrink-0 rounded-full bg-brand"
             />
           ) : null}
         </AnimatePresence>

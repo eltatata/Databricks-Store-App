@@ -1,6 +1,6 @@
 import NumberFlow, { type Format } from '@number-flow/react';
 import { ArrowDownRight, ArrowUpRight, Minus } from 'lucide-react';
-import { SignalDot } from '@/components/common/SignalDot';
+import { AccentDot } from '@/components/common/AccentDot';
 import { cn } from '@/lib/utils';
 import type { KpiFormat, KpiReading } from '@/types/dashboard.types';
 import { formatSignedPercent, formatSignedPoints } from '@/utils/format';
@@ -55,10 +55,10 @@ export function KpiFigure({ reading, isLargestMove, comparisonLabel, variant }: 
       <dd className="mt-2">
         <span
           className={cn(
-            'relative inline-flex items-start gap-1.5 font-condensed tracking-[-0.03em] text-ink',
+            'relative inline-flex items-start gap-1.5 tracking-[-0.04em] text-ink',
             variant === 'hero'
-              ? 'text-[64px] leading-[0.95] font-extralight lg:text-[76px]'
-              : 'text-[34px] leading-none font-light'
+              ? 'text-[56px] leading-[0.95] font-semibold lg:text-[68px]'
+              : 'text-[32px] leading-none font-semibold'
           )}
         >
           {value === null ? (
@@ -73,14 +73,14 @@ export function KpiFigure({ reading, isLargestMove, comparisonLabel, variant }: 
             />
           )}
           {isLargestMove ? (
-            <SignalDot layoutId="kpi-signal" className={variant === 'hero' ? 'mt-3 size-3' : 'mt-1 size-2.5'} />
+            <AccentDot layoutId="kpi-signal" className={variant === 'hero' ? 'mt-3 size-3' : 'mt-1 size-2.5'} />
           ) : null}
         </span>
       </dd>
       <dd className="mt-2.5 flex min-h-4 items-center gap-1.5 text-xs">
         {changeText && change !== null ? (
           <>
-            <span className={cn('inline-flex items-center gap-0.5', isLargestMove ? 'text-signal' : 'text-ink-2')}>
+            <span className={cn('inline-flex items-center gap-0.5', isLargestMove ? 'text-brand' : 'text-ink-2')}>
               <DirectionIcon change={change} />
               {changeText}
             </span>

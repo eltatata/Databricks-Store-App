@@ -66,7 +66,7 @@ export function ProductActionDialog({ action, onClose, onDeleted }: ProductActio
     <AlertDialog open={action !== null} onOpenChange={(open) => (open || isPending ? undefined : onClose())}>
       <AlertDialogContent className="border-hairline bg-raised">
         <AlertDialogHeader>
-          <AlertDialogTitle className="font-light">{copy.title}</AlertDialogTitle>
+          <AlertDialogTitle className="font-semibold">{copy.title}</AlertDialogTitle>
           <AlertDialogDescription>
             <span className="text-ink">{action?.product.displayName}</span>. {copy.description}
           </AlertDialogDescription>
@@ -75,7 +75,7 @@ export function ProductActionDialog({ action, onClose, onDeleted }: ProductActio
           <AlertDialogCancel disabled={isPending}>Keep product</AlertDialogCancel>
           <AlertDialogAction
             disabled={isPending}
-            className={action?.kind === 'delete' ? 'bg-signal text-ink hover:bg-signal/90' : undefined}
+            className={action?.kind === 'delete' ? 'bg-signal text-white hover:bg-signal/90' : undefined}
             onClick={(event) => {
               event.preventDefault();
               void confirm();
