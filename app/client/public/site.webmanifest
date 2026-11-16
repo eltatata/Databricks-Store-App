@@ -1,6 +1,6 @@
 {
-  "name": "store-app",
-  "short_name": "store-app",
+  "name": "Olist Store",
+  "short_name": "Olist Store",
   "icons": [
     {
       "src": "/favicon-192x192.png",
