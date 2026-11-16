@@ -1,6 +1,6 @@
 ---
 name: Olist Store
-description: Light operator console in the Olist brand for KPIs, catalog administration and an agentic assistant
+description: Operator console in the Olist brand, light and dark, for KPIs, catalog administration and an agentic assistant
 colors:
   ground: '#ffffff'
   raised: '#f5f7fb'
@@ -146,7 +146,32 @@ Taken from olist.com (`--rebrand-primary-color`, `--rebrand-secondary-color` and
 
 **The Red Means Wrong Rule.** Red never decorates and never means "selected". It appears only when something failed or is about to be removed.
 
-**The Blue Ramp Rule.** Sequential data (the state map) uses `--chart-scale-01` to `--chart-scale-05`, light to deep blue. A darker state always means more.
+**The Blue Ramp Rule.** Sequential data (the state map) uses `--chart-scale-01` to `--chart-scale-05`. In light mode the ramp runs from light to deep blue; in dark mode it runs from navy to bright blue. The stronger color always means more.
+
+**The Token Rule.** Components never use literal colors (hex, `rgb()`, `text-white`, `bg-black/50`, Tailwind palette names such as `zinc-900`). They use the semantic utilities generated from the tokens (`bg-background`, `text-ink-2`, `bg-overlay`, `text-destructive-foreground`, `var(--chart-*)`). Literal values live only in `client/src/index.css`.
+
+### Dark mode (D21)
+
+Follows the shadcn dark-mode pattern: the tokens are redefined under `.dark`, Tailwind's `dark:` variant is `@custom-variant dark (&:is(.dark *))`, and a `light` or `dark` class sits on `<html>`. The user picks Light, Dark or System from the toggle in the top bar; the choice persists in `localStorage` (`olist-store-theme`) through the Zustand `useUiStore`, and an inline script in `index.html` applies the class before first paint.
+
+| Token | Light | Dark |
+|---|---|---|
+| ground | #ffffff | #070e24 |
+| raised | #f5f7fb | #0d1632 |
+| raised-2 | #edf1f7 | #141e3d |
+| hairline | #e5e8ed | #1c284a |
+| hairline-strong | #c9d0dc | #2a3a63 |
+| ink | #001647 | #edf1fa |
+| ink-2 | #4d5c7e | #aab5cd |
+| ink-3 | #696d8c | #8a96b2 |
+| brand | #0a4ee4 | #5b8cf5 (navy text on top) |
+| brand-deep | #0a1f9c | #a9c3ff |
+| signal | #d92d20 | #f97066 (navy text on top) |
+| positive | #0e8a5f | #34c98a |
+| chart tooltip | navy panel, white text | off-white panel, navy text |
+| chart-scale | #e8effd → #0a1f9c | #13224a → #a9c3ff |
+
+Every text pair meets WCAG AA (4.5:1) on its dark surface.
 
 ## Typography
 
