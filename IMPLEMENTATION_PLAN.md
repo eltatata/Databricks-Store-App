@@ -30,6 +30,9 @@
 | D15 | Resource management (P1, approved 2026-10-09) | **The `data/` bundle also manages** the Lakebase project (`postgres_projects`, Beta), the synced tables (`postgres_synced_tables`, Beta, sharing **one** sync pipeline via `existing_pipeline_id`) and the Genie space (`genie_spaces` with `file_path`). `platform/` keeps only what DABs cannot express. | CLI v1.20.0 bundle schema supports these resources (`docs/ENVIRONMENT_AUDIT.md`). One deploy path, and a shared sync pipeline removes the "1 active pipeline" risk. Fallback if a Beta resource fails: CLI scripts. **Amendment (Phase 1):** the catalog is **not** bundle-managed. On Free Edition (Default Storage) the catalogs API used by DABs fails with `INVALID_STATE: Metastore storage root URL does not exist`, while SQL `CREATE CATALOG` works. The catalog is created by `scripts/catalog-create.sh` from `platform/workspace/catalog.sql`. **Amendment (Phase 4):** the Lakebase project, synced tables, Genie space and Lakebase refresh job live in a third bundle, `serving/`, deployed **after** the data job has built Gold. Synced tables and the Genie space need their Gold sources to exist, so keeping them in `data/` would break the first deploy on a fresh workspace. |
 | D16 | Agent model (P2, approved 2026-10-09) | Primary `databricks-qwen3-next-80b-a3b-instruct`, fallback `databricks-llama-4-maverick`, selected via `AGENT_SERVING_ENDPOINT`. Bound as a `serving_endpoint` resource (`CAN_QUERY`). | Both pass tool-calling and streaming tests and return plain string content. No Claude/GPT on this workspace. Unity Gateway not enforced. Re-validated inside AppKit `agents()` in Phase 8. |
 | D17 | Local tooling (P3, approved 2026-10-09) | Dataset downloaded **manually** by the user into `.local/olist/` (no Kaggle CLI). `uv` installed (ruff runs through it). **No `psql`**: owner-side Lakebase SQL runs through a small TS runner (`platform/lakebase/run-sql.ts`, using `pg` + `databricks postgres generate-database-credential`). No `shellcheck`. | User decision. |
+| D18 | Visual identity (approved 2026-11-16) | **Olist brand, light theme only.** Palette from olist.com: primary blue `#0A4EE4`, deep blue `#0A1F9C`, navy ink `#001647`, teal `#8DD7D7`, amber `#F0A028`, off-white `#F9F8F4`. Typeface **Plus Jakarta Sans** (OFL, `@fontsource-variable/plus-jakarta-sans`). Tokens live in `client/src/index.css` and `app/DESIGN.md`; shadcn and bklit stay the only UI and chart libraries (D10). | User decision: the app should look like the brand the dataset comes from. Soleil (also on olist.com) is a commercial font and is not bundled. |
+| D19 | Chat surface (approved 2026-11-16) | **One chat only: the Assistant page** (supervisor agent with Genie as its `ask_analytics` sub-agent plus the Lakebase tools). The Explore page and the client use of `useGenieChat` are removed; `/explore` redirects to `/assistant`. Genie results render inside the assistant as allowlisted generative UI (table, bklit bar/area chart, state map). The `genie()` plugin stays on the server because the agent uses its toolkit. | User decision: the product is an agentic system, so two chats duplicated the same capability. |
+| D20 | Brazil state map (approved 2026-11-16, §13 part A) | **bklit `choropleth-chart`** over a bundled Brazil-states GeoJSON built from Natural Earth admin-1 (public domain), keyed by the two-letter UF. Shown on the dashboard (metric: GMV, orders, average order value, freight) and in the assistant: a new read tool `get_sales_by_state` (Lakebase `serving.sales_by_state_month`) and Genie results with a state column render as a map. Late-delivery rate is **not** mapped: it cannot be aggregated exactly across months from that table. §13 part B (delivery distance) is **rejected** for now. | User decision: map with the data already available, no new ingestion. |
 
 ### Rejected alternatives (do not reintroduce without a new decision)
 - **Agent Bricks Supervisor Agent:** not available on Free Edition (dependencies unsupported), and it cannot call the app's in-process CRUD services.
@@ -437,7 +440,7 @@ Kaggle CSVs ─(local)─► UC Volume ─► SDP pipeline: bronze ST ─► sil
 │      tools: ask_analytics (Genie) │ kpi/product read tools │ create/update/deactivate_product         │
 │             └── all non-Genie tools call the SAME services as the controllers                         │
 │ React client (feature-organized): shadcn/ui + bklit charts                                            │
-│   Dashboard · Products (CRUD) · Assistant (useAgentChat) · Explore (useGenieChat)                     │
+│   Dashboard · Products (CRUD) · Assistant (useAgentChat; Explore removed by D19)                      │
 └───────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -612,7 +615,7 @@ server/
   - Theme through `--chart-*` CSS variables / `chartCssVars`, never hardcoded colors.
   - Check current docs at ui.bklit.com for the exact registry names and import paths.
 - `@databricks/appkit-ui` is used **only for plugin hooks** (`useAgentChat`, `useGenieChat`). Their visual rendering is built with shadcn and bklit for a consistent design system. **Amendment (Phase 7):** AppKit-UI's `styles.css` is not imported; the theme lives in `client/src/index.css` and `app/DESIGN.md`. `components.json` sits in `app/` because the shadcn CLI needs `package.json` beside it; generated files still land in `client/src/components/{ui,charts}`. Genie helpers `transformGenieData` and `inferChartType` are also used.
-  - `<GenieChat>` may be used only as a temporary fallback if `useGenieChat` blocks progress.
+  - `<GenieChat>` may be used only as a temporary fallback if `useGenieChat` blocks progress. **Amendment (D19):** `useGenieChat` is no longer used; Genie reaches the user only through the assistant.
   - Check that AppKit-UI's Tailwind setup and shadcn's `components.json` coexist; resolve conflicts in Phase 6.
 - **Global client state: Zustand** (D12).
   - One store per concern in `states/` (e.g. `useUiStore` for sidebar/theme, `useDashboardFiltersStore` for date range and category, `useAssistantStore` for the active thread and pending approvals).
@@ -652,7 +655,7 @@ src/
 │   ├── dashboard/                 # useDashboardSummary, useSalesTrend, useCategoryBreakdown, useStateBreakdown, useTopProducts
 │   ├── products/                  # useProducts, useProduct, useCreateProduct, useUpdateProduct, useDeactivateProduct
 │   ├── assistant/                 # useAssistant (wraps useAgentChat + approvals)
-│   └── explore/                   # useExplore (wraps useGenieChat)
+│   └── explore/                   # removed by D19
 ├── components/
 │   ├── ui/                        # shadcn primitives (generated)
 │   ├── charts/                    # bklit charts (generated)
@@ -662,13 +665,13 @@ src/
 │   │                              # TopProductsTable, TopSellersTable, DashboardFilters, FreshnessBadge
 │   ├── products/                  # ProductsTable, ProductFilters, ProductForm, ProductFormDialog, DeactivateProductDialog
 │   ├── assistant/                 # ChatThread, ChatMessage, ChatInput, ToolActivity, ApprovalCard, ResultTable, ResultChart
-│   └── explore/                   # GenieThread, GenieResult (table + bklit chart)
+│   └── explore/                   # removed by D19; Genie results live in assistant/AnalyticsResult*
 ├── pages/                         # thin: compose feature components + hooks; no fetch logic
 │   ├── DashboardPage.tsx
 │   ├── ProductsPage.tsx
 │   ├── ProductDetailPage.tsx
 │   ├── AssistantPage.tsx
-│   ├── ExplorePage.tsx
+│   ├── ExplorePage.tsx            # removed by D19 (/explore redirects to /assistant)
 │   └── NotFoundPage.tsx
 ├── states/                        # Zustand stores: ui.store.ts, dashboard-filters.store.ts, assistant.store.ts
 ├── lib/                           # cn(), shadcn helpers
@@ -689,7 +692,7 @@ src/
   - Built on `useAgentChat`. Shows tool-activity summaries and an `ApprovalCard` for each pending mutation (approve/deny).
   - Results render only through allowlisted components (`ResultTable`, `ResultChart` with a typed spec → bklit). No `dangerouslySetInnerHTML`, and no model-generated HTML, JSX or SQL rendering.
   - Message text renders as plain or sanitized markdown.
-- **Explore:** `useGenieChat` with the shadcn UI. Genie query results render as a table, plus an optional bklit chart when the result shape matches an allowlisted spec.
+- **Explore:** removed by D19. Genie results render inside the assistant (table, bklit chart or state map).
 - Accessibility: labels, keyboard focus, visible focus rings, and color contrast that does not rely on color alone for chart meaning.
 
 ---
@@ -698,13 +701,14 @@ src/
 
 ## 7.1 Components
 - **Supervisor:** an AppKit code agent at `server/agents/supervisor/agent.ts` (`createAgent`, `@databricks/appkit/beta`). The model backend is `databricks-qwen3-next-80b-a3b-instruct` (fallback `databricks-llama-4-maverick`), configurable through `AGENT_SERVING_ENDPOINT` (D16). It is bound as a `serving_endpoint` resource with `CAN_QUERY`, because Unity Gateway is not enforced on this workspace.
-- **Genie Agent:** curated over `gold.*` (§7.4), exposed to the supervisor through the genie plugin toolkit (verify the exact toolkit name in the AppKit agents docs) and to users directly through the Explore page (`useGenieChat`).
+- **Genie Agent:** curated over `gold.*` (§7.4), exposed to the supervisor through the genie plugin toolkit (verify the exact toolkit name in the AppKit agents docs) and to users directly through the Explore page (`useGenieChat`). **Amendment (D19):** users reach Genie only through the assistant.
 - **Tools** (Zod schemas, explicit `effect`):
 
 | Tool | Effect | Calls |
 |------|--------|-------|
 | `ask_analytics` (Genie) | read | Genie Agent conversation (UC Gold) |
 | `get_kpi_summary(from?, to?)` | read | `dashboardService.getSummary` (Lakebase `serving`) |
+| `get_sales_by_state(from?, to?)` (D20) | read | `dashboardService.getStateBreakdown` (Lakebase `serving`); rendered as a state map |
 | `search_products(query?, category?, limit≤20)` | read | `productsService.listProducts` |
 | `get_product(product_id)` | read | `productsService.getProduct` |
 | `create_product({display_name, category_en, …})` | write → **HITL** | `productsService.createProduct` |
@@ -804,7 +808,7 @@ src/
 2. Gold and Lakebase reconciliations pass.
 3. Dashboard loads with the freshness badge.
 4. Product CRUD from the UI; check `audit_log`.
-5. Explore page (`useGenieChat`): a supported question answered and verified against SQL.
+5. Explore page (`useGenieChat`): a supported question answered and verified against SQL. Since D19, the same check runs through the assistant's `ask_analytics`.
 6. Assistant: "create a product …" → approval prompt → approve → row exists. Deny → no row.
 7. Assistant: "deactivate product X" → approval → soft delete.
 8. Re-run the job → no duplicate growth; `app.products` untouched by the sync.
@@ -863,6 +867,17 @@ Commit per phase once git is initialized (it is **not** yet a git repo; `git ini
 - **MCP adapter:** an `mcp-store-tools` app exposing the same `products.service` functions, usable from Claude Code / AI Playground.
 - UC Metric View over `fact_sales` as Genie's governed semantic layer.
 - Second CRUD entity (`sellers`).
+- **Geography (proposed 2026-11-07). Part A approved and implemented as D20; part B not approved.** Two independent parts. Each needs a new §0 decision before work starts.
+  - **A. Brazil state map (no new data).** Add a dashboard map that colors each state by GMV, orders or late-delivery rate for the selected period. Source: `serving.sales_by_state_month`, which is already synced. Use bklit's `@bklit/choropleth-chart`, so D10 still holds. It takes a GeoJSON `FeatureCollection` and colors regions per feature (`getFeatureColor`). Work needed:
+    - Find a Brazil-states GeoJSON with a compatible license and bundle it in the client. Map its state code to `customer_state` (two-letter UF).
+    - Add a dashboard endpoint for values by state over a date range.
+    - Add the map component.
+  - **B. Delivery distance (needs geolocation).** Ingest `olist_geolocation_dataset.csv`, skipped in v1:
+    - Add `bronze.geolocation_raw` and a `geolocation` landing entity in `dataset-upload.sh`, `ingest_check.py` and `reconcile_gold.py`.
+    - In Silver, collapse it to one row per zip prefix: average lat/lng, about 19k prefixes from about 1M rows, with normalized city names.
+    - Join customer and seller zip prefixes, then add a Haversine `distance_km` to `fact_orders`. For an order with several sellers, use the max distance.
+    - Expose it in KPIs: late-delivery rate and freight by distance band. Add the column to the Genie space instructions.
+    - No map is needed for this part. Point or lat/lng markers are not documented for the bklit choropleth (check `bklit.com/docs/utility/markers`), so a city- or zip-level map stays out of scope until that is confirmed.
 
 ---
 
