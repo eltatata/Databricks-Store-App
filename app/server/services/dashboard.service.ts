@@ -58,6 +58,7 @@ export async function getStateBreakdown(range: DateRange): Promise<StateBreakdow
   return rows.map((row) => ({
     ...row,
     gmv: roundTo(row.gmv, MONEY_DECIMALS),
+    freight: roundTo(row.freight, MONEY_DECIMALS),
     averageOrderValue: safeRatio(row.gmv, row.orders, MONEY_DECIMALS),
   }));
 }

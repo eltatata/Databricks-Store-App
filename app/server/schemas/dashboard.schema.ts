@@ -65,6 +65,7 @@ export const stateBreakdownResponseSchema = z
         customerState: z.string(),
         gmv: z.number(),
         orders: z.number().int(),
+        freight: z.number(),
         averageOrderValue: nullableNumber,
       })
     ),

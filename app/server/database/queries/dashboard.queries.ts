@@ -131,7 +131,12 @@ export async function sumSalesByState(range: DateRange): Promise<StateBreakdownR
   const gmv = sumAsNumber(salesByStateMonth.gmv);
   const rows = await runQuery(() =>
     getDb()
-      .select({ customerState: salesByStateMonth.customerState, gmv, orders: sumAsNumber(salesByStateMonth.orders) })
+      .select({
+        customerState: salesByStateMonth.customerState,
+        gmv,
+        orders: sumAsNumber(salesByStateMonth.orders),
+        freight: sumAsNumber(salesByStateMonth.freight),
+      })
       .from(salesByStateMonth)
       .where(monthRangeCondition(salesByStateMonth.orderMonth, range))
       .groupBy(salesByStateMonth.customerState)
