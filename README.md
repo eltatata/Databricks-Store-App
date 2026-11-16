@@ -5,21 +5,21 @@ A learning proof of concept on Databricks Free Edition that takes a real e-comme
 - **Data:** the Olist public dataset goes through a Medallion pipeline (Bronze → Silver → Gold) in Unity Catalog, built with Lakeflow Spark Declarative Pipelines.
 - **Serving:** Gold tables sync into Lakebase Postgres. A Genie space answers natural-language questions over the same Gold tables.
 - **App:** `store-app` is one AppKit app (TypeScript, Express and React) with:
-  - a KPI dashboard and product CRUD, both read from Lakebase only;
-  - Explore, which talks to Genie;
-  - an Assistant, a supervisor agent with Genie and catalog tools; every change it proposes waits for human approval.
+  - a KPI dashboard with a Brazil state map, and product CRUD, both read from Lakebase only;
+  - one chat, the Assistant: a supervisor agent with Genie as its analytics sub-agent plus Lakebase tools, answering with figures, charts and maps; every change it proposes waits for human approval.
+  - the Olist brand look (light theme, Olist blue, Plus Jakarta Sans) on shadcn/ui and bklit charts.
 
 ```text
 CSV ─▶ UC Volume ─▶ Bronze ─▶ Silver ─▶ Gold ──┬─▶ Lakebase serving.* ─▶ Dashboard, Products ┐
                                                │   Lakebase app.products ◀─▶ CRUD, agent tools ├─ store-app
-                                               └─▶ Genie space ─▶ Explore, ask_analytics ───────┘
+                                               └─▶ Genie space ─▶ ask_analytics (Assistant) ────┘
 ```
 
 ## Documentation
 
 | Document | Content |
 |----------|---------|
-| [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) | The contract: locked decisions D1–D17, phases and exit gates, with amendments recorded in place |
+| [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) | The contract: locked decisions D1–D20, phases and exit gates, with amendments recorded in place |
 | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | Rebuild from a clean clone, refresh data, restart after the 24 h auto-stop, local development, cost |
 | [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md) | Symptoms, causes and fixes found while building |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | As-built state of every component |

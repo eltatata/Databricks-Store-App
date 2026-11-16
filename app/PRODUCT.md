@@ -16,21 +16,20 @@ Olist Store is the operator's single place to read KPIs and manage products. Eve
 
 ## Positioning
 
-The dashboard is not a BI embed: KPIs are precomputed in Gold and served from Postgres, so they match Genie and SQL exactly. Explore lets the operator ask questions in plain language against the same Gold tables through a Genie space. The Assistant combines both: it reads KPIs and products from Lakebase, delegates analysis to Genie, and drafts catalog changes that run only after the operator approves them.
+The dashboard is not a BI embed: KPIs are precomputed in Gold and served from Postgres, so they match Genie and SQL exactly. The Assistant is the only chat: it reads KPIs, state sales and products from Lakebase, delegates analysis to Genie over the same Gold tables, answers with figures, charts and maps, and drafts catalog changes that run only after the operator approves them.
 
 ## Operating Context
 
-- Desktop first, used during working hours. The app opens on the Dashboard; Products and Explore are secondary routes.
+- Desktop first, used during working hours. The app opens on the Dashboard; Products and the Assistant are secondary routes.
 - Historical dataset: Olist orders from 2016-09 to 2018-10. A "data as of" freshness badge shows when Gold was last synced.
 - Currency is Brazilian real (R$). States and categories come from the dataset as published (Portuguese category names translated to English slugs).
 - No user roles: every signed-in workspace user has the same access. Identity comes from Databricks Apps.
 
 ## Capabilities and Constraints
 
-- Dashboard: six KPIs (GMV, orders, AOV, distinct customers, average review score, late-delivery rate) for any date range, a sales trend by day or month, and breakdowns by category and state, plus top products, top sellers and freshness.
+- Dashboard: six KPIs (GMV, orders, AOV, distinct customers, average review score, late-delivery rate) for any date range, a sales trend by day or month, breakdowns by category, a Brazil state map (GMV, orders, average order value, freight) with a top-states ranking, plus top products, top sellers and freshness.
 - Products: paginated, searchable and filterable list; create, edit (optimistic concurrency with a version number), soft delete, and permanent delete. Writes are audited with the operator's email.
-- Explore: natural-language questions to the Genie space, answered with text, SQL-backed tables and an optional chart.
-- Assistant: a supervisor agent that answers KPI and product questions, routes analysis to Genie, and proposes create, update or deactivate actions that wait for an approval card. Writes from the assistant are audited with the operator's email and the `agent` channel.
+- Assistant: a supervisor agent that answers KPI, state and product questions, routes analysis to Genie (results as a table, bklit chart or state map, with the SQL Genie ran), and proposes create, update or deactivate actions that wait for an approval card. Writes from the assistant are audited with the operator's email and the `agent` channel.
 - KPIs are never recomputed in the browser.
 - Built on Databricks Free Edition: one app, cold starts after the 24 h auto-stop are possible.
 
@@ -38,7 +37,7 @@ The dashboard is not a BI embed: KPIs are precomputed in Gold and served from Po
 
 - Name: Olist Store.
 - Interface copy is in English.
-- The user asked for a dark, minimalist theme that does not feel simplistic, with micro-animations and a good feel, optimized for data visualization and administration.
+- The look follows the Olist brand the dataset comes from (D18): light theme, Olist blue, navy ink and Plus Jakarta Sans, with micro-animations, optimized for data visualization and administration. It uses typeset text, not Olist logo artwork.
 
 ## Evidence on Hand
 
@@ -53,4 +52,4 @@ Real data only: the Olist public dataset (CC BY-NC-SA 4.0), about 99k orders, 33
 
 ## Accessibility & Inclusion
 
-WCAG AA contrast on the dark theme, visible keyboard focus, labelled controls, and charts that never rely on color alone.
+WCAG AA contrast on the light theme, visible keyboard focus, labelled controls, and charts that never rely on color alone (the state map has a numeric legend, tooltips and a ranking or table view).
