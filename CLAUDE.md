@@ -3,14 +3,14 @@
 `IMPLEMENTATION_PLAN.md` is the contract for this project. Read the sections relevant to the current phase before acting. Locked decisions are in §0 (D1–D17). Do not reopen them without the user's approval, and record any new decision there.
 
 ## Status
-- Current block: **H — dark mode and Tailwind 4.3.5 (D21)**, implemented locally, not deployed. Previous block F, done:
+- Current block: **H — dark mode and Tailwind 4.3.5 (D21)**, done and deployed on 2026-11-16. Previous block F, done:
   - Agent deployed and verified with real approvals.
   - E2E acceptance 9/9.
   - Runbooks (`docs/DEPLOYMENT.md`, `docs/TROUBLESHOOTING.md`) and `docs/FINAL_REPORT.md` written.
   - Inactive-product edit fix (`0247911`) deployed and verified on 2026-10-10.
   - Inactive-product search and edit fixes (`13e2f79`, `77a2e8b`, `2b7b707`) deployed and verified on the deployed app on 2026-10-10. Nothing pending in the plan.
   - Profile: `local-dev` (confirmed by the user).
-  - Block H (2026-11-16): dark mode (Light/Dark/System), Tailwind 4.3.5 via `@tailwindcss/vite` only, token-only colors, shadcn `Table` in `ApprovalCard` (D21). Verified locally: typecheck, unit tests 109/109, build, smoke 6/6 against `pnpm run dev`. Not deployed.
+  - Block H (2026-11-16): dark mode (Light/Dark/System), Tailwind 4.3.5 via `@tailwindcss/vite` only, token-only colors, shadcn `Table` in `ApprovalCard` (D21). Verified: `databricks apps validate`, unit tests 109/109, smoke 6/6 locally and on the deployed app, dark tokens and theme script served by the deployed app.
   - Block G (2026-11-16), done and deployed: Olist brand theme (D18), single assistant chat (D19), Brazil state map on the dashboard and in the assistant (D20). Verified: unit tests, evals 15/15, deployed smoke 6/6 and agent map checks (`docs/FINAL_REPORT.md` §9). Delivery distance (§13 part B) not approved.
 - Execution blocks: A = Phase 0 · B = 1–3 · C = 4–5 · D = 6 · E = 7 · F = 8–9.
 - Stop at the end of each block and report against the exit gates (§10) and the final report (§11). Wait for the user before starting the next block.
