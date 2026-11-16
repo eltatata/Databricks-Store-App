@@ -3,7 +3,7 @@ import { CategoryBreakdownChart } from '@/components/dashboard/CategoryBreakdown
 import { DashboardFilters } from '@/components/dashboard/DashboardFilters';
 import { KpiStrip } from '@/components/dashboard/KpiStrip';
 import { SalesTrendChart } from '@/components/dashboard/SalesTrendChart';
-import { StateBreakdownChart } from '@/components/dashboard/StateBreakdownChart';
+import { StateSalesMap } from '@/components/dashboard/StateSalesMap';
 import { TopProductsTable } from '@/components/dashboard/TopProductsTable';
 import { TopSellersTable } from '@/components/dashboard/TopSellersTable';
 import { useDashboardPeriod } from '@/hooks/dashboard/useDashboardPeriod';
@@ -37,8 +37,11 @@ export function DashboardPage() {
         <CategoryBreakdownChart range={period.range} />
       </div>
 
-      <div className="mt-12 grid gap-x-12 gap-y-12 border-t border-hairline pt-8 xl:grid-cols-[1fr_1.4fr_1.4fr]">
-        <StateBreakdownChart range={period.range} />
+      <div className="mt-12 border-t border-hairline pt-8">
+        <StateSalesMap range={period.range} />
+      </div>
+
+      <div className="mt-12 grid gap-x-12 gap-y-12 border-t border-hairline pt-8 xl:grid-cols-2">
         <TopProductsTable />
         <TopSellersTable />
       </div>
