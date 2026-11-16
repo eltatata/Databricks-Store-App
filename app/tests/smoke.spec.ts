@@ -24,7 +24,7 @@ test('dashboard draws the Brazil state map with a metric switch', async ({ page 
   const states = page.getByRole('region', { name: 'Customer states' });
   await expect(states.getByRole('radiogroup', { name: 'Map metric' })).toBeVisible();
   await expect(states.locator('figure svg path')).toHaveCount(27);
-  await expect(states.getByText(/by state, darker is higher/)).toBeVisible();
+  await expect(states.getByText(/by state, stronger color is higher/)).toBeVisible();
 });
 
 test('products page lists the catalog', async ({ page }) => {

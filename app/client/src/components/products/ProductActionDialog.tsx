@@ -75,7 +75,11 @@ export function ProductActionDialog({ action, onClose, onDeleted }: ProductActio
           <AlertDialogCancel disabled={isPending}>Keep product</AlertDialogCancel>
           <AlertDialogAction
             disabled={isPending}
-            className={action?.kind === 'delete' ? 'bg-signal text-white hover:bg-signal/90' : undefined}
+            className={
+              action?.kind === 'delete'
+                ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
+                : undefined
+            }
             onClick={(event) => {
               event.preventDefault();
               void confirm();

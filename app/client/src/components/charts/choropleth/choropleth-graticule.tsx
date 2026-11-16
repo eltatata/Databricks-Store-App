@@ -6,7 +6,7 @@ import { useChoroplethStable } from './choropleth-context';
 import { graticulePath } from './choropleth-projection';
 
 export interface ChoroplethGraticuleProps {
-  /** Stroke color for graticule lines. Default: rgba(255,255,255,0.1) */
+  /** Stroke color for graticule lines. Default: var(--chart-grid) */
   stroke?: string;
   /** Stroke width for graticule lines. Default: 0.5 */
   strokeWidth?: number;
@@ -17,7 +17,7 @@ export interface ChoroplethGraticuleProps {
 }
 
 export const ChoroplethGraticule = memo(function ChoroplethGraticule({
-  stroke = 'rgba(255,255,255,0.1)',
+  stroke = 'var(--chart-grid)',
   strokeWidth = 0.5,
   step,
   hideOnFocus = true,

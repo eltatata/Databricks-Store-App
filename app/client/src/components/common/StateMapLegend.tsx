@@ -11,7 +11,7 @@ export function StateMapLegend({ steps, valueLabel, formatValue }: StateMapLegen
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-xs text-ink-3">{valueLabel} by state, darker is higher</p>
+      <p className="text-xs text-ink-3">{valueLabel} by state, stronger color is higher</p>
       <ol className="grid gap-0.5" style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}>
         {steps.map((step, index) => (
           <li key={step.color} className="flex flex-col gap-1.5">

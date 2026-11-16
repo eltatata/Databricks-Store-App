@@ -81,6 +81,42 @@
   --chart-marker-badge-foreground: var(--ground);
   --chart-segment-background: var(--brand-soft);
   --chart-segment-line: rgb(0 22 71 / 0.2);
+  --overlay: rgb(0 22 71 / 0.45);
+}
+
+.dark {
+  color-scheme: dark;
+
+  --ink: #edf1fa;
+  --ink-2: #aab5cd;
+  --ink-3: #8a96b2;
+  --ground: #070e24;
+  --raised: #0d1632;
+  --raised-2: #141e3d;
+  --hairline: #1c284a;
+  --hairline-strong: #2a3a63;
+  --brand: #5b8cf5;
+  --brand-deep: #a9c3ff;
+  --brand-soft: rgb(91 140 245 / 0.14);
+  --brand-foreground: #070e24;
+  --signal: #f97066;
+  --signal-soft: rgb(249 112 102 / 0.12);
+  --positive: #34c98a;
+
+  --destructive-foreground: #070e24;
+
+  --chart-2: #3a74f0;
+  --chart-grid: #141e3d;
+  --chart-tooltip-background: rgb(237 241 250 / 0.97);
+  --chart-tooltip-foreground: #001647;
+  --chart-tooltip-muted: #4d5c7e;
+  --chart-scale-01: #13224a;
+  --chart-scale-02: #1d3f8f;
+  --chart-scale-03: #2f62d6;
+  --chart-scale-04: #5b8cf5;
+  --chart-scale-05: #a9c3ff;
+  --chart-segment-line: rgb(237 241 250 / 0.2);
+  --overlay: rgb(0 0 0 / 0.6);
 }
 
 @theme inline {
@@ -105,6 +141,7 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-overlay: var(--overlay);
 
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);

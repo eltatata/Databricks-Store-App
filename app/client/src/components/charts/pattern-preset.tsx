@@ -323,7 +323,7 @@ export function renderPatternPreset(
     return null;
   }
   const def: PatternPresetDef = PATTERN_PRESET_DEFS[resolved];
-  const color = options.color ?? (preset === 'accent' ? '#e879f9' : 'var(--chart-1)');
+  const color = options.color ?? (preset === 'accent' ? 'var(--chart-5)' : 'var(--chart-1)');
 
   return (
     <PatternTile
