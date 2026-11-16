@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useProduct } from '@/hooks/products/useProductQueries';
 import { cn } from '@/lib/utils';
 import type { ApprovalDecision, ApprovalState, AssistantToolItem } from '@/types/assistant.types';
@@ -78,32 +79,34 @@ function FieldList({ values }: { values: Record<string, unknown> }) {
 function ChangeTable({ changes, current }: { changes: Record<string, unknown>; current: Product | undefined }) {
   const currentValues = asRecord(current);
   return (
-    <table className="w-full text-sm">
-      <thead>
-        <tr className="text-left text-xs text-ink-3">
-          <th scope="col" className="pb-2 font-normal">
+    <Table>
+      <TableHeader>
+        <TableRow className="hover:bg-transparent">
+          <TableHead scope="col" className="h-auto px-0 pb-2">
             Field
-          </th>
-          <th scope="col" className="pb-2 font-normal">
+          </TableHead>
+          <TableHead scope="col" className="h-auto px-0 pb-2">
             Now
-          </th>
-          <th scope="col" className="pb-2 font-normal">
+          </TableHead>
+          <TableHead scope="col" className="h-auto px-0 pb-2">
             After approval
-          </th>
-        </tr>
-      </thead>
-      <tbody className="tabular-nums">
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody className="tabular-nums">
         {orderedFields(changes).map((field) => (
-          <tr key={field} className="border-t border-hairline">
-            <th scope="row" className="py-2 pr-4 text-left font-normal text-ink-3">
+          <TableRow key={field} className="hover:bg-transparent">
+            <TableHead scope="row" className="h-auto py-2 pr-4 pl-0 text-sm">
               {FIELD_LABELS[field]}
-            </th>
-            <td className="py-2 pr-4 text-ink-2">{current ? formatField(field, currentValues[field]) : '…'}</td>
-            <td className="py-2 text-ink">{formatField(field, changes[field])}</td>
-          </tr>
+            </TableHead>
+            <TableCell className="py-2 pr-4 pl-0 whitespace-normal text-ink-2">
+              {current ? formatField(field, currentValues[field]) : '…'}
+            </TableCell>
+            <TableCell className="py-2 px-0 whitespace-normal text-ink">{formatField(field, changes[field])}</TableCell>
+          </TableRow>
         ))}
-      </tbody>
-    </table>
+      </TableBody>
+    </Table>
   );
 }
 
