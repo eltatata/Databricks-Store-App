@@ -14,7 +14,7 @@ test('health endpoint reports the database as up', async ({ request }) => {
 test('dashboard shows the headline KPIs and freshness', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Business overview' })).toBeVisible();
-  await expect(page.getByText('Gross merchandise value')).toBeVisible();
+  await expect(page.getByRole('term').filter({ hasText: 'Gross merchandise value' })).toBeVisible();
   await expect(page.getByText('Average order value').first()).toBeVisible();
   await expect(page.getByText('Data through')).toBeVisible();
 });
