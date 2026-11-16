@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router';
 import { AccentDot } from '@/components/common/AccentDot';
 import { FreshnessLabel } from '@/components/layout/FreshnessLabel';
+import { ModeToggle } from '@/components/layout/ModeToggle';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { API_DOCS_URL, NAVIGATION } from '@/configs/routes';
 import { cn } from '@/lib/utils';
@@ -54,22 +55,25 @@ export function TopBar() {
           ))}
         </nav>
 
-        <div className="ml-auto hidden items-center gap-4 md:flex">
-          <FreshnessLabel />
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <a
-                href={API_DOCS_URL}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Open the API documentation"
-                className="grid size-9 place-items-center rounded-md text-ink-3 transition-colors hover:bg-raised-2 hover:text-ink"
-              >
-                <BookOpenText className="size-4" strokeWidth={1.75} />
-              </a>
-            </TooltipTrigger>
-            <TooltipContent>API documentation</TooltipContent>
-          </Tooltip>
+        <div className="ml-auto flex items-center gap-1 md:gap-4">
+          <div className="hidden items-center gap-4 md:flex">
+            <FreshnessLabel />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <a
+                  href={API_DOCS_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Open the API documentation"
+                  className="grid size-9 place-items-center rounded-md text-ink-3 transition-colors hover:bg-raised-2 hover:text-ink"
+                >
+                  <BookOpenText className="size-4" strokeWidth={1.75} />
+                </a>
+              </TooltipTrigger>
+              <TooltipContent>API documentation</TooltipContent>
+            </Tooltip>
+          </div>
+          <ModeToggle />
         </div>
       </div>
     </header>
