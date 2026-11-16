@@ -613,7 +613,7 @@ server/
 - **bklit is mandatory for every chart.** No other charting library may be installed, and AppKit-UI chart components are not used either.
   - Install with `npx shadcn@latest add @bklit/<chart>` (line, area, bar, pie/ring, composed…). Charts land as source in `components/charts/`.
   - Theme through `--chart-*` CSS variables / `chartCssVars`, never hardcoded colors.
-  - Check current docs at ui.bklit.com for the exact registry names and import paths.
+  - Check current docs at ui.bklit.com for the exact registry names and import paths. **Amendment (D20):** the registry moved to `bklit.com/r`; `components.json` points there.
 - `@databricks/appkit-ui` is used **only for plugin hooks** (`useAgentChat`, `useGenieChat`). Their visual rendering is built with shadcn and bklit for a consistent design system. **Amendment (Phase 7):** AppKit-UI's `styles.css` is not imported; the theme lives in `client/src/index.css` and `app/DESIGN.md`. `components.json` sits in `app/` because the shadcn CLI needs `package.json` beside it; generated files still land in `client/src/components/{ui,charts}`. Genie helpers `transformGenieData` and `inferChartType` are also used.
   - `<GenieChat>` may be used only as a temporary fallback if `useGenieChat` blocks progress. **Amendment (D19):** `useGenieChat` is no longer used; Genie reaches the user only through the assistant.
   - Check that AppKit-UI's Tailwind setup and shadcn's `components.json` coexist; resolve conflicts in Phase 6.
@@ -625,7 +625,7 @@ server/
 - **Server data: TanStack Query** (D12), used where it adds value: dashboard reads (caching, `staleTime`) and products (pagination, invalidation after create/update/deactivate).
   - Query keys come from one factory per feature (`productKeys.list(params)`).
   - Feature hooks in `hooks/<feature>/` wrap `useQuery`/`useMutation` around `services/`.
-  - Plugin streams (`useAgentChat`, `useGenieChat`) keep their own state and are not wrapped in TanStack Query.
+  - Plugin streams (`useAgentChat`, `useGenieChat`) keep their own state and are not wrapped in TanStack Query. Since D19 only `useAgentChat` is used.
 - Forms: react-hook-form + `zodResolver`. Routing: the router the scaffold ships, or React Router.
 - Design guidance: load `frontend-design` / `impeccable` / `dataviz` for layout, KPI cards, chart choice and empty/error states.
 
@@ -684,7 +684,7 @@ src/
 - Every data view handles loading (skeleton), empty, error (with retry) and success states. Mutations show sonner toasts and invalidate the relevant query keys.
 - **Dashboard:**
   - KPI cards: GMV, Orders, AOV, Customers, Avg review, Late-delivery %.
-  - bklit charts: monthly trend (line/area), category (bar), state (bar or choropleth if available).
+  - bklit charts: monthly trend (line/area), category (bar), state (bar or choropleth if available). **Amendment (D20):** state is a choropleth map (GMV, orders, average order value, freight) with a top-10 bar ranking.
   - Top products and top sellers tables, date-range and category filters, and a "data as of" freshness badge.
   - KPIs are never recomputed in React.
 - **Products:** paginated searchable table, a create/edit dialog form (Zod plus react-hook-form for convenience; the server is authoritative), soft-delete confirmation, and handling for 409 version conflict ("reload") and 404.
@@ -708,7 +708,7 @@ src/
 |------|--------|-------|
 | `ask_analytics` (Genie) | read | Genie Agent conversation (UC Gold) |
 | `get_kpi_summary(from?, to?)` | read | `dashboardService.getSummary` (Lakebase `serving`) |
-| `get_sales_by_state(from?, to?)` (D20) | read | `dashboardService.getStateBreakdown` (Lakebase `serving`); rendered as a state map |
+| `get_sales_by_state(from?, to?, metric?)` (D20) | read | `dashboardService.getStateBreakdown` (Lakebase `serving`); rendered as a state map |
 | `search_products(query?, category?, limit≤20)` | read | `productsService.listProducts` |
 | `get_product(product_id)` | read | `productsService.getProduct` |
 | `create_product({display_name, category_en, …})` | write → **HITL** | `productsService.createProduct` |
@@ -877,7 +877,7 @@ Commit per phase once git is initialized (it is **not** yet a git repo; `git ini
     - In Silver, collapse it to one row per zip prefix: average lat/lng, about 19k prefixes from about 1M rows, with normalized city names.
     - Join customer and seller zip prefixes, then add a Haversine `distance_km` to `fact_orders`. For an order with several sellers, use the max distance.
     - Expose it in KPIs: late-delivery rate and freight by distance band. Add the column to the Genie space instructions.
-    - No map is needed for this part. Point or lat/lng markers are not documented for the bklit choropleth (check `bklit.com/docs/utility/markers`), so a city- or zip-level map stays out of scope until that is confirmed.
+    - No map is needed for this part. Point or lat/lng markers are not documented for the bklit choropleth (check `bklit.com/docs/utility/markers`), so a city- or zip-level map stays out of scope until that is confirmed. **Update 2026-11-16:** the current registry ships `ChoroplethMarker`, so markers are available if part B is ever approved.
 
 ---
 
@@ -892,5 +892,5 @@ Commit per phase once git is initialized (it is **not** yet a git repo; `git ini
 - Supervisor API (deprecated, EOL 2026-09-30): https://learn.microsoft.com/en-us/azure/databricks/agents/agent-bricks/supervisor-api
 - Agent Bricks CLI (rejected alternative): https://learn.microsoft.com/en-us/azure/databricks/agents/custom-agents/agent-bricks-cli
 - Dataset: https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
-- shadcn/ui: https://ui.shadcn.com · bklit charts: https://ui.bklit.com · https://github.com/bklit/bklit-ui (MIT)
+- shadcn/ui: https://ui.shadcn.com · bklit charts: https://ui.bklit.com (registry `https://bklit.com/r`) · https://github.com/bklit/bklit-ui (MIT)
 - Zod → OpenAPI: https://github.com/asteasolutions/zod-to-openapi · Swagger UI Express: https://github.com/scottie1984/swagger-ui-express
