@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { RouteErrorPage } from '@/pages/RouteErrorPage';
 import { ROUTES } from '@/configs/routes';
@@ -21,8 +21,8 @@ export const router = createBrowserRouter([
         lazy: async () => ({ Component: (await import('@/pages/ProductDetailPage')).ProductDetailPage }),
       },
       {
-        path: ROUTES.explore,
-        lazy: async () => ({ Component: (await import('@/pages/ExplorePage')).ExplorePage }),
+        path: ROUTES.legacyExplore,
+        element: <Navigate to={ROUTES.assistant} replace />,
       },
       {
         path: ROUTES.assistant,

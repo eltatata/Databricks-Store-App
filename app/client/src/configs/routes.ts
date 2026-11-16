@@ -2,7 +2,7 @@ export const ROUTES = {
   dashboard: '/',
   products: '/products',
   productDetail: '/products/:productId',
-  explore: '/explore',
+  legacyExplore: '/explore',
   assistant: '/assistant',
 } as const;
 
@@ -19,6 +19,5 @@ export interface NavigationItem {
 export const NAVIGATION: NavigationItem[] = [
   { label: 'Dashboard', to: ROUTES.dashboard, end: true },
   { label: 'Products', to: ROUTES.products, end: false },
-  { label: 'Explore', to: ROUTES.explore, end: false },
   { label: 'Assistant', to: ROUTES.assistant, end: false },
 ];

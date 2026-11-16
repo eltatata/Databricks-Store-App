@@ -21,7 +21,7 @@ export function AssistantPage() {
     <div className="mx-auto flex min-h-[calc(100dvh-10rem)] max-w-[880px] flex-col">
       <PageHeader
         title="Assistant"
-        description="Ask about the business or change the catalog in plain words. Every change waits for your approval."
+        description="Ask about the business or change the catalog in plain words. Deeper analysis goes to Genie, and every change waits for your approval."
       >
         {assistant.turns.length > 0 ? (
           <Button variant="ghost" onClick={assistant.reset}>
@@ -34,7 +34,7 @@ export function AssistantPage() {
       <div className="flex flex-col gap-10 pb-6" aria-live="polite" aria-busy={assistant.isStreaming}>
         {assistant.turns.length === 0 ? (
           <ChatSuggestions
-            intro="The assistant reads KPIs and products from Lakebase, asks Genie for deeper analysis, and drafts catalog changes for you to approve."
+            intro="The assistant reads KPIs, state sales and products from Lakebase, hands trends and rankings to Genie, and answers with figures, charts and maps. It drafts catalog changes for you to approve."
             suggestions={ASSISTANT_SUGGESTIONS}
             onPick={assistant.send}
           />
