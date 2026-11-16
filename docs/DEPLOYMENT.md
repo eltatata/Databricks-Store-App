@@ -108,13 +108,17 @@ Notes:
 - **`NODE_ENV=development` is required.** Without it the server runs in production mode: it looks for a built `dist/` and rejects API calls that carry no user token. In production, `app/app.yaml` sets `NODE_ENV=production` and the deployed app does not read `.env`.
 - **`PGUSER`** is your workspace email. Without it Lakebase rejects the connection.
 - **Data:** local development connects to the production Lakebase branch with your identity. Do not create or edit products from a local session.
-- **Agent:** approvals work the same as in the deployed app.
+- **Agent:** approvals work the same as in the deployed app. Editing `server/agents/supervisor/agent.md` does not restart `pnpm run dev`; restart it to load new instructions.
+- **Local cache warning:** at startup AppKit logs `must be owner of table appkit_cache_entries`. The table belongs to the app service principal; the local server still works.
 
 | Check | Command |
 |-------|---------|
 | Unit and component tests | `pnpm test` |
 | Smoke test (server running) | `pnpm test:smoke` |
 | Agent evals (server running) | `AGENT_APPROVAL_TIMEOUT_MS=15000` in `app/.env`, then `npx appkit agent eval --url http://localhost:8000 --concurrency 3` |
+| Rebuild the Brazil states GeoJSON | `pnpm run geo:brazil` (downloads Natural Earth 1:50m admin-1, writes `client/src/assets/geo/brazil-states.json`; only needed to change the geometry) |
+
+Adding or updating a bklit chart: run `npx shadcn@latest add @bklit/<chart>` from `app/` (the registry is `bklit.com/r`). The CLI writes to `app/components` and `app/lib` and appends tokens to `index.css`. Copy the chart files into `client/src/components/charts`, delete the stray folders, keep only `--color-chart-*` mappings in `index.css` (no `.dark` block), map new `--chart-*` tokens to the Olist palette, and run `pnpm run lint:ast-grep` (no `as unknown as`).
 
 ## 9. Cost and cleanup
 
