@@ -9,6 +9,7 @@ import {
   deactivateProductToolSchema,
   getProductToolSchema,
   kpiSummaryToolSchema,
+  salesByStateToolSchema,
   searchProductsToolSchema,
   updateProductToolSchema,
 } from '../../schemas/agent-tools.schema';
@@ -82,6 +83,18 @@ export function buildStoreTools(options: StoreToolsOptions): ToolRegistry {
       annotations: { effect: 'read' },
       execute: (range) =>
         runSafely('get_kpi_summary', () => dashboardService.getSummary(dateRangeQuerySchema.parse(range))),
+    }),
+    get_sales_by_state: defineTool({
+      description:
+        'Sales by customer state (two-letter Brazilian UF) for an optional purchase date range (YYYY-MM-DD, inclusive): GMV in BRL, orders, freight in BRL and average order value, sorted by GMV. Omit both dates for all time. The app shows the result to the user as a map of Brazil that opens on `metric`. Use it for questions about states, regions or where customers buy.',
+      schema: salesByStateToolSchema,
+      annotations: { effect: 'read' },
+      execute: ({ metric, ...input }) =>
+        runSafely('get_sales_by_state', async () => {
+          const range = dateRangeQuerySchema.parse(input);
+          const states = await dashboardService.getStateBreakdown(range);
+          return { from: range.from ?? null, to: range.to ?? null, metric: metric ?? 'gmv', states };
+        }),
     }),
     search_products: defineTool({
       description:

@@ -27,6 +27,15 @@ export const kpiSummaryToolSchema = z.object({
   to: isoDateArgument.optional().describe('Inclusive end purchase date as YYYY-MM-DD'),
 });
 
+export const STATE_MAP_METRICS = ['gmv', 'orders', 'averageOrderValue', 'freight'] as const;
+
+export const salesByStateToolSchema = kpiSummaryToolSchema.extend({
+  metric: z
+    .enum(STATE_MAP_METRICS)
+    .optional()
+    .describe('The measure the user asked about; the map opens on it. Default gmv'),
+});
+
 export const searchProductsToolSchema = z.object({
   query: z.string().min(1).max(100).optional().describe('Words from the product name, or a product id'),
   category: categoryArgument.optional(),
@@ -57,7 +66,12 @@ export const updateProductToolSchema = z.object({
   version: z.number().int().min(1).describe('Current version from get_product'),
   changes: createProductToolSchema
     .partial()
-    .extend({ isActive: z.boolean().optional().describe('Only when the user explicitly asks to activate (true) or deactivate (false)') })
+    .extend({
+      isActive: z
+        .boolean()
+        .optional()
+        .describe('Only when the user explicitly asks to activate (true) or deactivate (false)'),
+    })
     .describe('Only the fields to change'),
 });
 

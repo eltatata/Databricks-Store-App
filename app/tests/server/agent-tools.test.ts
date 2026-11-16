@@ -9,7 +9,7 @@ vi.mock('../../server/services/products.service', () => ({
   updateProduct: vi.fn(),
   deactivateProduct: vi.fn(),
 }));
-vi.mock('../../server/services/dashboard.service', () => ({ getSummary: vi.fn() }));
+vi.mock('../../server/services/dashboard.service', () => ({ getSummary: vi.fn(), getStateBreakdown: vi.fn() }));
 
 const appkit = await import('@databricks/appkit');
 const productsService = await import('../../server/services/products.service');
@@ -47,6 +47,7 @@ describe('store agent tools', () => {
     const effects = Object.fromEntries(Object.entries(tools).map(([name, entry]) => [name, entry.annotations?.effect]));
     expect(effects).toEqual({
       get_kpi_summary: 'read',
+      get_sales_by_state: 'read',
       search_products: 'read',
       get_product: 'read',
       create_product: 'write',
@@ -65,6 +66,25 @@ describe('store agent tools', () => {
     const result = await run('get_kpi_summary', { from: '2018-07-01', to: '2018-01-01' });
     expect(result).toMatchObject({ error: { code: 'VALIDATION_ERROR' } });
     expect(dashboardService.getSummary).not.toHaveBeenCalled();
+  });
+
+  it('reads sales by state for the requested range and echoes the range', async () => {
+    const states = [{ customerState: 'SP', gmv: 100, orders: 4, freight: 12, averageOrderValue: 25 }];
+    vi.mocked(dashboardService.getStateBreakdown).mockResolvedValue(states);
+    await expect(
+      run('get_sales_by_state', { from: '2018-01-01', to: '2018-06-30', metric: 'orders' })
+    ).resolves.toEqual({
+      from: '2018-01-01',
+      to: '2018-06-30',
+      metric: 'orders',
+      states,
+    });
+    expect(dashboardService.getStateBreakdown).toHaveBeenCalledWith({ from: '2018-01-01', to: '2018-06-30' });
+  });
+
+  it('reads sales by state for all time when no dates are given', async () => {
+    vi.mocked(dashboardService.getStateBreakdown).mockResolvedValue([]);
+    await expect(run('get_sales_by_state', {})).resolves.toEqual({ from: null, to: null, metric: 'gmv', states: [] });
   });
 
   it('searches only active products by default and caps the page size', async () => {
