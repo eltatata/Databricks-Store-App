@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { ExploreResultSource } from '@/hooks/explore/useExplore';
+import type { AnalyticsResultSource } from '@/types/analytics.types';
 import { DENIED_OUTPUT_PREFIX } from './agent-events';
 
 const failureSchema = z.object({ error: z.object({ code: z.string(), message: z.string() }) });
@@ -33,6 +33,21 @@ export const agentProductSchema = z.object({
 
 const productSearchSchema = z.object({ total: z.number(), products: z.array(agentProductSchema) });
 
+const salesByStateSchema = z.object({
+  from: z.string().nullable(),
+  to: z.string().nullable(),
+  metric: z.enum(['gmv', 'orders', 'averageOrderValue', 'freight']).catch('gmv'),
+  states: z.array(
+    z.object({
+      customerState: z.string(),
+      gmv: z.number(),
+      orders: z.number(),
+      freight: z.number(),
+      averageOrderValue: z.number().nullable(),
+    })
+  ),
+});
+
 const genieAttachmentSchema = z.object({
   attachmentId: z.string().optional(),
   query: z
@@ -52,15 +67,17 @@ const genieEventSchema = z.discriminatedUnion('type', [
 
 export type AgentProduct = z.infer<typeof agentProductSchema>;
 export type AgentKpiSummary = z.infer<typeof kpiSummarySchema>;
+export type AgentSalesByState = z.infer<typeof salesByStateSchema>;
 
 export type ToolResult =
   | { kind: 'none' }
   | { kind: 'denied' }
   | { kind: 'failure'; code: string; message: string }
   | { kind: 'kpis'; summary: AgentKpiSummary }
+  | { kind: 'states'; sales: AgentSalesByState }
   | { kind: 'products'; total: number; products: AgentProduct[] }
   | { kind: 'product'; product: AgentProduct }
-  | { kind: 'analytics'; results: ExploreResultSource[] };
+  | { kind: 'analytics'; results: AnalyticsResultSource[] };
 
 const PRODUCT_TOOLS = new Set(['get_product', 'create_product', 'update_product', 'deactivate_product']);
 
@@ -72,7 +89,7 @@ const parseJson = (output: string): unknown => {
   }
 };
 
-const toAnalyticsSources = (payload: unknown): ExploreResultSource[] => {
+const toAnalyticsSources = (payload: unknown): AnalyticsResultSource[] => {
   if (!Array.isArray(payload)) {
     return [];
   }
@@ -94,7 +111,7 @@ const toAnalyticsSources = (payload: unknown): ExploreResultSource[] => {
             title: attachment.query.title,
             description: attachment.query.description,
             sql: attachment.query.query,
-            statement: statements.get(attachment.attachmentId) as ExploreResultSource['statement'],
+            statement: statements.get(attachment.attachmentId) as AnalyticsResultSource['statement'],
           },
         ]
       : []
@@ -116,6 +133,10 @@ export const parseToolResult = (toolName: string, output: string | null): ToolRe
   if (toolName === 'get_kpi_summary') {
     const summary = kpiSummarySchema.safeParse(payload);
     return summary.success ? { kind: 'kpis', summary: summary.data } : { kind: 'none' };
+  }
+  if (toolName === 'get_sales_by_state') {
+    const sales = salesByStateSchema.safeParse(payload);
+    return sales.success ? { kind: 'states', sales: sales.data } : { kind: 'none' };
   }
   if (toolName === 'search_products') {
     const search = productSearchSchema.safeParse(payload);

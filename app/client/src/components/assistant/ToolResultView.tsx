@@ -1,15 +1,17 @@
-import { ExploreResult } from '@/components/explore/ExploreResult';
-import { buildExploreResult } from '@/hooks/explore/useExplore';
+import { AnalyticsResult } from './AnalyticsResult';
+import { buildAnalyticsResult } from '@/utils/analytics-result';
 import { parseToolResult } from '@/utils/agent-tool-results';
 import { KpiSummaryResult } from './KpiSummaryResult';
 import { ProductResultLine, ProductResultTable } from './ProductResults';
+import { StateSalesResult } from './StateSalesResult';
 
 interface ToolResultViewProps {
+  toolId: string;
   toolName: string;
   output: string | null;
 }
 
-export function ToolResultView({ toolName, output }: ToolResultViewProps) {
+export function ToolResultView({ toolId, toolName, output }: ToolResultViewProps) {
   const result = parseToolResult(toolName, output);
 
   switch (result.kind) {
@@ -22,14 +24,16 @@ export function ToolResultView({ toolName, output }: ToolResultViewProps) {
       );
     case 'kpis':
       return <KpiSummaryResult summary={result.summary} />;
+    case 'states':
+      return <StateSalesResult sales={result.sales} resultId={toolId} />;
     case 'products':
       return <ProductResultTable products={result.products} total={result.total} />;
     case 'product':
       return <ProductResultLine product={result.product} />;
     case 'analytics':
       return result.results.flatMap((source) => {
-        const built = buildExploreResult(source);
-        return built ? [<ExploreResult key={built.attachmentId} result={built} />] : [];
+        const built = buildAnalyticsResult(source);
+        return built ? [<AnalyticsResult key={built.attachmentId} result={built} />] : [];
       });
     default:
       return null;

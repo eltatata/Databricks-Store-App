@@ -32,7 +32,7 @@ export function ToolActivity({ tool, isLive, approvalState, onDecide }: ToolActi
         </p>
       )}
 
-      {wasStopped ? null : <ToolResultView toolName={tool.name} output={tool.output} />}
+      {wasStopped ? null : <ToolResultView toolId={tool.id} toolName={tool.name} output={tool.output} />}
     </div>
   );
 }
