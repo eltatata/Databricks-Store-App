@@ -15,8 +15,16 @@ test('dashboard shows the headline KPIs and freshness', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Business overview' })).toBeVisible();
   await expect(page.getByText('Gross merchandise value')).toBeVisible();
-  await expect(page.getByText('Average order value')).toBeVisible();
+  await expect(page.getByText('Average order value').first()).toBeVisible();
   await expect(page.getByText('Data through')).toBeVisible();
+});
+
+test('dashboard draws the Brazil state map with a metric switch', async ({ page }) => {
+  await page.goto('/');
+  const states = page.getByRole('region', { name: 'Customer states' });
+  await expect(states.getByRole('radiogroup', { name: 'Map metric' })).toBeVisible();
+  await expect(states.locator('figure svg path')).toHaveCount(27);
+  await expect(states.getByText(/by state, darker is higher/)).toBeVisible();
 });
 
 test('products page lists the catalog', async ({ page }) => {
@@ -27,10 +35,11 @@ test('products page lists the catalog', async ({ page }) => {
   await expect(page.getByText(/products? in the catalog view/)).toBeVisible();
 });
 
-test('explore page offers Genie questions', async ({ page }) => {
+test('the old explore link opens the assistant, the only chat', async ({ page }) => {
   await page.goto('/explore');
-  await expect(page.getByRole('heading', { name: 'Explore' })).toBeVisible();
-  await expect(page.getByLabel('Question for Genie')).toBeVisible();
+  await expect(page).toHaveURL(/\/assistant$/);
+  await expect(page.getByRole('heading', { name: 'Assistant' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Explore' })).toHaveCount(0);
 });
 
 test('assistant page offers suggestions and a composer', async ({ page }) => {

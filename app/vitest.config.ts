@@ -29,6 +29,7 @@ export default defineConfig({
           environment: 'jsdom',
           include: ['tests/client/**/*.test.{ts,tsx}'],
           setupFiles: ['tests/client/setup.ts'],
+          server: { deps: { inline: ['@databricks/appkit-ui'] } },
           exclude,
         },
       },
