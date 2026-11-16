@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { SafeMarkdown } from '@/components/common/SafeMarkdown';
-import { ExploreResultTable } from '@/components/explore/ExploreResultTable';
+import { AnalyticsResultTable } from '@/components/assistant/AnalyticsResultTable';
 
 describe('SafeMarkdown', () => {
   it('renders bold text and bullet lists as elements', () => {
@@ -21,11 +21,11 @@ describe('SafeMarkdown', () => {
   });
 });
 
-describe('ExploreResultTable', () => {
+describe('AnalyticsResultTable', () => {
   it('formats numeric columns and caps the visible rows', () => {
     const rows = Array.from({ length: 60 }, (_, index) => ({ category_en: `cat_${index}`, gmv: '1234.5' }));
     render(
-      <ExploreResultTable
+      <AnalyticsResultTable
         rows={rows}
         columns={[
           { name: 'category_en', category: 'string' },

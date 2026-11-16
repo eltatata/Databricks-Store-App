@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { SegmentedControl } from '@/components/common/SegmentedControl';
-import type { ExploreResult as ExploreResultData } from '@/hooks/explore/useExplore';
-import { ExploreResultChart } from './ExploreResultChart';
-import { ExploreResultTable } from './ExploreResultTable';
+import type { AnalyticsResult as AnalyticsResultData } from '@/types/analytics.types';
+import { AnalyticsResultChart } from './AnalyticsResultChart';
+import { AnalyticsResultTable } from './AnalyticsResultTable';
+import { AnalyticsStateMap } from './AnalyticsStateMap';
 
 type ResultView = 'chart' | 'table';
 
-interface ExploreResultProps {
-  result: ExploreResultData;
+interface AnalyticsResultProps {
+  result: AnalyticsResultData;
 }
 
-export function ExploreResult({ result }: ExploreResultProps) {
+export function AnalyticsResult({ result }: AnalyticsResultProps) {
   const [view, setView] = useState<ResultView>(result.chart ? 'chart' : 'table');
 
   return (
@@ -21,22 +22,24 @@ export function ExploreResult({ result }: ExploreResultProps) {
           <SegmentedControl<ResultView>
             label="Result view"
             options={[
-              { value: 'chart', label: 'Chart' },
+              { value: 'chart', label: result.chart.kind === 'map' ? 'Map' : 'Chart' },
               { value: 'table', label: 'Table' },
             ]}
             value={view}
             onChange={setView}
-            signalId={`result-view-${result.attachmentId}`}
+            accentId={`result-view-${result.attachmentId}`}
             size="sm"
           />
         ) : null}
       </div>
       {result.description ? <p className="max-w-[70ch] text-xs text-ink-3">{result.description}</p> : null}
 
-      {view === 'chart' && result.chart ? (
-        <ExploreResultChart result={result} />
+      {view === 'chart' && result.chart?.kind === 'map' ? (
+        <AnalyticsStateMap rows={result.rows} chart={result.chart} />
+      ) : view === 'chart' && result.chart ? (
+        <AnalyticsResultChart result={result} />
       ) : (
-        <ExploreResultTable rows={result.rows} columns={result.columns} />
+        <AnalyticsResultTable rows={result.rows} columns={result.columns} />
       )}
 
       {result.sql ? (

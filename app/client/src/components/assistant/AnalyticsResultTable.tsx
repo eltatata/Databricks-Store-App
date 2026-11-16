@@ -1,12 +1,12 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import type { ExploreColumn } from '@/hooks/explore/useExplore';
+import type { AnalyticsColumn } from '@/types/analytics.types';
 import { cn } from '@/lib/utils';
 import { formatCount, toDisplayText } from '@/utils/format';
 
 const MAX_ROWS = 50;
 const numberFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
 
-const formatCell = (value: unknown, column: ExploreColumn) => {
+const formatCell = (value: unknown, column: AnalyticsColumn) => {
   const text = toDisplayText(value);
   if (column.category !== 'numeric') {
     return text;
@@ -15,12 +15,12 @@ const formatCell = (value: unknown, column: ExploreColumn) => {
   return Number.isFinite(number) ? numberFormatter.format(number) : text;
 };
 
-interface ExploreResultTableProps {
+interface AnalyticsResultTableProps {
   rows: Record<string, unknown>[];
-  columns: ExploreColumn[];
+  columns: AnalyticsColumn[];
 }
 
-export function ExploreResultTable({ rows, columns }: ExploreResultTableProps) {
+export function AnalyticsResultTable({ rows, columns }: AnalyticsResultTableProps) {
   const visible = rows.slice(0, MAX_ROWS);
 
   return (

@@ -9,18 +9,18 @@ import { ChartTooltip } from '@/components/charts/tooltip';
 import { XAxis } from '@/components/charts/x-axis';
 import { YAxis } from '@/components/charts/y-axis';
 import { BAR_CHART_MARGIN, CHART_ANIMATION_MS, CHART_COLORS, CHART_MARGIN } from '@/configs/chart-theme';
-import type { ExploreResult } from '@/hooks/explore/useExplore';
+import type { AnalyticsResult } from '@/types/analytics.types';
 import { formatCompactCount, toDisplayText } from '@/utils/format';
 
 const MAX_BARS = 15;
 
 const toNumber = (value: unknown) => (typeof value === 'number' ? value : Number(value));
 
-interface ExploreResultChartProps {
-  result: ExploreResult;
+interface AnalyticsResultChartProps {
+  result: AnalyticsResult;
 }
 
-export function ExploreResultChart({ result }: ExploreResultChartProps) {
+export function AnalyticsResultChart({ result }: AnalyticsResultChartProps) {
   const chart = result.chart;
   const data = useMemo(() => {
     if (!chart) {
