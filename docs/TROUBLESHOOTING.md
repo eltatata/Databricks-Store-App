@@ -42,8 +42,8 @@ Every entry below was hit while building this POC. Background and evidence are i
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| `pnpm dev` fails with `'NODE_ENV' is not recognized` | `cmd` syntax | Run `npx tsx …` from Git Bash (see `DEPLOYMENT.md` §8) |
-| Lakebase connection fails locally with an auth error | `PGUSER` is not set to your workspace email | Prefix the command with `PGUSER=<email>` |
+| `pnpm dev` fails with `'NODE_ENV' is not recognized` | An old `dev` script with the POSIX `NODE_ENV=` prefix; pnpm runs scripts with `cmd` on Windows | Fixed: `NODE_ENV=development` now lives in `app/.env`. Copy `app/.env.example` if the file is missing (see `DEPLOYMENT.md` §8) |
+| Lakebase connection fails locally with an auth error | `PGUSER` is not set to your workspace email | Set `PGUSER=<email>` in `app/.env` |
 | Vite logs "Canonicalized path was dropped" after replacing a file | Rolldown-Vite cached a stub module | Restart the dev server; delete `node_modules/.vite` if it persists |
 | The server build has no app modules on Windows | `appkitServerConfig()` treats `C:\…` paths as external | `tsdown.server.config.ts` overrides `external`; keep the override |
 | `pnpm install` stops asking to approve build scripts | pnpm 11 blocks dependency scripts by default | Approve only the scripts listed in `pnpm-workspace.yaml` |

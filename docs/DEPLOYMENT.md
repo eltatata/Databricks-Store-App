@@ -98,12 +98,15 @@ The first request after a start can take a few seconds while the Lakebase comput
 
 ```bash
 cd app
-# app/.env holds DATABRICKS_CONFIG_PROFILE, PGHOST, PGDATABASE, LAKEBASE_ENDPOINT, DEV_USER_EMAIL
-NODE_ENV=development PGUSER=<your-email> npx tsx --tsconfig ./tsconfig.server.json --env-file-if-exists=./.env ./server/server.ts
+cp .env.example .env   # first time only: fill in PGUSER, PGHOST, DATABRICKS_GENIE_SPACE_ID, DEV_USER_EMAIL
+pnpm run dev
 ```
 
+`app/.env` sets `NODE_ENV=development` and `PGUSER`, so `pnpm run dev` works the same in any shell on Windows, macOS and Linux. The app runs on http://localhost:8000.
+
 Notes:
-- **Windows:** `pnpm dev` does not work in `cmd` (`NODE_ENV=` syntax). Run the command above from Git Bash.
+- **`NODE_ENV=development` is required.** Without it the server runs in production mode: it looks for a built `dist/` and rejects API calls that carry no user token. In production, `app/app.yaml` sets `NODE_ENV=production` and the deployed app does not read `.env`.
+- **`PGUSER`** is your workspace email. Without it Lakebase rejects the connection.
 - **Data:** local development connects to the production Lakebase branch with your identity. Do not create or edit products from a local session.
 - **Agent:** approvals work the same as in the deployed app.
 
@@ -111,7 +114,7 @@ Notes:
 |-------|---------|
 | Unit and component tests | `pnpm test` |
 | Smoke test (server running) | `pnpm test:smoke` |
-| Agent evals (server running) | `AGENT_APPROVAL_TIMEOUT_MS=15000` on the server, then `npx appkit agent eval --url http://localhost:8000 --concurrency 3` |
+| Agent evals (server running) | `AGENT_APPROVAL_TIMEOUT_MS=15000` in `app/.env`, then `npx appkit agent eval --url http://localhost:8000 --concurrency 3` |
 
 ## 9. Cost and cleanup
 

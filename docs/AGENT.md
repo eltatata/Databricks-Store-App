@@ -141,6 +141,7 @@ Run the evals again:
 
 ```bash
 cd app
-AGENT_APPROVAL_TIMEOUT_MS=15000 NODE_ENV=development npx tsx --env-file-if-exists=./.env ./server/server.ts
+# add AGENT_APPROVAL_TIMEOUT_MS=15000 to app/.env, then:
+pnpm run dev
 npx appkit agent eval --url http://localhost:8000 --concurrency 3
 ```
