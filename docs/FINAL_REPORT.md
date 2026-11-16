@@ -158,3 +158,14 @@ Known limitations:
 | Model endpoint | Pay per token, called only by the Assistant | Stops with the app |
 
 Nothing was deleted except the test products created during verification. `bundle destroy`, app deletion and dropping the catalog are left to the operator.
+
+## 9. Block G: Olist brand, single chat, state map (2026-11-16)
+
+| Item | What changed | Verification |
+|------|--------------|--------------|
+| Brand (D18) | Light theme with the olist.com palette (blue `#0A4EE4`, navy ink `#001647`, teal and amber chart accents), Plus Jakarta Sans, brand favicons. shadcn/ui and bklit stay the only UI and chart libraries. | Dashboard, Products and Assistant checked in the browser on desktop and at 390 px (no horizontal scroll). |
+| Single chat (D19) | Explore page and the client `useGenieChat` removed; `/explore` redirects to `/assistant`. Genie stays the supervisor's `ask_analytics` sub-agent and its results render in the assistant as a table, bklit chart or state map. | Smoke test `the old explore link opens the assistant`. |
+| State map (D20) | bklit `choropleth-chart` over a Natural Earth GeoJSON (27 UF). Dashboard: GMV, orders, average order value or freight by state plus a top 10 ranking. Assistant: new read tool `get_sales_by_state` (opens on the metric asked about) and Genie results keyed by UF render as maps. `/dashboard/by-state` now also returns freight. Delivery distance (§13 part B) not implemented. | Unit tests 109 passed; agent evals 15/15 locally; deployed app: smoke 6/6, an orders-by-state question drew the 27-state map on Orders, and a review-score-by-state question went to Genie and rendered as a map. |
+| bklit refresh | Charts reinstalled from `bklit.com/r` (visx replaced by d3), project patches re-applied. | `databricks apps validate`: typegen, ast-grep, typecheck, build and tests passed. |
+| Deploy | `bash scripts/app-deploy.sh` on 2026-11-16 (profile `local-dev`). | App `RUNNING`, Lakebase endpoint `ACTIVE`. |
+

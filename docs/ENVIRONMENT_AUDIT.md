@@ -134,6 +134,26 @@ Scaffolding rules to apply:
 | Thread store | The default `InMemoryThreadStore` logs a dev-only warning; threads are lost on restart. | Accepted for the POC (single instance, conversations are short). Lakebase-backed store left as a stretch item. |
 | Local tooling | Killing every `node.exe` to restart the dev server also stopped the Playwright MCP server. | Restart the dev server by port (`netstat` + `taskkill /PID`). UI checks used `playwright-core` with the installed Chrome from the session scratchpad. |
 
+## Findings after delivery
+
+| Item | Finding | Resolution |
+|------|---------|------------|
+| Lakebase endpoint disabled (2026-11-06) | The `primary` endpoint of `projects/store-app/branches/production` had `status.disabled: true` (last active 2026-10-15, disabled 2026-10-19). Lakebase cannot resume a disabled endpoint, so the Lakebase UI showed `The endpoint has been disabled. Enable it using the API and retry.` The app crashed at startup because `runMigrations` failed. The workspace did not show who disabled it; it matches about 4 days without activity on Free Edition. | Re-enabled with `databricks postgres update-endpoint projects/store-app/branches/production/endpoints/primary spec.disabled --json '{"spec":{"disabled":false}}'`, then `apps stop` + `apps start`. Verified: app `RUNNING`, `/api/v1/health` returns `database: up`, and products and categories come from Lakebase. Data was kept. |
+| Lakebase endpoint disabled again (2026-11-16) | Same symptom: `primary` had `disabled: true` (last active 2026-11-11, about 5 days earlier) and the app was `STOPPED` ("App compute was stopped due to workspace or account status"). Confirms the pattern: on Free Edition the endpoint is disabled after a few days without activity. | Same fix: `update-endpoint … spec.disabled` to `false`, then `apps start` (it redeployed the last deployment). Verified: app `RUNNING`, endpoint `ACTIVE`, `/api/v1/health` returns `database: up`, and products come from Lakebase. |
+| Lakebase autoscaling range | The endpoint reports 1–1 CU, while the docs say 0.5–2 CU. | Not changed. Recorded so the docs can be aligned if the user wants. |
+
+## Findings during block G (2026-11-16)
+
+| Item | Finding | Resolution |
+|------|---------|------------|
+| bklit registry | `ui.bklit.com/r/*` now redirects to `bklit.com/r/*`. The registry publishes `choropleth-chart` (GeoJSON `FeatureCollection`, `getFeatureColor`, tooltip, click-to-zoom, markers). | `app/components.json` points to `bklit.com/r`. The map is viable without new data (D20). |
+| bklit version drift | The choropleth needs the current shared chart files (new tooltip panel, `useChartPortalContainer`); the installed files were from Phase 7. The current bklit drops `@visx/*` for `d3-scale`/`d3-geo`. | Reinstalled area, bar, axes, tooltip and choropleth together, removed `@visx/*`, re-applied the project patches (full-width bar labels, no `as unknown as` for `appkit lint`, explicit effect returns for `noImplicitReturns`) and relaxed four lint rules for vendored chart code only. Dashboard charts re-checked in the browser. |
+| shadcn CLI output path | `shadcn add @bklit/...` from `app/` writes to `app/components` and `app/lib`, not `client/src`. | Copy the generated files into `client/src/components/charts`, then delete the stray folders. |
+| Brazil geometry | Natural Earth 1:50m admin-1 (public domain) has the 27 Brazilian states with `postal` = UF, matching `customer_state`. | `app/scripts/build-brazil-states.ts` (`pnpm run geo:brazil`) writes `client/src/assets/geo/brazil-states.json` (about 100 KB, 3-decimal coordinates). |
+| State late-delivery rate | `serving.sales_by_state_month` stores a monthly rate without its delivered-orders denominator, so it cannot be summed across months exactly. | Not mapped from Lakebase. Late delivery by state goes to Genie, whose result renders as a map. |
+| Client tests and AppKit UI | Importing `@databricks/appkit-ui/react` at runtime in Vitest failed on an extensionless `echarts-for-react` import. | `server.deps.inline: ['@databricks/appkit-ui']` in the client test project. |
+| Local dev cache | Locally, AppKit's persistent cache migration logs `must be owner of table appkit_cache_entries` (the table belongs to the app service principal). | Harmless in local dev: the server starts and serves requests. |
+
 ## Not yet verified (deferred to the phase that needs them)
 
 | Item | Phase |

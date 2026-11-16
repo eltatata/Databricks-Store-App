@@ -49,6 +49,7 @@ Score: 10/10 correct (9/10 under the strict value comparison). The exit gate (�
 |------|--------|-------|
 | `ask_analytics` | read | Genie plugin `olist.sendMessage`, renamed (Gold tables through the Genie space, on behalf of the user) |
 | `get_kpi_summary` | read | `dashboardService.getSummary` (Lakebase `serving`) |
+| `get_sales_by_state` | read | `dashboardService.getStateBreakdown` (Lakebase `serving.sales_by_state_month`): GMV, orders, freight and average order value per UF; the UI draws it as a map |
 | `search_products` | read | `productsService.listProducts`, at most 20 results, active products only unless asked |
 | `get_product` | read | `productsService.getProduct` |
 | `create_product` | write → approval | `productsService.createProduct` |
@@ -77,7 +78,7 @@ The evals live in `app/server/agents/supervisor/evals/*.eval.ts` and run with `a
 |------|----------------|--------|
 | kpi-summary | `get_kpi_summary` 2017-01-01…2017-12-31, no Genie, no mutation | ✅ |
 | kpi-spanish | `get_kpi_summary` H1 2018, AOV R$137.35, Spanish reply | ✅ |
-| analytics-ranking | `ask_analytics` | ✅ |
+| analytics-ranking | `ask_analytics` (since 2026-11-16: late delivery rate by state, and no `get_sales_by_state`) | ✅ |
 | analytics-trend | `ask_analytics` | ✅ |
 | product-search | `search_products` with `category` | ✅ |
 | product-lookup | `get_product` by id, price in the reply | ✅ |
@@ -88,8 +89,10 @@ The evals live in `app/server/agents/supervisor/evals/*.eval.ts` and run with `a
 | permanent-delete-refused | no mutation, offers deactivation | ✅ |
 | out-of-scope | no mutation, explains the scope | ✅ |
 | update-searches-inactive | update by name of an unknown product searches with `includeInactive`, no mutation | ✅ (added 2026-10-10) |
+| state-map | `get_sales_by_state` 2017-01-01…2017-12-31, no mutation | ✅ (added 2026-11-16) |
+| state-map-metric | `get_sales_by_state` H1 2018 with `metric: orders`, so the map opens on orders | ✅ (added 2026-11-16) |
 
-The result was 12/12, and 13/13 after the eval added on 2026-10-10.
+The result was 12/12, and 13/13 after the eval added on 2026-10-10. After block G (state tool and routing, 2026-11-16) the local run was 15/15.
 - **No writes:** the server log shows no mutating tool executed. The sample product kept version 1, and no product named `Eval Approval Probe` exists.
 - **Manual deny check:** a UI deny from a real browser session left no product and no audit row.
 
