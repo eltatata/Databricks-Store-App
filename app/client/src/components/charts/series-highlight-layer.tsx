@@ -2,7 +2,7 @@
 
 import type { RefObject } from 'react';
 import { useChartStable } from './chart-context';
-import { HighlightSegment } from './highlight-segment';
+import { HighlightSegment, type HighlightSegmentGlow } from './highlight-segment';
 import { useHighlightSegment } from './use-highlight-segment';
 
 interface SeriesHighlightLayerProps {
@@ -12,6 +12,11 @@ interface SeriesHighlightLayerProps {
   pathRef: RefObject<SVGPathElement | null>;
   stroke: string;
   strokeWidth: number;
+  /** Data points either side of the hovered point. Default: 1 */
+  span?: number;
+  /** Soft-end fade (% of band width per side). Default: 0 (hard edges) */
+  fadeLength?: number;
+  glow?: HighlightSegmentGlow;
 }
 
 /**
@@ -22,11 +27,25 @@ interface SeriesHighlightLayerProps {
  * component still re-renders on hover — that's the price of driving the
  * highlight band — but it's a tiny leaf so the cost is bounded to itself.
  */
-export function SeriesHighlightLayer({ enabled, height, pathRef, stroke, strokeWidth }: SeriesHighlightLayerProps) {
+export function SeriesHighlightLayer({
+  enabled,
+  height,
+  pathRef,
+  stroke,
+  strokeWidth,
+  span,
+  fadeLength,
+  glow,
+}: SeriesHighlightLayerProps) {
   const { isLoaded } = useChartStable();
-  const { xSpring, widthSpring, isActive } = useHighlightSegment({ enabled });
+  const { xSpring, widthSpring, isActive } = useHighlightSegment({
+    enabled,
+    span,
+  });
   return (
     <HighlightSegment
+      fadeLength={fadeLength}
+      glow={glow}
       height={height}
       pathRef={pathRef}
       stroke={stroke}

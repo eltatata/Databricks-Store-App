@@ -1,18 +1,19 @@
 'use client';
 
-import { motion } from 'motion/react';
-import { memo, useEffect, useMemo, useState } from 'react';
+import { m } from 'motion/react';
+import { memo, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
-import { useChart, useChartStable } from './chart-context';
+import { useChart, useChartPortalContainer, useChartStable } from './chart-context';
+import { type ChartLabelCount, resolveResponsiveChartLabelCount } from './responsive-chart-label-count';
 
 export interface BarXAxisProps {
   /** Width of the date ticker box for fade calculation. Default: 50 */
   tickerHalfWidth?: number;
   /** Whether to show all labels or skip some for dense data. Default: false */
   showAllLabels?: boolean;
-  /** Maximum number of labels to show. Default: 12 */
-  maxLabels?: number;
+  /** Maximum number of labels to show. Supports responsive breakpoints. */
+  maxLabels?: ChartLabelCount;
 }
 
 interface BarXAxisLabelProps {
@@ -49,28 +50,22 @@ function BarXAxisLabel({ label, x, crosshairX, isHovering, tickerHalfWidth }: Ba
         justifyContent: 'center',
       }}
     >
-      <motion.span
+      <m.span
         animate={{ opacity }}
         className={cn('whitespace-nowrap text-chart-label text-xs')}
         initial={{ opacity: 1 }}
         transition={{ duration: 0.4, ease: 'easeInOut' }}
       >
         {label}
-      </motion.span>
+      </m.span>
     </div>
   );
 }
 
 export function BarXAxis(props: BarXAxisProps) {
   const { containerRef, barScale } = useChartStable();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const container = containerRef.current;
-  if (!(mounted && container)) {
+  const container = useChartPortalContainer(containerRef);
+  if (!container) {
     return null;
   }
 
@@ -87,7 +82,9 @@ const BarXAxisInner = memo(function BarXAxisInner({
   maxLabels = 12,
   container,
 }: BarXAxisProps & { container: HTMLDivElement }) {
-  const { margin, tooltipData, barScale, bandWidth, barXAccessor, data } = useChart();
+  const { margin, tooltipData, barScale, bandWidth, barXAccessor, data, width } = useChart();
+
+  const resolvedMaxLabels = useMemo(() => resolveResponsiveChartLabelCount(maxLabels, width, 12), [maxLabels, width]);
 
   // Generate labels for each bar
   const labelsToShow = useMemo(() => {
@@ -104,14 +101,14 @@ const BarXAxisInner = memo(function BarXAxisInner({
     });
 
     // If showAllLabels is true or we have fewer than maxLabels, show all
-    if (showAllLabels || allLabels.length <= maxLabels) {
+    if (showAllLabels || allLabels.length <= resolvedMaxLabels) {
       return allLabels;
     }
 
     // Otherwise, skip some labels to avoid crowding
-    const step = Math.ceil(allLabels.length / maxLabels);
+    const step = Math.ceil(allLabels.length / Math.max(1, resolvedMaxLabels));
     return allLabels.filter((_, i) => i % step === 0);
-  }, [barScale, bandWidth, barXAccessor, data, margin.left, showAllLabels, maxLabels]);
+  }, [barScale, bandWidth, barXAccessor, data, margin.left, showAllLabels, resolvedMaxLabels]);
 
   const isHovering = tooltipData !== null;
   const crosshairX = tooltipData ? tooltipData.x + margin.left : null;

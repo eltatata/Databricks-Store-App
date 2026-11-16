@@ -1,7 +1,7 @@
 'use client';
 
-import { ParentSize } from '@visx/responsive';
 import type { Transition } from 'motion/react';
+import { domAnimation, LazyMotion } from 'motion/react';
 import {
   Children,
   type CSSProperties,
@@ -14,8 +14,10 @@ import {
 } from 'react';
 import { cn } from '@/lib/utils';
 import { Area, type AreaProps } from './area';
-import type { LineConfig, Margin } from './chart-context';
+import { AreaValueLabels } from './area-value-labels';
+import { type LineConfig, type Margin, useStableMargin } from './chart-context';
 import { ChartLoadingLabel } from './chart-loading-label';
+import { ParentSize } from './chart-parent-size';
 import {
   type ChartPhase,
   type ChartStatus,
@@ -24,7 +26,7 @@ import {
   resolveRestingChartPhase,
 } from './chart-phase';
 import { PatternArea } from './pattern-area';
-import { TimeSeriesChartInner } from './time-series-chart-shell';
+import { TimeSeriesChartInner, timeSeriesChartHasRoom } from './time-series-chart-shell';
 
 export interface AreaChartProps {
   /** Data array - each item should have a date field and numeric values */
@@ -69,8 +71,8 @@ export interface AreaChartProps {
 
 const DEFAULT_MARGIN: Margin = { top: 40, right: 40, bottom: 40, left: 40 };
 
-function extractAreaConfigs(children: ReactNode): LineConfig[] {
-  const configs: LineConfig[] = [];
+function extractAreaConfigs(children: ReactNode): (LineConfig & AreaProps)[] {
+  const configs: (LineConfig & AreaProps)[] = [];
 
   Children.forEach(children, (child) => {
     if (!isValidElement(child)) {
@@ -85,13 +87,17 @@ function extractAreaConfigs(children: ReactNode): LineConfig[] {
 
     const props = child.props as AreaProps | undefined;
     const isPatternArea = componentName === 'PatternArea' || child.type === PatternArea;
+    // Overlays that carry a dataKey but are not series of their own.
+    const isSeriesOverlay =
+      componentName === 'TrendLine' || componentName === 'LineSeriesTerminalMarker' || componentName === 'LineBackdrop';
     const isAreaComponent =
       componentName === 'Area' ||
       child.type === Area ||
-      (props && typeof props.dataKey === 'string' && props.dataKey.length > 0 && !isPatternArea);
+      (props && typeof props.dataKey === 'string' && props.dataKey.length > 0 && !isPatternArea && !isSeriesOverlay);
 
     if (isAreaComponent && props?.dataKey) {
       configs.push({
+        ...props,
         dataKey: props.dataKey,
         stroke: props.stroke || props.fill || 'var(--chart-line-primary)',
         strokeWidth: props.strokeWidth || 2,
@@ -101,79 +107,6 @@ function extractAreaConfigs(children: ReactNode): LineConfig[] {
   });
 
   return configs;
-}
-
-interface ChartInnerProps {
-  width: number;
-  height: number;
-  data: Record<string, unknown>[];
-  xDataKey: string;
-  margin: Margin;
-  animationDuration: number;
-  animationEasing?: string;
-  enterTransition?: Transition;
-  revealSignature?: string;
-  chartStatus: ChartStatus;
-  loadingLabel?: string;
-  yDomainTweenDuration: number;
-  yDomainTween: boolean;
-  xDomain?: [Date, Date];
-  xDomainSlotCount?: number;
-  tweenYDomainOnXDomainChange?: boolean;
-  children: ReactNode;
-  containerRef: React.RefObject<HTMLDivElement | null>;
-  onPhaseChange: (phase: ChartPhase) => void;
-}
-
-function ChartInner({
-  width,
-  height,
-  data,
-  xDataKey,
-  margin,
-  animationDuration,
-  animationEasing,
-  enterTransition,
-  revealSignature,
-  chartStatus,
-  loadingLabel,
-  yDomainTweenDuration,
-  yDomainTween,
-  xDomain,
-  xDomainSlotCount,
-  tweenYDomainOnXDomainChange,
-  children,
-  containerRef,
-  onPhaseChange,
-}: ChartInnerProps) {
-  const lines = useMemo(() => extractAreaConfigs(children), [children]);
-
-  return (
-    <TimeSeriesChartInner
-      animationDuration={animationDuration}
-      animationEasing={animationEasing}
-      chartStatus={chartStatus}
-      clipPathId="chart-area-grow-clip"
-      containerRef={containerRef}
-      data={data}
-      enterTransition={enterTransition}
-      height={height}
-      lines={lines}
-      loadingLabel={loadingLabel}
-      margin={margin}
-      onPhaseChange={onPhaseChange}
-      revealSignature={revealSignature}
-      tweenYDomainOnXDomainChange={tweenYDomainOnXDomainChange}
-      width={width}
-      xDataKey={xDataKey}
-      xDomain={xDomain}
-      xDomainSlotCount={xDomainSlotCount}
-      yDomainTween={yDomainTween}
-      yDomainTweenDuration={yDomainTweenDuration}
-    >
-      {children}
-    </TimeSeriesChartInner>
-  );
 }
 
 export function AreaChart({
@@ -198,7 +131,8 @@ export function AreaChart({
   children,
 }: AreaChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const margin = { ...DEFAULT_MARGIN, ...marginProp };
+  const margin = useStableMargin({ ...DEFAULT_MARGIN, ...marginProp });
+  const lines = useMemo(() => extractAreaConfigs(children), [children]);
   const [chartPhase, setChartPhase] = useState<ChartPhase>(() => resolveRestingChartPhase(status));
   const handlePhaseChange = useCallback(
     (phase: ChartPhase) => {
@@ -217,39 +151,47 @@ export function AreaChart({
   );
 
   return (
-    <div
-      className={cn('relative w-full', className)}
-      ref={containerRef}
-      style={{ aspectRatio, touchAction: 'none', ...style }}
-    >
-      <ParentSize debounceTime={10}>
-        {({ width, height }) => (
-          <ChartInner
-            animationDuration={animationDuration}
-            animationEasing={animationEasing}
-            chartStatus={status}
-            containerRef={containerRef}
-            data={data}
-            enterTransition={enterTransition}
-            height={height}
-            loadingLabel={loadingLabel}
-            margin={margin}
-            onPhaseChange={handlePhaseChange}
-            revealSignature={revealSignature}
-            tweenYDomainOnXDomainChange={tweenYDomainOnXDomainChange}
-            width={width}
-            xDataKey={xDataKey}
-            xDomain={xDomain}
-            xDomainSlotCount={xDomainSlotCount}
-            yDomainTween={yDomainTween}
-            yDomainTweenDuration={yDomainTweenDuration}
-          >
-            {children}
-          </ChartInner>
-        )}
-      </ParentSize>
-      {showLoadingLabel ? <ChartLoadingLabel exiting={chartPhase !== 'loading'} text={loadingLabel} /> : null}
-    </div>
+    <LazyMotion features={domAnimation}>
+      <div
+        className={cn('relative w-full', className)}
+        ref={containerRef}
+        style={{ aspectRatio, touchAction: 'none', ...style }}
+      >
+        <ParentSize debounceTime={10}>
+          {({ width, height }) =>
+            timeSeriesChartHasRoom(width, height) ? (
+              <TimeSeriesChartInner
+                animationDuration={animationDuration}
+                animationEasing={animationEasing}
+                chartStatus={status}
+                clipPathId="chart-area-grow-clip"
+                containerRef={containerRef}
+                data={data}
+                enterTransition={enterTransition}
+                height={height}
+                lines={lines}
+                loadingLabel={loadingLabel}
+                margin={margin}
+                onPhaseChange={handlePhaseChange}
+                revealSignature={revealSignature}
+                tweenYDomainOnXDomainChange={tweenYDomainOnXDomainChange}
+                width={width}
+                xDataKey={xDataKey}
+                xDomain={xDomain}
+                xDomainSlotCount={xDomainSlotCount}
+                yDomainTween={yDomainTween}
+                yDomainTweenDuration={yDomainTweenDuration}
+              >
+                {children}
+                {/* Resolve labels together, above all fills and outside their edge masks. */}
+                <AreaValueLabels series={lines} />
+              </TimeSeriesChartInner>
+            ) : null
+          }
+        </ParentSize>
+        {showLoadingLabel ? <ChartLoadingLabel exiting={chartPhase !== 'loading'} text={loadingLabel} /> : null}
+      </div>
+    </LazyMotion>
   );
 }
 

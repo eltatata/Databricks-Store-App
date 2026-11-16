@@ -1,9 +1,9 @@
 'use client';
 
-import { GridColumns, GridRows } from '@visx/grid';
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import { useId } from 'react';
 import { chartCssVars, useChartStable, useYScale } from './chart-context';
+import { GridColumns, GridRows } from './grid-lines';
 import { useGridShimmer } from './use-grid-shimmer';
 import { isLoadingChromePhase, isLoadingGridChromePhase } from './y-domain-utils';
 
@@ -180,7 +180,7 @@ export function Grid({
 
       {horizontal && shimmerEnabled ? (
         <defs>
-          <motion.linearGradient
+          <m.linearGradient
             gradientTransform={shimmerTransform}
             gradientUnits="userSpaceOnUse"
             id={shimmerGradientId}
@@ -194,7 +194,7 @@ export function Grid({
             <stop offset="50%" stopColor={shimmerStroke} stopOpacity={1} />
             <stop offset="65%" stopColor={shimmerStroke} stopOpacity={0.45} />
             <stop offset="100%" stopColor={shimmerStroke} stopOpacity={0} />
-          </motion.linearGradient>
+          </m.linearGradient>
         </defs>
       ) : null}
 

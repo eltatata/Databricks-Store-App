@@ -7,7 +7,7 @@ export function getChartChildComponentName(child: ReactElement): string {
 
 const VISX_PATTERN_COMPONENT_NAMES = new Set(['Lines', 'Circles', 'Waves', 'Hexagons', 'Path', 'Pattern']);
 
-/** @visx/pattern default exports use short names (e.g. `Lines`); also match *Pattern* displayNames. */
+/** Vendored pattern exports use short names (e.g. `Lines`); also match *Pattern* displayNames. */
 export function isPatternDefComponent(child: ReactElement): boolean {
   const name = getChartChildComponentName(child);
   return name.includes('Pattern') || VISX_PATTERN_COMPONENT_NAMES.has(name);
@@ -22,7 +22,7 @@ export function isChartDefsComponent(child: ReactElement): boolean {
   return isPatternDefComponent(child) || isGradientDefComponent(child);
 }
 
-/** Split hoisted defs: @visx/pattern nodes already wrap `<defs>` and render at the svg root. */
+/** Split hoisted defs: pattern nodes already wrap `<defs>` and render at the svg root. */
 export function partitionChartDefNodes(defNodes: ReactElement[]): {
   patternDefNodes: ReactElement[];
   gradientDefNodes: ReactElement[];
