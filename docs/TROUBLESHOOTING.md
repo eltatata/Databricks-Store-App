@@ -6,6 +6,7 @@ Every entry below was hit while building this POC. Background and evidence are i
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
+| App shows `Crashed` right after "App started successfully"; logs show `Application failed to start` from `runMigrations`. Lakebase UI shows "The endpoint has been disabled" | The Lakebase endpoint is disabled (seen after weeks without use). Scale-to-zero does not wake a disabled endpoint | Check `databricks postgres list-endpoints projects/store-app/branches/production` for `disabled: true`. Run `databricks postgres update-endpoint projects/store-app/branches/production/endpoints/primary spec.disabled --json '{"spec":{"disabled":false}}'`, then `databricks apps stop` / `start store-app` |
 | The app URL shows "App not available" a day after a deploy | Free Edition stops apps 24 h after start or redeploy | `databricks apps start store-app --profile <profile>`, wait for `RUNNING` |
 | First page load is slow after a pause | Lakebase compute resumes after 300 s of inactivity | Wait a few seconds and retry. The UI shows skeletons, then the data. |
 | `App did not respect SIGTERM timeout of 15 seconds` in the logs | The app ran through `pnpm run start`, so the signal never reached Node | `app/app.yaml` runs `node ./dist/server.js` directly; keep it that way |
