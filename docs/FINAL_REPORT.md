@@ -11,8 +11,8 @@ The structure follows `IMPLEMENTATION_PLAN.md` §11. Every number below was meas
 | Lakebase | Project `store-app`, 7 synced tables in schema `serving` sharing one pipeline, writable schema `app` (products, audit log) owned by the app service principal | `serving/resources/`, `platform/lakebase/`, `app/server/database/` |
 | Genie | Space `Olist Store Analytics` over 7 Gold tables, with instructions, synonyms and 10 benchmark questions | `serving/genie/olist-store.geniespace.json` |
 | Backend | REST API `/api/v1`: health, dashboard (summary, trend, breakdowns, top products/sellers, freshness), products CRUD with optimistic concurrency and audit, admin seed. Swagger at `/api/v1/docs`. | `app/server/` |
-| Frontend | Dashboard, Products (list, sheet form, detail), Explore (Genie), Assistant (agent with approval cards); dark "Elenco Sleeve" design system | `app/client/src/`, `app/DESIGN.md` |
-| Agent | Supervisor markdown agent; `ask_analytics` (Genie); 6 Lakebase tools in the `store-tools` plugin; approval for every mutation; 13 evals | `app/server/agents/supervisor/`, `app/server/plugins/store-tools/` |
+| Frontend | Dashboard with a Brazil state map, Products (list, sheet form, detail), Assistant as the only chat (agent with approval cards and generative UI: figures, tables, bklit charts, state maps); Olist brand design system (§9). Explore was removed in block G | `app/client/src/`, `app/DESIGN.md` |
+| Agent | Supervisor markdown agent; `ask_analytics` (Genie); 7 Lakebase tools in the `store-tools` plugin (`get_sales_by_state` added in block G); approval for every mutation; 15 evals | `app/server/agents/supervisor/`, `app/server/plugins/store-tools/` |
 
 | Test suite | Command | Result (2026-10-10) |
 |------------|---------|---------------------|
@@ -21,7 +21,7 @@ The structure follows `IMPLEMENTATION_PLAN.md` §11. Every number below was meas
 | AppKit validation | `databricks apps validate --profile local-dev` | typegen, ast-grep, typecheck, build, tests: all passed |
 | Smoke test (Playwright), local | `pnpm test:smoke` | 5/5 passed |
 | Smoke test, deployed app | `SMOKE_BASE_URL=<app-url> SMOKE_BEARER_TOKEN=… pnpm test:smoke` | 5/5 passed |
-| Agent evals | `npx appkit agent eval --url http://localhost:8000` | 13/13 passed (2026-10-10) |
+| Agent evals | `npx appkit agent eval --url http://localhost:8000` | 13/13 passed (2026-10-10); 15/15 after block G (2026-11-16) |
 | Data job helpers (pytest) | `cd data && uv run pytest` | 15 passed |
 | Serving job helpers (pytest) | `cd serving && uv run pytest` | 4 passed |
 | Gold reconciliation | `bash scripts/data-run.sh` | 38/38 checks passed |
@@ -94,9 +94,9 @@ Idempotency was checked on 2026-10-10:
 | Genie benchmark | 10/10 questions answered correctly (Phase 5, `docs/AGENT.md`) |
 | Genie through the agent | Top categories by GMV for 2017 and 2018 match hand-written SQL on `gold.sales_by_category_month` exactly |
 | Lakebase tools through the agent | H1 2018: GMV R$5,614,133.04, 40,876 orders, AOV R$137.35, equal to `gold.kpi_daily` |
-| Tools | `ask_analytics`, `get_kpi_summary`, `search_products`, `get_product` (read); `create_product` (write), `update_product` (update), `deactivate_product` (destructive) |
+| Tools | `ask_analytics`, `get_kpi_summary`, `get_sales_by_state` (block G), `search_products`, `get_product` (read); `create_product` (write), `update_product` (update), `deactivate_product` (destructive) |
 | HITL | Every write/update/destructive call waits for an approval card from the user who opened the stream; no decision in 120 s auto-denies |
-| Evals | 13/13: routing (Genie vs Lakebase), clarification, approval on each mutation, refusal of permanent delete and out-of-scope requests, inactive products found before an update |
+| Evals | 15/15 (13/13 before block G): routing (Genie vs Lakebase, state sales vs Genie), clarification, approval on each mutation, refusal of permanent delete and out-of-scope requests, inactive products found before an update |
 
 Deployed approval run on 2026-10-10. Each step went through `/api/agents/chat` and `/api/agents/approve` as the signed-in user:
 
@@ -115,7 +115,7 @@ E2E acceptance (§9):
 | 2 | Gold and Lakebase reconciliations pass | ✅ 38/38 and 12/12 |
 | 3 | Dashboard loads with the freshness badge | ✅ Deployed smoke test |
 | 4 | Product CRUD from the UI, audit checked | ✅ Phase 7, deployed UI: create, edit, version conflict, deactivate, reactivate, delete; 7 audit rows |
-| 5 | Explore answers a question that matches SQL | ✅ Genie benchmark, plus the category ranking above |
+| 5 | Explore answers a question that matches SQL (since block G, through the assistant's `ask_analytics`) | ✅ Genie benchmark, plus the category ranking above |
 | 6 | Assistant: create → approve → row exists; deny → no row | ✅ Deployed run above; deny also verified from the local UI |
 | 7 | Assistant: deactivate → approval → soft delete | ✅ Deployed run above |
 | 8 | Job re-run: no duplicate growth, `app.products` untouched | ✅ Counts identical |
