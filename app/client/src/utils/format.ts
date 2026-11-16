@@ -13,6 +13,7 @@ const compactCurrencyFormatter = new Intl.NumberFormat(LOCALE, {
 });
 const countFormatter = new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 0 });
 const compactCountFormatter = new Intl.NumberFormat(LOCALE, { notation: 'compact', maximumFractionDigits: 1 });
+const measureFormatter = new Intl.NumberFormat(LOCALE, { notation: 'compact', maximumSignificantDigits: 3 });
 const scoreFormatter = new Intl.NumberFormat(LOCALE, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const percentFormatter = new Intl.NumberFormat(LOCALE, {
   style: 'percent',
@@ -40,6 +41,9 @@ export const formatCount = (value: number | null | undefined) =>
 
 export const formatCompactCount = (value: number | null | undefined) =>
   isPresent(value) ? compactCountFormatter.format(value) : EMPTY_VALUE;
+
+export const formatMeasure = (value: number | null | undefined) =>
+  isPresent(value) ? measureFormatter.format(value) : EMPTY_VALUE;
 
 export const formatScore = (value: number | null | undefined) =>
   isPresent(value) ? scoreFormatter.format(value) : EMPTY_VALUE;

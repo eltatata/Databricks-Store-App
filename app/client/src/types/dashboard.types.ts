@@ -36,6 +36,7 @@ export interface StateBreakdownRow {
   customerState: string;
   gmv: number;
   orders: number;
+  freight: number;
   averageOrderValue: number | null;
 }
 
