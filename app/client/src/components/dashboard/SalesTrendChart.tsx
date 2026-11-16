@@ -45,7 +45,7 @@ export function SalesTrendChart({ range }: SalesTrendChartProps) {
           options={GRANULARITY_OPTIONS}
           value={granularity}
           onChange={setGranularity}
-          signalId="granularity-signal"
+          accentId="granularity-signal"
           size="sm"
         />
       }

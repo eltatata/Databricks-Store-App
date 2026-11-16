@@ -84,7 +84,7 @@ export function ProductsToolbar({ state, onChange }: ProductsToolbarProps) {
         options={STATUS_OPTIONS}
         value={state.status}
         onChange={(status) => onChange({ status })}
-        signalId="product-status-signal"
+        accentId="product-status-signal"
       />
     </div>
   );
