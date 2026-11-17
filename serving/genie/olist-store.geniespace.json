@@ -1,0 +1,477 @@
+{
+  "version": 2,
+  "config": {
+    "sample_questions": [
+      {
+        "id": "a0000000000000000000000000000001",
+        "question": [
+          "What was the total GMV in 2017?"
+        ]
+      },
+      {
+        "id": "a0000000000000000000000000000002",
+        "question": [
+          "¿Cuáles son las 5 categorías con más ventas?"
+        ]
+      },
+      {
+        "id": "a0000000000000000000000000000003",
+        "question": [
+          "Which state has the highest GMV?"
+        ]
+      },
+      {
+        "id": "a0000000000000000000000000000004",
+        "question": [
+          "¿Cuál es el ticket promedio por mes en 2018?"
+        ]
+      },
+      {
+        "id": "a0000000000000000000000000000005",
+        "question": [
+          "What is the late delivery rate trend by month?"
+        ]
+      }
+    ]
+  },
+  "data_sources": {
+    "tables": [
+      {
+        "identifier": "data_engineering.gold.dim_product",
+        "column_configs": [
+          {
+            "column_name": "category_en",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true,
+            "synonyms": [
+              "category",
+              "product category",
+              "categoria"
+            ]
+          },
+          {
+            "column_name": "display_name",
+            "synonyms": [
+              "product name",
+              "nombre del producto"
+            ]
+          }
+        ]
+      },
+      {
+        "identifier": "data_engineering.gold.fact_orders",
+        "column_configs": [
+          {
+            "column_name": "customer_state",
+            "enable_entity_matching": true,
+            "synonyms": [
+              "state",
+              "UF",
+              "estado"
+            ]
+          },
+          {
+            "column_name": "gmv",
+            "synonyms": [
+              "revenue",
+              "sales",
+              "order value",
+              "ventas",
+              "faturamento"
+            ]
+          },
+          {
+            "column_name": "order_status",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "primary_payment_type",
+            "enable_entity_matching": true,
+            "synonyms": [
+              "payment method",
+              "metodo de pago"
+            ]
+          }
+        ]
+      },
+      {
+        "identifier": "data_engineering.gold.fact_sales",
+        "column_configs": [
+          {
+            "column_name": "category_en",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true,
+            "synonyms": [
+              "category",
+              "product category",
+              "categoria"
+            ]
+          },
+          {
+            "column_name": "customer_state",
+            "enable_entity_matching": true,
+            "synonyms": [
+              "state",
+              "UF",
+              "estado"
+            ]
+          },
+          {
+            "column_name": "price",
+            "synonyms": [
+              "item price",
+              "precio"
+            ]
+          },
+          {
+            "column_name": "seller_state",
+            "enable_entity_matching": true
+          }
+        ]
+      },
+      {
+        "identifier": "data_engineering.gold.kpi_daily",
+        "column_configs": [
+          {
+            "column_name": "average_order_value",
+            "synonyms": [
+              "AOV",
+              "average ticket",
+              "ticket medio",
+              "ticket promedio"
+            ]
+          },
+          {
+            "column_name": "gmv",
+            "synonyms": [
+              "revenue",
+              "sales",
+              "gross merchandise value",
+              "ventas",
+              "faturamento"
+            ]
+          },
+          {
+            "column_name": "late_delivery_rate",
+            "synonyms": [
+              "late rate",
+              "delay rate",
+              "entregas tarde"
+            ]
+          }
+        ]
+      },
+      {
+        "identifier": "data_engineering.gold.product_performance"
+      },
+      {
+        "identifier": "data_engineering.gold.sales_by_category_month",
+        "column_configs": [
+          {
+            "column_name": "category_en",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true,
+            "synonyms": [
+              "category",
+              "categoria"
+            ]
+          }
+        ]
+      },
+      {
+        "identifier": "data_engineering.gold.sales_by_state_month",
+        "column_configs": [
+          {
+            "column_name": "customer_state",
+            "enable_entity_matching": true,
+            "synonyms": [
+              "state",
+              "UF",
+              "estado"
+            ]
+          }
+        ]
+      },
+      {
+        "identifier": "data_engineering.gold.seller_performance",
+        "column_configs": [
+          {
+            "column_name": "seller_state",
+            "enable_entity_matching": true,
+            "synonyms": [
+              "seller state",
+              "estado del vendedor"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "instructions": {
+    "text_instructions": [
+      {
+        "id": "c0000000000000000000000000000001",
+        "content": [
+          "Data: Olist Brazilian e-commerce marketplace, purchases from 2016-09 to 2018-09. Currency is BRL (R$). Timestamps are local Brazil time.",
+          "GMV (revenue, sales) = sum of item price, excluding freight. Freight is reported separately.",
+          "Only valid sales count for KPIs: use is_valid_sale = true in fact_sales and fact_orders. The aggregate tables (kpi_daily, sales_by_*, *_performance) already contain only valid sales.",
+          "Orders = count of valid orders. Average order value (AOV) = sum(gmv) / sum(orders). Never average the daily average_order_value column; recompute it from gmv and orders.",
+          "Late delivery rate = sum(late_orders) / sum(delivered_orders) over the period. Never average the daily rate.",
+          "Distinct customers use customer_unique_id and are not additive across days or months: count them from fact_orders for any period.",
+          "Prefer kpi_daily for daily or period totals, sales_by_category_month for category trends, sales_by_state_month for geography, product_performance and seller_performance for rankings, fact_sales or fact_orders only for detail or custom slices.",
+          "Product names do not exist in the source: display_name is a synthetic label. Categories are in English snake_case in category_en (for example health_beauty).",
+          "States are Brazilian two-letter codes (UF), for example SP, RJ, MG.",
+          "Answer in the language of the question (Spanish, English or Portuguese)."
+        ]
+      }
+    ],
+    "example_question_sqls": [
+      {
+        "id": "d0000000000000000000000000000001",
+        "question": [
+          "What is the total GMV by month?"
+        ],
+        "sql": [
+          "SELECT trunc(order_date, 'MM') AS month, sum(gmv) AS gmv FROM data_engineering.gold.kpi_daily GROUP BY trunc(order_date, 'MM') ORDER BY month"
+        ]
+      },
+      {
+        "id": "d0000000000000000000000000000002",
+        "question": [
+          "What is the average order value in 2018?"
+        ],
+        "sql": [
+          "SELECT round(sum(gmv) / sum(orders), 2) AS average_order_value FROM data_engineering.gold.kpi_daily WHERE year(order_date) = 2018"
+        ]
+      },
+      {
+        "id": "d0000000000000000000000000000003",
+        "question": [
+          "Which categories have the highest GMV?"
+        ],
+        "sql": [
+          "SELECT category_en, sum(gmv) AS gmv FROM data_engineering.gold.sales_by_category_month GROUP BY category_en ORDER BY gmv DESC LIMIT 10"
+        ]
+      },
+      {
+        "id": "d0000000000000000000000000000004",
+        "question": [
+          "What is the late delivery rate by state?"
+        ],
+        "sql": [
+          "SELECT customer_state, round(sum(CASE WHEN is_late_delivery THEN 1 ELSE 0 END) / count_if(is_delivered), 4) AS late_delivery_rate FROM data_engineering.gold.fact_orders WHERE is_valid_sale AND is_delivered GROUP BY customer_state ORDER BY late_delivery_rate DESC"
+        ]
+      },
+      {
+        "id": "d0000000000000000000000000000005",
+        "question": [
+          "Who are the top 10 sellers by GMV?"
+        ],
+        "sql": [
+          "SELECT seller_id, seller_state, gmv, orders FROM data_engineering.gold.seller_performance ORDER BY gmv_rank LIMIT 10"
+        ]
+      },
+      {
+        "id": "d0000000000000000000000000000006",
+        "question": [
+          "How many distinct customers bought in 2018?"
+        ],
+        "sql": [
+          "SELECT count(DISTINCT customer_unique_id) AS customers FROM data_engineering.gold.fact_orders WHERE is_valid_sale AND year(order_date) = 2018"
+        ]
+      }
+    ],
+    "join_specs": [
+      {
+        "id": "e0000000000000000000000000000001",
+        "left": {
+          "identifier": "data_engineering.gold.fact_sales",
+          "alias": "fact_sales"
+        },
+        "right": {
+          "identifier": "data_engineering.gold.dim_product",
+          "alias": "dim_product"
+        },
+        "sql": [
+          "`fact_sales`.`product_id` = `dim_product`.`product_id`",
+          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_ONE--"
+        ]
+      },
+      {
+        "id": "e0000000000000000000000000000002",
+        "left": {
+          "identifier": "data_engineering.gold.fact_sales",
+          "alias": "fact_sales"
+        },
+        "right": {
+          "identifier": "data_engineering.gold.fact_orders",
+          "alias": "fact_orders"
+        },
+        "sql": [
+          "`fact_sales`.`order_id` = `fact_orders`.`order_id`",
+          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_ONE--"
+        ]
+      },
+      {
+        "id": "e0000000000000000000000000000003",
+        "left": {
+          "identifier": "data_engineering.gold.fact_sales",
+          "alias": "fact_sales"
+        },
+        "right": {
+          "identifier": "data_engineering.gold.seller_performance",
+          "alias": "seller_performance"
+        },
+        "sql": [
+          "`fact_sales`.`seller_id` = `seller_performance`.`seller_id`",
+          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_ONE--"
+        ]
+      }
+    ]
+  },
+  "benchmarks": {
+    "questions": [
+      {
+        "id": "b0000000000000000000000000000001",
+        "question": [
+          "What was the total GMV in 2017?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT sum(gmv) AS gmv FROM data_engineering.gold.kpi_daily WHERE year(order_date) = 2017"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "b0000000000000000000000000000002",
+        "question": [
+          "What are the top 5 categories by GMV?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT category_en, sum(gmv) AS gmv FROM data_engineering.gold.sales_by_category_month GROUP BY category_en ORDER BY gmv DESC LIMIT 5"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "b0000000000000000000000000000003",
+        "question": [
+          "Which state has the highest GMV?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT customer_state, sum(gmv) AS gmv FROM data_engineering.gold.sales_by_state_month GROUP BY customer_state ORDER BY gmv DESC LIMIT 1"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "b0000000000000000000000000000004",
+        "question": [
+          "What is the overall average order value?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT round(sum(gmv) / sum(orders), 2) AS average_order_value FROM data_engineering.gold.kpi_daily"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "b0000000000000000000000000000005",
+        "question": [
+          "What was the late delivery rate in 2017?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT round(sum(late_orders) / sum(delivered_orders), 4) AS late_delivery_rate FROM data_engineering.gold.kpi_daily WHERE year(order_date) = 2017"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "b0000000000000000000000000000006",
+        "question": [
+          "How many distinct customers made a valid purchase in 2018?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT count(DISTINCT customer_unique_id) AS customers FROM data_engineering.gold.fact_orders WHERE is_valid_sale AND year(order_date) = 2018"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "b0000000000000000000000000000007",
+        "question": [
+          "What is the most common payment method?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT primary_payment_type, count(*) AS orders FROM data_engineering.gold.fact_orders WHERE is_valid_sale GROUP BY primary_payment_type ORDER BY orders DESC LIMIT 1"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "b0000000000000000000000000000008",
+        "question": [
+          "Who are the top 10 sellers by GMV?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT seller_id, gmv FROM data_engineering.gold.seller_performance ORDER BY gmv_rank LIMIT 10"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "b0000000000000000000000000000009",
+        "question": [
+          "What was the monthly GMV in 2018?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT trunc(order_date, 'MM') AS month, sum(gmv) AS gmv FROM data_engineering.gold.kpi_daily WHERE year(order_date) = 2018 GROUP BY trunc(order_date, 'MM') ORDER BY month"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "b000000000000000000000000000000a",
+        "question": [
+          "How many valid orders were placed in total?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT sum(orders) AS orders FROM data_engineering.gold.kpi_daily"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
