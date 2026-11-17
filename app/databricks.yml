@@ -1,0 +1,52 @@
+bundle:
+  name: store-app
+
+variables:
+  agents_serving_endpoint_name:
+    description: Default LLM serving endpoint name
+  genie_space_id:
+    description: Default Genie Space ID
+  genie_space_name:
+    description: Genie Space display name
+  postgres_branch:
+    description: Full Lakebase Postgres branch resource name. Obtain by running `databricks postgres list-branches {project-name}`, select the desired item from the output array and use its .name value. Requires the project resource name.
+  postgres_database:
+    description: Full Lakebase Postgres database resource name. Obtain by running `databricks postgres list-databases {branch-name}`, select the desired item from the output array and use its .name value. Requires the branch resource name.
+
+resources:
+  apps:
+    app:
+      name: 'store-app'
+      description: 'Olist store: KPI dashboard, product CRUD and AI assistant'
+      source_code_path: ./
+
+      lifecycle:
+        started: true
+      user_api_scopes:
+        - genie
+
+      resources:
+        - name: agents-serving-endpoint
+          serving_endpoint:
+            name: ${var.agents_serving_endpoint_name}
+            permission: CAN_QUERY
+        - name: genie-space
+          genie_space:
+            name: ${var.genie_space_name}
+            space_id: ${var.genie_space_id}
+            permission: CAN_RUN
+        - name: postgres
+          postgres:
+            branch: ${var.postgres_branch}
+            database: ${var.postgres_database}
+            permission: CAN_CONNECT_AND_CREATE
+
+targets:
+  default:
+    default: true
+    variables:
+      agents_serving_endpoint_name: databricks-qwen3-next-80b-a3b-instruct
+      genie_space_id: 01f1c43f76fc1b69b5abaaba83365398
+      genie_space_name: Olist Store Analytics
+      postgres_branch: projects/store-app/branches/production
+      postgres_database: projects/store-app/branches/production/databases/databricks-postgres

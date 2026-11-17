@@ -1,0 +1,10 @@
+command: ['node', './dist/server.js']
+env:
+  - name: NODE_ENV
+    value: production
+  - name: DATABRICKS_SERVING_ENDPOINT_NAME
+    valueFrom: agents-serving-endpoint
+  - name: DATABRICKS_GENIE_SPACE_ID
+    valueFrom: genie-space
+  - name: LAKEBASE_ENDPOINT
+    valueFrom: postgres
