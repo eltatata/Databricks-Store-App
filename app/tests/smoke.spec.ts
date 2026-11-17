@@ -48,3 +48,15 @@ test('assistant page offers suggestions and a composer', async ({ page }) => {
   await expect(page.getByLabel('Message for the assistant')).toBeVisible();
   await expect(page.getByRole('button', { name: /Find active products/ })).toBeVisible();
 });
+
+test('assistant keeps the window still and scrolls only the conversation', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 520 });
+  await page.goto('/assistant');
+  const history = page.getByRole('region', { name: 'Conversation history' });
+  await expect(history).toBeVisible();
+  await expect(page.getByLabel('Message for the assistant')).toBeInViewport();
+
+  const windowOverflow = await page.evaluate<number>('document.documentElement.scrollHeight - window.innerHeight');
+  expect(windowOverflow).toBeLessThanOrEqual(0);
+  await expect(history).toHaveCSS('overflow-y', 'auto');
+});
