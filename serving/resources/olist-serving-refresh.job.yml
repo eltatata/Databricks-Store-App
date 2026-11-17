@@ -1,0 +1,41 @@
+resources:
+  jobs:
+    olist_serving_refresh:
+      name: olist-serving-refresh
+      max_concurrent_runs: 1
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: lakebase_project_id
+          default: ${var.lakebase_project_id}
+        - name: lakebase_branch_id
+          default: ${var.lakebase_branch_id}
+        - name: lakebase_database
+          default: ${var.lakebase_database}
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "4"
+            dependencies:
+              - databricks-sdk>=0.81
+              - pg8000>=1.31
+      tasks:
+        - task_key: refresh_synced_tables
+          pipeline_task:
+            pipeline_id: ${resources.postgres_synced_tables.kpi_daily.status.pipeline_id}
+
+        - task_key: reconcile_lakebase
+          depends_on:
+            - task_key: refresh_synced_tables
+          environment_key: default
+          spark_python_task:
+            python_file: ../jobs/reconcile_lakebase.py
+            parameters:
+              - --catalog
+              - "{{job.parameters.catalog}}"
+              - --project
+              - "{{job.parameters.lakebase_project_id}}"
+              - --branch
+              - "{{job.parameters.lakebase_branch_id}}"
+              - --database
+              - "{{job.parameters.lakebase_database}}"
