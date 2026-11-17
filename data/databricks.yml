@@ -1,0 +1,18 @@
+bundle:
+  name: store-data
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog catalog that holds the medallion layers
+    default: data_engineering
+  warehouse_id:
+    description: SQL warehouse used by Genie and ad-hoc validation
+    lookup:
+      warehouse: Serverless Starter Warehouse
+
+targets:
+  dev:
+    default: true
