@@ -1,0 +1,254 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@fontsource-variable/plus-jakarta-sans';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  color-scheme: light;
+  --radius: 0.75rem;
+
+  --ink: #001647;
+  --ink-2: #4d5c7e;
+  --ink-3: #696d8c;
+  --ground: #ffffff;
+  --raised: #f5f7fb;
+  --raised-2: #edf1f7;
+  --hairline: #e5e8ed;
+  --hairline-strong: #c9d0dc;
+  --brand: #0a4ee4;
+  --brand-deep: #0a1f9c;
+  --brand-soft: rgb(10 78 228 / 0.08);
+  --brand-foreground: #ffffff;
+  --signal: #d92d20;
+  --signal-soft: rgb(217 45 32 / 0.08);
+  --positive: #0e8a5f;
+  --teal: #8dd7d7;
+  --amber: #f0a028;
+
+  --background: var(--ground);
+  --foreground: var(--ink);
+  --card: var(--ground);
+  --card-foreground: var(--ink);
+  --popover: var(--ground);
+  --popover-foreground: var(--ink);
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  --secondary: var(--raised-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--raised);
+  --muted-foreground: var(--ink-2);
+  --accent: var(--raised-2);
+  --accent-foreground: var(--ink);
+  --destructive: var(--signal);
+  --destructive-foreground: #ffffff;
+  --border: var(--hairline);
+  --input: var(--hairline-strong);
+  --ring: var(--brand);
+
+  --chart-1: var(--brand);
+  --chart-2: #3d74ec;
+  --chart-3: var(--brand-deep);
+  --chart-4: var(--teal);
+  --chart-5: var(--amber);
+  --chart-background: var(--ground);
+  --chart-foreground: var(--ink-3);
+  --chart-foreground-muted: var(--ink-2);
+  --chart-line-primary: var(--chart-1);
+  --chart-line-secondary: var(--chart-3);
+  --chart-crosshair: var(--hairline-strong);
+  --chart-grid: #eef1f6;
+  --chart-brush-border: var(--hairline-strong);
+  --chart-tooltip-background: rgb(0 22 71 / 0.96);
+  --chart-tooltip-foreground: #ffffff;
+  --chart-tooltip-muted: #b7c3da;
+  --chart-marker-background: var(--ground);
+  --chart-marker-border: var(--hairline-strong);
+  --chart-marker-foreground: var(--ink);
+  --chart-label: var(--ink-3);
+  --chart-scale-01: #e8effd;
+  --chart-scale-02: #b6cbf7;
+  --chart-scale-03: #6f97f0;
+  --chart-scale-04: #0a4ee4;
+  --chart-scale-05: #0a1f9c;
+  --chart-scale-pattern-color: var(--ground);
+  --chart-positive: var(--positive);
+  --chart-negative: var(--signal);
+  --chart-scale-mix: var(--ground);
+  --chart-indicator-color: var(--ink);
+  --chart-indicator-secondary-color: var(--hairline);
+  --chart-marker-badge-background: var(--ink);
+  --chart-marker-badge-foreground: var(--ground);
+  --chart-segment-background: var(--brand-soft);
+  --chart-segment-line: rgb(0 22 71 / 0.2);
+  --overlay: rgb(0 22 71 / 0.45);
+}
+
+.dark {
+  color-scheme: dark;
+
+  --ink: #edf1fa;
+  --ink-2: #aab5cd;
+  --ink-3: #8a96b2;
+  --ground: #070e24;
+  --raised: #0d1632;
+  --raised-2: #141e3d;
+  --hairline: #1c284a;
+  --hairline-strong: #2a3a63;
+  --brand: #5b8cf5;
+  --brand-deep: #a9c3ff;
+  --brand-soft: rgb(91 140 245 / 0.14);
+  --brand-foreground: #070e24;
+  --signal: #f97066;
+  --signal-soft: rgb(249 112 102 / 0.12);
+  --positive: #34c98a;
+
+  --destructive-foreground: #070e24;
+
+  --chart-2: #3a74f0;
+  --chart-grid: #141e3d;
+  --chart-tooltip-background: rgb(237 241 250 / 0.97);
+  --chart-tooltip-foreground: #001647;
+  --chart-tooltip-muted: #4d5c7e;
+  --chart-scale-01: #13224a;
+  --chart-scale-02: #1d3f8f;
+  --chart-scale-03: #2f62d6;
+  --chart-scale-04: #5b8cf5;
+  --chart-scale-05: #a9c3ff;
+  --chart-segment-line: rgb(237 241 250 / 0.2);
+  --overlay: rgb(0 0 0 / 0.6);
+}
+
+@theme inline {
+  --font-sans: 'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-overlay: var(--overlay);
+
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ground: var(--ground);
+  --color-raised: var(--raised);
+  --color-raised-2: var(--raised-2);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-teal: var(--teal);
+  --color-amber: var(--amber);
+  --color-signal: var(--signal);
+  --color-signal-soft: var(--signal-soft);
+  --color-positive: var(--positive);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-label: var(--chart-label);
+  --color-chart-tooltip-background: var(--chart-tooltip-background);
+  --color-chart-tooltip-foreground: var(--chart-tooltip-foreground);
+  --color-chart-tooltip-muted: var(--chart-tooltip-muted);
+
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --color-chart-line-primary: var(--chart-line-primary);
+  --color-chart-line-secondary: var(--chart-line-secondary);
+  --color-chart-brush-border: var(--chart-brush-border);
+  --color-chart-scale-02: var(--chart-scale-02);
+  --color-chart-scale-03: var(--chart-scale-03);
+  --color-chart-scale-04: var(--chart-scale-04);
+  --color-chart-scale-05: var(--chart-scale-05);
+  --color-chart-segment-line: var(--chart-segment-line);
+  --color-chart-segment-background: var(--chart-segment-background);
+  --color-chart-marker-badge-foreground: var(--chart-marker-badge-foreground);
+  --color-chart-marker-badge-background: var(--chart-marker-badge-background);
+  --color-chart-indicator-secondary-color: var(--chart-indicator-secondary-color);
+  --color-chart-indicator-color: var(--chart-indicator-color);
+  --color-chart-scale-pattern-color: var(--chart-scale-pattern-color);
+
+  --color-chart-scale-01: var(--chart-scale-01);
+  --color-chart-scale-mix: var(--chart-scale-mix);
+  --color-chart-marker-foreground: var(--chart-marker-foreground);
+  --color-chart-marker-border: var(--chart-marker-border);
+  --color-chart-marker-background: var(--chart-marker-background);
+
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-crosshair: var(--chart-crosshair);
+
+  --color-chart-foreground-muted: var(--chart-foreground-muted);
+  --color-chart-foreground: var(--chart-foreground);
+  --color-chart-background: var(--chart-background);
+  --color-chart-negative: var(--chart-negative);
+  --color-chart-positive: var(--chart-positive);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    background: var(--ground);
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+    font-feature-settings: 'tnum' 1;
+    caret-color: var(--brand);
+  }
+
+  ::selection {
+    background: var(--brand);
+    color: var(--brand-foreground);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--hairline-strong) transparent;
+  }
+
+  a {
+    text-underline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
