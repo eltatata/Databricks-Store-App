@@ -21,3 +21,11 @@ export const NAVIGATION: NavigationItem[] = [
   { label: 'Products', to: ROUTES.products, end: false },
   { label: 'Assistant', to: ROUTES.assistant, end: false },
 ];
+
+/**
+ * Route handle read by the app shell. `viewport` pins the page to the window height
+ * so only the page's own regions scroll (used by the chat).
+ */
+export interface RouteHandle {
+  layout?: 'viewport';
+}

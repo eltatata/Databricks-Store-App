@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { RouteErrorPage } from '@/pages/RouteErrorPage';
-import { ROUTES } from '@/configs/routes';
+import { ROUTES, type RouteHandle } from '@/configs/routes';
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +26,7 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTES.assistant,
+        handle: { layout: 'viewport' } satisfies RouteHandle,
         lazy: async () => ({ Component: (await import('@/pages/AssistantPage')).AssistantPage }),
       },
       {
